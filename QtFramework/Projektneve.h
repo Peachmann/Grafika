@@ -1,0 +1,4 @@
+#ifndef PROJEKTNEVE_H
+#define PROJEKTNEVE_H
+
+#endif // PROJEKTNEVE_H
