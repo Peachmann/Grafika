@@ -59,11 +59,11 @@ GLboolean BiquadraticCompositeCurve3::InsertNewIsolatedArc(GLuint index, Color4*
 {
 
     //Insert new attribute (arc)
-      GLint attr_size = _attributes.size();
-     _attributes.resize(attr_size + 1);
-     _attributes[index].arc = new BiquadraticArcs3();
+    GLint attr_size = _attributes.size();
+    _attributes.resize(attr_size + 1);
+    _attributes[index].arc = new BiquadraticArcs3();
 
-     //Check if arc was created
+    //Check if arc was created
 
     if(!_attributes[attr_size].arc)
     {
@@ -90,11 +90,113 @@ GLboolean BiquadraticCompositeCurve3::MergeExistingArcs(const size_t &arc_index1
 
 GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1, Direction direction1, const size_t &arc_index2, Direction direction2)
 {
+    //Insert new attribute (arc)
+    GLint attr_size = _attributes.size();
+    _attributes.resize(attr_size + 1);
+    _attributes[attr_size].arc = new BiquadraticArcs3();
+
+    //If selected arcs have already neighbours
+    if((direction1 == LEFT && _attributes[arc_index1].previous != nullptr) ||
+       (direction1 == RIGHT && _attributes[arc_index1].next != nullptr) ||
+       (direction2 == LEFT && _attributes[arc_index2].previous != nullptr) ||
+       (direction2 == RIGHT && _attributes[arc_index2].next != nullptr)) {
+        return GL_FALSE;
+    }
+
+    if(!_attributes[attr_size].arc)
+    {
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    DCoordinate3 p0, p1, p2, p3;
+    // setting up first 2 points
+    switch (direction1) {
+
+    case LEFT:
+        p0 = _attributes[arc_index1].arc->GetData(0);
+        p1 = _attributes[arc_index1].arc->GetData(1);
+        *_attributes[arc_index1].previous = _attributes[attr_size];
+        break;
+    case RIGHT:
+        p0 = _attributes[arc_index1].arc->GetData(3);
+        p1 = _attributes[arc_index1].arc->GetData(2);
+        *_attributes[arc_index1].next = _attributes[attr_size];
+        break;
+    default:
+        std :: cout << "That should not have happened..." << std :: endl;
+        return GL_FALSE;
+    }
+
+    // setting up other 2 points
+    switch (direction2) {
+
+    case LEFT:
+        p3 = _attributes[arc_index2].arc->GetData(0);
+        p2 = _attributes[arc_index2].arc->GetData(1);
+        *_attributes[arc_index2].previous = _attributes[attr_size];
+        break;
+    case RIGHT:
+        p3 = _attributes[arc_index2].arc->GetData(3);
+        p2 = _attributes[arc_index2].arc->GetData(2);
+        *_attributes[arc_index2].next = _attributes[attr_size];
+        break;
+    default:
+        std :: cout << "That should not have happened..." << std :: endl;
+        return GL_FALSE;
+    }
+
+    // setting up the new arc
+    _attributes[attr_size].arc->SetData(0,*new DCoordinate3(p0));
+    _attributes[attr_size].arc->SetData(1,*new DCoordinate3(2 * p0.x() - p1.x(),2 * p0.y() - p1.y(),2 * p0.z() - p1.z()));
+    _attributes[attr_size].arc->SetData(2,*new DCoordinate3(2 * p3.x() - p2.x(),2 * p3.y() - p2.y(),2 * p3.z() - p2.z()));
+    _attributes[attr_size].arc->SetData(3,*new DCoordinate3(p3));
+
     return GL_TRUE;
 }
 
 GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_index, Direction direction)
 {
+    //Insert new attribute (arc)
+    GLint attr_size = _attributes.size();
+    _attributes.resize(attr_size + 1);
+    _attributes[attr_size].arc = new BiquadraticArcs3();
+
+    if((direction == LEFT && _attributes[arc_index].previous != nullptr) || (direction == RIGHT && _attributes[arc_index].next != nullptr)) {
+        return GL_FALSE;
+    }
+
+    if(!_attributes[attr_size].arc)
+    {
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    DCoordinate3 p0, p1;
+    // setting up the first 2 points
+    switch (direction) {
+
+    case LEFT:
+        p0 = _attributes[arc_index].arc->GetData(0);
+        p1 = _attributes[arc_index].arc->GetData(1);
+        *_attributes[arc_index].previous = _attributes[attr_size];
+        break;
+    case RIGHT:
+        p0 = _attributes[arc_index].arc->GetData(3);
+        p1 = _attributes[arc_index].arc->GetData(2);
+        *_attributes[arc_index].next = _attributes[attr_size];
+        break;
+    default:
+        std :: cout << "That should not have happened..." << std :: endl;
+        return GL_FALSE;
+    }
+    // calculating new arc points
+    GLdouble x0 = p0.x(), y0 = p0.y(), z0 = p0.z(), xdiff = x0 - p1.x(), ydiff = y0 - p1.y(), zdiff = z0 - p1.z();
+    _attributes[attr_size].arc->SetData(0,*new DCoordinate3(p0));
+    _attributes[attr_size].arc->SetData(1,*new DCoordinate3(xdiff + x0, ydiff + y0, zdiff + z0));
+    _attributes[attr_size].arc->SetData(2,*new DCoordinate3(2 * xdiff + x0, 2 * ydiff + y0,  2 * zdiff + z0));
+    _attributes[attr_size].arc->SetData(3,*new DCoordinate3(3 * xdiff + x0, 3 * ydiff + y0, 3 * zdiff + z0));
+
     return GL_TRUE;
 }
 
