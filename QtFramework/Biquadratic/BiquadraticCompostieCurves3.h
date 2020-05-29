@@ -3,6 +3,7 @@
 
 #include "BiquadraticArcs3.h"
 #include <Core/Colors4.h>
+#include <Core/Constants.h>
 
 namespace cagd {
     class BiquadraticCompositeCurve3

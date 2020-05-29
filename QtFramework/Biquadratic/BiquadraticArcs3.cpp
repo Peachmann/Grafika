@@ -181,16 +181,6 @@ namespace cagd {
         dF.SetRow(2,u_blending_values_d2);
         dF.SetRow(3,u_blending_values_d3);
 
-        DCoordinate3 centroid;
-        centroid = (_data[0] + _data[1] + _data[2] + _data[3]) / 4.0;
-
-        /*for(int i = 0; i <= max_order_of_derivatives; i++)
-        {
-            for(int j = 0; j < _data.GetRowCount(); j++)
-            {
-                d[i] += _data[i] * dF(i,j);
-            }
-        }*/
         d[0] = _data[0] * f0(u) + _data[1] * f1(u) + _data[2] * f2(u) + _data[3] * f3(u);
         d[1] = _data[0] * f0_d1(u) + _data[1] * f1_d1(u) + _data[2] * f2_d1(u) + _data[3] * f3_d1(u);
         d[2] = _data[0] * f0_d2(u) + _data[1] * f1_d2(u) + _data[2] * f2_d2(u) + _data[3] * f3_d2(u);

@@ -1323,12 +1323,23 @@ void GLWidget::do_arc_operation() {
 
     // Continue
     case 2:
+        if(direction1 == "Right")
+            _curve->ContinueExistingArc(index1,BiquadraticCompositeCurve3::RIGHT);
+        else
+            _curve->ContinueExistingArc(index1,BiquadraticCompositeCurve3::LEFT);
         // continue(arc1, direction1);
         break;
 
     // Join
     case 3:
-        // join(arc1, arc2, direction1, direction2);
+        if(direction1 == "Right" && direction2 == "Left" )
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::LEFT);
+        else if(direction1 == "Right" && direction2 == "Right")
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::RIGHT);
+        else if(direction1 == "Left" && direction2 == "Right")
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::RIGHT);
+        else if(direction1 == "Left" && direction2 == "Left")
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::LEFT);
         break;
 
     // Merge
