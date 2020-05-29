@@ -72,7 +72,9 @@ namespace cagd {
         GLboolean JoinExistingArcs(const size_t &arc_index1, Direction direction1,
                                    const size_t &arc_index2, Direction direction2);
         GLboolean MergeExistingArcs(const size_t &arc_index1, Direction direction1,
-                                    const size_t &arc_index2, Direction direction2);
+                                    const size_t &arc_index2, Direction direction2,
+                                    GLuint div_point_count = 30,
+                                    GLuint max_order_of_derivatives  = 3);
 
 
         //render all arc, rendere selected arc, update selected arc
@@ -81,7 +83,9 @@ namespace cagd {
 
         //other setters/getters
 
-        GLboolean SetCurveData(GLuint index, GLuint div_point_count = 200, GLuint max_order_of_derivatives  = 3);
+        GLboolean SetCurveData(GLuint index, GLuint div_point_count = 30, GLuint max_order_of_derivatives  = 2);
+
+        void UpdateArc(GLuint index, GLuint div_point_count = 30, GLuint max_order_of_derivatives = 2);
 
 
     };

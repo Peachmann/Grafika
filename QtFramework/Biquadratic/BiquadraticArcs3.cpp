@@ -195,7 +195,7 @@ namespace cagd {
         d[1] = _data[0] * f0_d1(u) + _data[1] * f1_d1(u) + _data[2] * f2_d1(u) + _data[3] * f3_d1(u);
         d[2] = _data[0] * f0_d2(u) + _data[1] * f1_d2(u) + _data[2] * f2_d2(u) + _data[3] * f3_d2(u);
 
-        d[0] += centroid;
+        //d[0] += centroid;
 
         return GL_TRUE;
     }

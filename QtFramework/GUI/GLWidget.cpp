@@ -1302,8 +1302,18 @@ void GLWidget::do_arc_operation() {
     // Merge
     case 4:
         // merge(arc1, arc2, direction1, direction2);
+       if(direction1 == "Right" && direction2 == "Left" )
+             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::RIGHT,1,BiquadraticCompositeCurve3::LEFT);
+       else if(direction1 == "Right" && direction2 == "Right")
+             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::RIGHT,1,BiquadraticCompositeCurve3::RIGHT);
+       else if(direction1 == "Left" && direction2 == "Right")
+             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::LEFT,1,BiquadraticCompositeCurve3::RIGHT);
+       else if(direction1 == "Left" && direction2 == "Left")
+             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::LEFT,1,BiquadraticCompositeCurve3::LEFT);
         break;
     }
+
+    updateGL();
 }
 
 /* Patch methods */
