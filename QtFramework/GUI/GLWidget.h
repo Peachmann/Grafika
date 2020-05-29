@@ -102,12 +102,16 @@ namespace cagd
         GenericCurve3* _image_of_arc;
         GenericCurve3* _image_of_arc_interpolated;
 
+<<<<<<< Updated upstream
         /*Curve*/
         GLuint _curveindex = 0;
         RowMatrix<Color4*> _colors;
 
         BiquadraticCompositeCurve3 *_curve;
 
+=======
+        void *depth;
+>>>>>>> Stashed changes
 
     signals:
         void xcoordhasChanged(double);

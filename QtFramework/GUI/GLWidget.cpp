@@ -1194,7 +1194,21 @@ void GLWidget::set_derivative_scale(int value)
 }
 
 void GLWidget::mousePressEvent(QMouseEvent *event) {
+    GLint viewport[4];
+    GLdouble modelview[16];
+    GLdouble projection[16];
+    GLdouble posX, posY, posZ;
+    GLfloat winx = event->x(), winy = event->y(), winz;
 
+    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
+    glGetDoublev( GL_PROJECTION_MATRIX, projection );
+    glGetIntegerv( GL_VIEWPORT, viewport );
+
+    glReadPixels(winx, winy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winz);
+    gluUnProject(winx, winy, winz, modelview, projection, viewport, &posX, &posY, &posZ);
+
+    cout << winx << " " << winy << " " << winz << endl;
+    cout << posX << " " << posY << " " << posZ << endl;
 }
 
 /* Arc methods */
