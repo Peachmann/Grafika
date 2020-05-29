@@ -11,7 +11,10 @@
 #include "../Cyclic/CyclicCurves3.h"
 #include "../Biquadratic/BiquadraticPatches3.h"
 #include "../Biquadratic/BiquadraticArcs3.h"
+#include "../Biquadratic/BiquadraticCompostieCurves3.h"
+#include "../Biquadratic/BiquadraticCompositeSurfaces3.h"
 #include "../Core/ShaderPrograms.h"
+#include "../Core/Colors4.h"
 #include "SideWidget.h"
 
 namespace cagd
@@ -98,6 +101,13 @@ namespace cagd
         BiquadraticArcs3* _arc;
         GenericCurve3* _image_of_arc;
         GenericCurve3* _image_of_arc_interpolated;
+
+        /*Curve*/
+        GLuint _curveindex = 0;
+        RowMatrix<Color4*> _colors;
+
+        BiquadraticCompositeCurve3 *_curve;
+
 
     signals:
         void xcoordhasChanged(double);
@@ -190,6 +200,10 @@ namespace cagd
         void add_patch();
         void delete_patch();
         void do_patch_operation();
+
+        /* Curve */
+        void curve();
+        void loadColors();
 
    private:
         void testMatrices();

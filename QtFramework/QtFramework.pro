@@ -89,6 +89,7 @@ HEADERS += \
 
 SOURCES += \
     Biquadratic/BiquadraticArcs3.cpp \
+    Biquadratic/BiquadraticCompositeCurves3.cpp \
     Biquadratic/BiquadraticPatches3.cpp \
     Core/GenericCurves3.cpp \
     Core/Lights.cpp \

@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <string.h>
 using namespace std;
 
 #include <QMouseEvent>
@@ -35,6 +36,7 @@ GLWidget::GLWidget(QWidget *parent, const QGLFormat &format): QGLWidget(format, 
     surfaces = RowMatrix<ParametricSurface3*>(7);
     curves = RowMatrix<ParametricCurve3*>(8);
     _shaders = RowMatrix<ShaderProgram>(5);
+    _colors = RowMatrix<Color4*>(10);
 }
 
 //--------------------------------------------------------------------------------------
@@ -107,6 +109,9 @@ void GLWidget::initializeGL()
     set_current_point(0);
     arc();
     patch();
+    loadColors();
+    curve();
+
 }
 
 //-----------------------
@@ -126,6 +131,44 @@ void GLWidget::paintGL()
     glRotatef(_angle_z, 0.0, 0.0, 1.0);
     glTranslated(_trans_x, _trans_y, _trans_z);
     glScaled(_zoom, _zoom, _zoom);
+
+    if(_homeworkID == 2)
+    {
+        //Render all arcs;
+        if(_d1 && _d2)
+        {
+            if(_control_net_status)
+            {
+                _curve->RenderArcs(GL_TRUE,GL_TRUE,GL_TRUE);
+            }
+            _curve->RenderArcs(GL_TRUE,GL_TRUE);
+        }
+
+        else if(_d1)
+        {
+            if(_control_net_status)
+            {
+                _curve->RenderArcs(GL_TRUE,GL_FALSE,GL_TRUE);
+            }
+            _curve->RenderArcs(GL_TRUE);
+        }
+        else if(_d2)
+        {
+            if(_control_net_status)
+            {
+                _curve->RenderArcs(GL_FALSE,GL_TRUE,GL_TRUE);
+            }
+            _curve->RenderArcs(GL_FALSE,GL_TRUE);
+        }
+        else
+        {
+            if(_control_net_status)
+            {
+                _curve->RenderArcs(GL_FALSE,GL_FALSE,GL_TRUE);
+            }
+            _curve->RenderArcs();
+        }
+    }
 
     if(_homeworkID == 1)
     {
@@ -1004,6 +1047,8 @@ void GLWidget::enable_shader(int value)
 
 }
 
+
+
 void GLWidget::renderCyclic()
 {
     set_current_point(0);
@@ -1161,6 +1206,39 @@ void GLWidget::add_arc() {
     // Material? Shaders?
 
     // actual adding of arc with ID
+
+    if(_side_widget->arcColorBox->currentText() == "Red")
+    {
+        _curve->InsertNewIsolatedArc(_curveindex,_colors[0]);
+    }
+    else if(_side_widget->arcColorBox->currentText() == "Green")
+    {
+         _curve->InsertNewIsolatedArc(_curveindex,_colors[1]);
+    }
+    else if(_side_widget->arcColorBox->currentText() == "Blue")
+    {
+         _curve->InsertNewIsolatedArc(_curveindex,_colors[2]);
+    }
+    else if(_side_widget->arcColorBox->currentText() == "Yellow")
+    {
+        _curve->InsertNewIsolatedArc(_curveindex,_colors[3]);
+    }
+    else if(_side_widget->arcColorBox->currentText() == "Magenta")
+    {
+        _curve->InsertNewIsolatedArc(_curveindex,_colors[4]);
+    }
+    else if(_side_widget->arcColorBox->currentText() == "Cyan")
+    {
+        _curve->InsertNewIsolatedArc(_curveindex,_colors[5]);
+    }
+    else
+    {
+        _curve->InsertNewIsolatedArc(_curveindex);
+    }
+
+    _curveindex++;
+
+    updateGL();
 }
 
 void GLWidget::delete_arc () {
@@ -1264,6 +1342,34 @@ void GLWidget::do_patch_operation() {
     }
 }
 
+/* Curve */
+void GLWidget::curve()
+{
+    _curve = new BiquadraticCompositeCurve3();
+    /*
+    if(!_curve->InsertNewIsolatedArc(0))
+       cout<<"Couldn't create new arc!"<<endl;
+    else
+        cout<<"New arc created!"<<endl;
+     */
+}
+
+void GLWidget::loadColors()
+{
+    //red
+    _colors[0] = new Color4(1.0,0.0,0.0,1.0);
+    //green
+    _colors[1] = new Color4(0.0,1.0,0.0,1.0);
+    //blue
+    _colors[2] = new Color4(0.0,0.0,1.0,1.0);
+    //yellow
+    _colors[3] = new Color4(1.0,1.0,0.0,1.0);
+    //magenta
+    _colors[4] = new Color4(1.0,0.0,1.0,1.0);
+    //cyan
+    _colors[5] = new Color4(0.0,1.0,1.0,1.0);
+}
+
 GLWidget::~GLWidget()
 {
     if (_pc) delete _pc;
@@ -1293,5 +1399,7 @@ GLWidget::~GLWidget()
     if (_image_of_arc) delete _image_of_arc;
     _image_of_arc = nullptr;
 
+    if(_curve)
+        _curve = nullptr;
 }
 }

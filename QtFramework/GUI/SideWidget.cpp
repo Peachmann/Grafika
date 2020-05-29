@@ -21,6 +21,7 @@ namespace cagd
 
         hwComboBox->addItem("0 - Patch");
         hwComboBox->addItem("1 - Arc");
+        hwComboBox->addItem("2 - Curve testing");
 
         cb0->setCheckState(Qt::Checked);
         cb1->setCheckState(Qt::Checked);

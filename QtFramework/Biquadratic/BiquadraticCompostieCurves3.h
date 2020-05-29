@@ -20,32 +20,70 @@ namespace cagd {
             Color4 *color;
             // other project-specific attributes
 
+            GLint index;
+
             ArcAttributes *previous, *next; //they are initialized as nulltpr by default
 
             //TO DO ctor, copy const (deep copy), operator= (deep copy), dtor
-        protected:
-            std::vector<ArcAttributes> _attributes;
-
-            // _attributes[i].arc = new BiquadraticArcs3();
-            // (*_attributes[i].arc)[j] = p_j; j = 0,1,2,3
-            //_attributes[i].arc -> UpdateVertexBufferObjectsOfData();
-            //_attributes[i].arc -> RenderData();
-            // _attributes[i].image = _attributes[i].arc->GenerateImage(..,..,..);
-            //_attributes[i].image->UpdateVertexBufferObjects(..);
-            //i_attributes[i].image->RenderDerivatives(..,..);
-            //_attributes[i].glColor4fv(&(*_attributes[i].color)[0]);
-
-            GLboolean InsertNewIsolatedArc();
-            GLboolean ContinueExistingArc(const size_t &arc_index,Direction direction);
-
-            GLboolean JoinExistingArcs(const size_t &arc_index1, Direction direction1,
-                                       const size_t &arc_index2, Direction direction2);
-            GLboolean MergeExistingArcs(const size_t &arc_index1, Direction direction1,
-                                        const size_t &arc_index2, Direction direction2);
-            //render all arc, rendere selected arc, update selected arc
-
-            //other setters/getters
+            //Default Constructor
+            ArcAttributes()
+            {
+                arc = nullptr;
+                image = nullptr;
+                color = nullptr;
+                this->index = 0;
+                next = nullptr;
+                previous = nullptr;
+            }
+            //Special constructor
+            ArcAttributes(Color4 *c, GLint index)
+            {
+                arc = nullptr;
+                image = nullptr;
+                color = c;
+                this->index = index;
+                next = nullptr;
+                previous = nullptr;
+            }
         };
+
+    protected:
+        std::vector<ArcAttributes> _attributes; //at1 at2 at3
+        GLuint _maxArcNumber;
+    public:
+        //Default Constructor
+        BiquadraticCompositeCurve3();
+
+        //Special Constructor
+        BiquadraticCompositeCurve3(GLuint arcNumber);
+
+        // _attributes[i].arc = new BiquadraticArcs3();
+        // (*_attributes[i].arc)[j] = p_j; j = 0,1,2,3
+        //_attributes[i].arc -> UpdateVertexBufferObjectsOfData();
+        //_attributes[i].arc -> RenderData();
+        // _attributes[i].image = _attributes[i].arc->GenerateImage(..,..,..);
+        //_attributes[i].image->UpdateVertexBufferObjects(..);
+        //i_attributes[i].image->RenderDerivatives(..,..);
+        //_attributes[i].glColor4fv(&(*_attributes[i].color)[0]);
+
+        GLboolean InsertNewIsolatedArc(GLuint index, Color4* color = new Color4(1.0,1.0,1.0,1.0));
+        GLboolean ContinueExistingArc(const size_t &arc_index,Direction direction);
+
+        GLboolean JoinExistingArcs(const size_t &arc_index1, Direction direction1,
+                                   const size_t &arc_index2, Direction direction2);
+        GLboolean MergeExistingArcs(const size_t &arc_index1, Direction direction1,
+                                    const size_t &arc_index2, Direction direction2);
+
+
+        //render all arc, rendere selected arc, update selected arc
+
+        GLboolean RenderArcs(GLboolean d1 = GL_FALSE, GLboolean d2 = GL_FALSE, GLboolean polygon = GL_FALSE);
+
+        //other setters/getters
+
+        GLboolean SetCurveData(GLuint index, GLuint div_point_count = 200, GLuint max_order_of_derivatives  = 3);
+
+
     };
 }
 
