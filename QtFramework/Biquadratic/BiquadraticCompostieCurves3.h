@@ -45,6 +45,7 @@ namespace cagd {
                 next = nullptr;
                 previous = nullptr;
             }
+
         };
 
     protected:
@@ -83,6 +84,9 @@ namespace cagd {
 
         GLboolean SetCurveData(GLuint index, GLuint div_point_count = 200, GLuint max_order_of_derivatives  = 3);
 
+        GLboolean moveOnAxisX(const size_t &arc_index, GLdouble offset);
+        GLboolean moveOnAxisY(const size_t &arc_index, GLdouble offset);
+        GLboolean moveOnAxisZ(const size_t &arc_index, GLdouble offset);
 
     };
 }

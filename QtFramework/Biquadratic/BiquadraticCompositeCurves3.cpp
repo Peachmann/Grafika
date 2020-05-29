@@ -235,5 +235,98 @@ GLboolean BiquadraticCompositeCurve3::RenderArcs(GLboolean d1, GLboolean d2, GLb
     return GL_TRUE;
 }
 
+GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdouble offset) {
+
+    ArcAttributes first = _attributes[arc_index];
+    DCoordinate3 off = *new DCoordinate3(offset, 0.0, 0.0);
+    // set the chosen arc
+    for(GLint i = 0; i < 4; i++) {
+        first.arc->SetData(i, first.arc->GetData(i) + off);
+    }
+
+    first = *first.previous;
+
+    while(first.arc != nullptr && first.arc != _attributes[arc_index].arc) {
+        for(GLint i = 0; i < 4; i++) {
+            first.arc->SetData(i, first.arc->GetData(i) + off);
+        }
+        first = *first.previous;
+    }
+
+    if(first.arc == nullptr) {
+        first = *_attributes[arc_index].next;
+        while(first.arc != nullptr) {
+            for(GLint i = 0; i < 4; i++) {
+                first.arc->SetData(i, first.arc->GetData(i) + off);
+            }
+            first = *first.next;
+        }
+    }
+
+    return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeCurve3::moveOnAxisY(const size_t &arc_index, GLdouble offset) {
+
+    ArcAttributes first = _attributes[arc_index];
+    DCoordinate3 off = *new DCoordinate3(0.0, offset, 0.0);
+    // set the chosen arc
+    for(GLint i = 0; i < 4; i++) {
+        first.arc->SetData(i, first.arc->GetData(i) + off);
+    }
+
+    first = *first.previous;
+
+    while(first.arc != nullptr && first.arc != _attributes[arc_index].arc) {
+        for(GLint i = 0; i < 4; i++) {
+            first.arc->SetData(i, first.arc->GetData(i) + off);
+        }
+        first = *first.previous;
+    }
+
+    if(first.arc == nullptr) {
+        first = *_attributes[arc_index].next;
+        while(first.arc != nullptr) {
+            for(GLint i = 0; i < 4; i++) {
+                first.arc->SetData(i, first.arc->GetData(i) + off);
+            }
+            first = *first.next;
+        }
+    }
+
+    return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeCurve3::moveOnAxisZ(const size_t &arc_index, GLdouble offset) {
+
+    ArcAttributes first = _attributes[arc_index];
+    DCoordinate3 off = *new DCoordinate3(0.0, 0.0, offset);
+    // set the chosen arc
+    for(GLint i = 0; i < 4; i++) {
+        first.arc->SetData(i, first.arc->GetData(i) + off);
+    }
+
+    first = *first.previous;
+
+    while(first.arc != nullptr && first.arc != _attributes[arc_index].arc) {
+        for(GLint i = 0; i < 4; i++) {
+            first.arc->SetData(i, first.arc->GetData(i) + off);
+        }
+        first = *first.previous;
+    }
+
+    if(first.arc == nullptr) {
+        first = *_attributes[arc_index].next;
+        while(first.arc != nullptr) {
+            for(GLint i = 0; i < 4; i++) {
+                first.arc->SetData(i, first.arc->GetData(i) + off);
+            }
+            first = *first.next;
+        }
+    }
+
+    return GL_TRUE;
+}
+
 
 
