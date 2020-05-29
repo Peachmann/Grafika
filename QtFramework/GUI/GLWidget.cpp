@@ -1278,6 +1278,38 @@ void GLWidget::do_arc_operation() {
 
     GLuint operation = _side_widget->operationBox->currentIndex();
 
+    GLuint index1 = -1,index2 = -1;
+
+    if(arc1 == "Red")
+        index1 = get_index_by_color(_colors[0]);
+    else if(arc1 == "Green")
+        index1 = get_index_by_color(_colors[1]);
+    else if(arc1 == "Blue")
+        index1 = get_index_by_color(_colors[2]);
+    else if(arc1 == "Yellow")
+        index1 = get_index_by_color(_colors[3]);
+    else if(arc1 == "Magenta")
+        index1 = get_index_by_color(_colors[4]);
+    else if(arc1 == "Cyan")
+        index1 = get_index_by_color(_colors[5]);
+
+    if(arc2 == "Red")
+        index2 = get_index_by_color(_colors[0]);
+    else if(arc2 == "Green")
+        index2 = get_index_by_color(_colors[1]);
+    else if(arc2 == "Blue")
+        index2 = get_index_by_color(_colors[2]);
+    else if(arc2 == "Yellow")
+        index2 = get_index_by_color(_colors[3]);
+    else if(arc2 == "Magenta")
+        index2 = get_index_by_color(_colors[4]);
+    else if(arc2 == "Cyan")
+        index2 = get_index_by_color(_colors[5]);
+
+    cout<<"Index of 1: " << index1 <<" Index of 2: "<<index2<<endl;
+
+
+
     switch (operation) {
     // Move
     case 0:
@@ -1303,17 +1335,31 @@ void GLWidget::do_arc_operation() {
     case 4:
         // merge(arc1, arc2, direction1, direction2);
        if(direction1 == "Right" && direction2 == "Left" )
-             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::RIGHT,1,BiquadraticCompositeCurve3::LEFT);
+             _curve->MergeExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::LEFT);
        else if(direction1 == "Right" && direction2 == "Right")
-             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::RIGHT,1,BiquadraticCompositeCurve3::RIGHT);
+             _curve->MergeExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::RIGHT);
        else if(direction1 == "Left" && direction2 == "Right")
-             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::LEFT,1,BiquadraticCompositeCurve3::RIGHT);
+             _curve->MergeExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::RIGHT);
        else if(direction1 == "Left" && direction2 == "Left")
-             _curve->MergeExistingArcs(0,BiquadraticCompositeCurve3::LEFT,1,BiquadraticCompositeCurve3::LEFT);
+             _curve->MergeExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::LEFT);
         break;
     }
 
     updateGL();
+}
+
+
+GLuint GLWidget::get_index_by_color(Color4* color)
+{
+    std::vector<BiquadraticCompositeCurve3::ArcAttributes> attributes = _curve->get_attributes();
+    for(GLuint i = 0; i < attributes.size(); i++)
+    {
+        cout<<i<<endl;
+        if(attributes[i].color == color)
+            return attributes[i].index;
+    }
+
+    return -1;
 }
 
 /* Patch methods */

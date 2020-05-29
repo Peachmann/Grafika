@@ -196,6 +196,7 @@ namespace cagd
         void add_arc();
         void delete_arc();
         void do_arc_operation();
+        GLuint get_index_by_color(Color4* color);
 
         /* Patch controller */
         void add_patch();

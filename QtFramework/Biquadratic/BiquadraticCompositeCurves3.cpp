@@ -94,6 +94,7 @@ GLboolean BiquadraticCompositeCurve3::InsertNewIsolatedArc(GLuint index, Color4*
     }
 
     _attributes[index].color = color;
+    _attributes[index].index = index;
 
     return GL_TRUE;
 }
@@ -427,4 +428,9 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisZ(const size_t &arc_index, GLdou
     }
 
     return GL_TRUE;
+}
+
+std::vector<BiquadraticCompositeCurve3::ArcAttributes> BiquadraticCompositeCurve3::get_attributes()
+{
+    return _attributes;
 }

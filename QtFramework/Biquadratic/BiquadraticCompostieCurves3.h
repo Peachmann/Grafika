@@ -92,6 +92,9 @@ namespace cagd {
         GLboolean moveOnAxisY(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisZ(const size_t &arc_index, GLdouble offset);
 
+
+        std::vector<ArcAttributes> get_attributes();
+
     };
 }
 
