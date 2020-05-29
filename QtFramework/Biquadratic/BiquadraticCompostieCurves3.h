@@ -45,6 +45,7 @@ namespace cagd {
                 next = nullptr;
                 previous = nullptr;
             }
+
         };
 
     protected:
@@ -87,6 +88,9 @@ namespace cagd {
 
         void UpdateArc(GLuint index, GLuint div_point_count = 30, GLuint max_order_of_derivatives = 2);
 
+        GLboolean moveOnAxisX(const size_t &arc_index, GLdouble offset);
+        GLboolean moveOnAxisY(const size_t &arc_index, GLdouble offset);
+        GLboolean moveOnAxisZ(const size_t &arc_index, GLdouble offset);
 
     };
 }
