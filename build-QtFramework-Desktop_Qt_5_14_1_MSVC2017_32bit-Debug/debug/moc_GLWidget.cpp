@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_cagd__GLWidget_t {
-    QByteArrayData data[49];
-    char stringdata0[621];
+    QByteArrayData data[56];
+    char stringdata0[705];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -79,8 +79,15 @@ QT_MOC_LITERAL(43, 545, 13), // "set_visolines"
 QT_MOC_LITERAL(44, 559, 13), // "set_uisolines"
 QT_MOC_LITERAL(45, 573, 12), // "renderCyclic"
 QT_MOC_LITERAL(46, 586, 3), // "arc"
-QT_MOC_LITERAL(47, 590, 9), // "renderArc"
-QT_MOC_LITERAL(48, 600, 20) // "set_derivative_scale"
+QT_MOC_LITERAL(47, 590, 5), // "patch"
+QT_MOC_LITERAL(48, 596, 9), // "renderArc"
+QT_MOC_LITERAL(49, 606, 20), // "set_derivative_scale"
+QT_MOC_LITERAL(50, 627, 7), // "add_arc"
+QT_MOC_LITERAL(51, 635, 10), // "delete_arc"
+QT_MOC_LITERAL(52, 646, 16), // "do_arc_operation"
+QT_MOC_LITERAL(53, 663, 9), // "add_patch"
+QT_MOC_LITERAL(54, 673, 12), // "delete_patch"
+QT_MOC_LITERAL(55, 686, 18) // "do_patch_operation"
 
     },
     "cagd::GLWidget\0xcoordhasChanged\0\0"
@@ -98,8 +105,10 @@ QT_MOC_LITERAL(48, 600, 20) // "set_derivative_scale"
     "set_toon_color_4\0set_scaling_factor\0"
     "set_smoothing\0set_shading\0set_patch_enable\0"
     "set_control_net\0set_visolines\0"
-    "set_uisolines\0renderCyclic\0arc\0renderArc\0"
-    "set_derivative_scale"
+    "set_uisolines\0renderCyclic\0arc\0patch\0"
+    "renderArc\0set_derivative_scale\0add_arc\0"
+    "delete_arc\0do_arc_operation\0add_patch\0"
+    "delete_patch\0do_patch_operation"
 };
 #undef QT_MOC_LITERAL
 
@@ -109,7 +118,7 @@ static const uint qt_meta_data_cagd__GLWidget[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      44,   14, // methods
+      51,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -117,52 +126,59 @@ static const uint qt_meta_data_cagd__GLWidget[] = {
        3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  234,    2, 0x06 /* Public */,
-       3,    1,  237,    2, 0x06 /* Public */,
-       4,    1,  240,    2, 0x06 /* Public */,
+       1,    1,  269,    2, 0x06 /* Public */,
+       3,    1,  272,    2, 0x06 /* Public */,
+       4,    1,  275,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    1,  243,    2, 0x0a /* Public */,
-       7,    1,  246,    2, 0x0a /* Public */,
-       8,    1,  249,    2, 0x0a /* Public */,
-       9,    1,  252,    2, 0x0a /* Public */,
-      10,    1,  255,    2, 0x0a /* Public */,
-      11,    1,  258,    2, 0x0a /* Public */,
-      12,    1,  261,    2, 0x0a /* Public */,
-      13,    1,  264,    2, 0x0a /* Public */,
-      14,    1,  267,    2, 0x0a /* Public */,
-      15,    1,  270,    2, 0x0a /* Public */,
-      16,    1,  273,    2, 0x0a /* Public */,
-      17,    1,  276,    2, 0x0a /* Public */,
-      18,    1,  279,    2, 0x0a /* Public */,
-      19,    1,  282,    2, 0x0a /* Public */,
-      20,    1,  285,    2, 0x0a /* Public */,
-      21,    1,  288,    2, 0x0a /* Public */,
-      22,    0,  291,    2, 0x0a /* Public */,
-      23,    0,  292,    2, 0x0a /* Public */,
-      24,    1,  293,    2, 0x0a /* Public */,
-      26,    1,  296,    2, 0x0a /* Public */,
-      28,    1,  299,    2, 0x0a /* Public */,
-      29,    1,  302,    2, 0x0a /* Public */,
-      30,    1,  305,    2, 0x0a /* Public */,
-      31,    0,  308,    2, 0x0a /* Public */,
-      32,    1,  309,    2, 0x0a /* Public */,
-      33,    1,  312,    2, 0x0a /* Public */,
-      34,    1,  315,    2, 0x0a /* Public */,
-      35,    1,  318,    2, 0x0a /* Public */,
-      36,    1,  321,    2, 0x0a /* Public */,
-      37,    1,  324,    2, 0x0a /* Public */,
-      38,    1,  327,    2, 0x0a /* Public */,
-      39,    1,  330,    2, 0x0a /* Public */,
-      40,    1,  333,    2, 0x0a /* Public */,
-      41,    1,  336,    2, 0x0a /* Public */,
-      42,    1,  339,    2, 0x0a /* Public */,
-      43,    1,  342,    2, 0x0a /* Public */,
-      44,    1,  345,    2, 0x0a /* Public */,
-      45,    0,  348,    2, 0x0a /* Public */,
-      46,    0,  349,    2, 0x0a /* Public */,
-      47,    0,  350,    2, 0x0a /* Public */,
-      48,    1,  351,    2, 0x0a /* Public */,
+       5,    1,  278,    2, 0x0a /* Public */,
+       7,    1,  281,    2, 0x0a /* Public */,
+       8,    1,  284,    2, 0x0a /* Public */,
+       9,    1,  287,    2, 0x0a /* Public */,
+      10,    1,  290,    2, 0x0a /* Public */,
+      11,    1,  293,    2, 0x0a /* Public */,
+      12,    1,  296,    2, 0x0a /* Public */,
+      13,    1,  299,    2, 0x0a /* Public */,
+      14,    1,  302,    2, 0x0a /* Public */,
+      15,    1,  305,    2, 0x0a /* Public */,
+      16,    1,  308,    2, 0x0a /* Public */,
+      17,    1,  311,    2, 0x0a /* Public */,
+      18,    1,  314,    2, 0x0a /* Public */,
+      19,    1,  317,    2, 0x0a /* Public */,
+      20,    1,  320,    2, 0x0a /* Public */,
+      21,    1,  323,    2, 0x0a /* Public */,
+      22,    0,  326,    2, 0x0a /* Public */,
+      23,    0,  327,    2, 0x0a /* Public */,
+      24,    1,  328,    2, 0x0a /* Public */,
+      26,    1,  331,    2, 0x0a /* Public */,
+      28,    1,  334,    2, 0x0a /* Public */,
+      29,    1,  337,    2, 0x0a /* Public */,
+      30,    1,  340,    2, 0x0a /* Public */,
+      31,    0,  343,    2, 0x0a /* Public */,
+      32,    1,  344,    2, 0x0a /* Public */,
+      33,    1,  347,    2, 0x0a /* Public */,
+      34,    1,  350,    2, 0x0a /* Public */,
+      35,    1,  353,    2, 0x0a /* Public */,
+      36,    1,  356,    2, 0x0a /* Public */,
+      37,    1,  359,    2, 0x0a /* Public */,
+      38,    1,  362,    2, 0x0a /* Public */,
+      39,    1,  365,    2, 0x0a /* Public */,
+      40,    1,  368,    2, 0x0a /* Public */,
+      41,    1,  371,    2, 0x0a /* Public */,
+      42,    1,  374,    2, 0x0a /* Public */,
+      43,    1,  377,    2, 0x0a /* Public */,
+      44,    1,  380,    2, 0x0a /* Public */,
+      45,    0,  383,    2, 0x0a /* Public */,
+      46,    0,  384,    2, 0x0a /* Public */,
+      47,    0,  385,    2, 0x0a /* Public */,
+      48,    0,  386,    2, 0x0a /* Public */,
+      49,    1,  387,    2, 0x0a /* Public */,
+      50,    0,  390,    2, 0x0a /* Public */,
+      51,    0,  391,    2, 0x0a /* Public */,
+      52,    0,  392,    2, 0x0a /* Public */,
+      53,    0,  393,    2, 0x0a /* Public */,
+      54,    0,  394,    2, 0x0a /* Public */,
+      55,    0,  395,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Double,    2,
@@ -210,7 +226,14 @@ static const uint qt_meta_data_cagd__GLWidget[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void,
     QMetaType::Void, QMetaType::Int,    2,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
+    QMetaType::Void,
 
        0        // eod
 };
@@ -263,8 +286,15 @@ void cagd::GLWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
         case 39: _t->set_uisolines((*reinterpret_cast< int(*)>(_a[1]))); break;
         case 40: _t->renderCyclic(); break;
         case 41: _t->arc(); break;
-        case 42: _t->renderArc(); break;
-        case 43: _t->set_derivative_scale((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 42: _t->patch(); break;
+        case 43: _t->renderArc(); break;
+        case 44: _t->set_derivative_scale((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 45: _t->add_arc(); break;
+        case 46: _t->delete_arc(); break;
+        case 47: _t->do_arc_operation(); break;
+        case 48: _t->add_patch(); break;
+        case 49: _t->delete_patch(); break;
+        case 50: _t->do_patch_operation(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -322,13 +352,13 @@ int cagd::GLWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 44)
+        if (_id < 51)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 44;
+        _id -= 51;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 44)
+        if (_id < 51)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 44;
+        _id -= 51;
     }
     return _id;
 }

@@ -33,6 +33,7 @@ namespace cagd
         _scroll_area->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
 
         _gl_widget = new GLWidget(this);
+        _gl_widget->set_side_widget(_side_widget);
 
         centralWidget()->setLayout(new QHBoxLayout());
         centralWidget()->layout()->addWidget(_gl_widget);
@@ -42,13 +43,6 @@ namespace cagd
         connect(_side_widget->rotate_x_slider, SIGNAL(valueChanged(int)), _gl_widget, SLOT(set_angle_x(int)));
         connect(_side_widget->rotate_y_slider, SIGNAL(valueChanged(int)), _gl_widget, SLOT(set_angle_y(int)));
         connect(_side_widget->rotate_z_slider, SIGNAL(valueChanged(int)), _gl_widget, SLOT(set_angle_z(int)));
-
-        connect(_side_widget->data_p_combo_box,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(set_current_point(int)));
-        // Interpolating sliders
-       // connect(_side_widget->off_x_slider,SIGNAL(valueChanged(double)),_gl_widget,SLOT(_set_data_p_x(double)));
-        connect(_side_widget->data_x_spin_box, SIGNAL(valueChanged(double)), _gl_widget, SLOT(_set_data_p_x(double)));
-        connect(_side_widget->data_y_spin_box, SIGNAL(valueChanged(double)), _gl_widget, SLOT(_set_data_p_y(double)));
-        connect(_side_widget->data_z_spin_box, SIGNAL(valueChanged(double)), _gl_widget, SLOT(_set_data_p_z(double)));
 
         connect(_side_widget->zoom_factor_spin_box, SIGNAL(valueChanged(double)), _gl_widget, SLOT(set_zoom_factor(double)));
 
@@ -61,22 +55,6 @@ namespace cagd
         connect(_side_widget->cb0,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_d0(int)));
         connect(_side_widget->cb1,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_d1(int)));
         connect(_side_widget->cb2,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_d2(int)));
-
-
-        connect(_side_widget->curve_box,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(set_curveID(int)));
-        connect(_side_widget->model_box,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(set_modelID(int)));
-        connect(_side_widget->colorcb,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(set_colorID(int)));
-        connect(_side_widget->cblines,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_polyID(int)));
-        connect(_side_widget->colorcb_2,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(set_colorID(int)));
-        connect(_side_widget->surfacecb,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(set_surfID(int)));
-
-        // connect(_side_widget->cbanimate,SIGNAL(stateChanged(int)),_gl_widget,SLOT(_animate()));
-        // connect(_side_widget->cbnoani,SIGNAL(stateChanged(int)),_gl_widget,SLOT(_deanimate()));
-        connect(_side_widget->aniBut,SIGNAL(clicked(bool)),_gl_widget,SLOT(_animate()));
-        connect(_side_widget->deaniBut,SIGNAL(clicked(bool)),_gl_widget,SLOT(_deanimate()));
-
-        /* _data_p_x+1 */
-        // connect(_side_widget->bt)
 
         /* Shader */
         connect(_side_widget->shader_checkb,SIGNAL(stateChanged(int)),_gl_widget,SLOT(enable_shader(int)));
@@ -92,10 +70,6 @@ namespace cagd
         connect(_side_widget->reflectionsmoothingsb,SIGNAL(valueChanged(double)),_gl_widget,SLOT(set_smoothing(double)));
         connect(_side_widget->reflectionshadingsb,SIGNAL(valueChanged(double)),_gl_widget,SLOT(set_shading(double)));
 
-        connect(_gl_widget,SIGNAL(xcoordhasChanged(double)),_side_widget->data_x_spin_box,SLOT(setValue(double)));
-        connect(_gl_widget,SIGNAL(ycoordhasChanged(double)),_side_widget->data_y_spin_box,SLOT(setValue(double)));
-        connect(_gl_widget,SIGNAL(zcoordhasChanged(double)),_side_widget->data_z_spin_box,SLOT(setValue(double)));
-
         /* Patch */
 
         connect(_side_widget->patch_cb,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_patch_enable(int)));
@@ -104,10 +78,15 @@ namespace cagd
         connect(_side_widget->uiso_cb,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_uisolines(int)));
         connect(_side_widget->viso_cb,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_visolines(int)));
 
-        connect(_side_widget->derivate_slider,SIGNAL(valueChanged(int)), _gl_widget,SLOT(set_derivative_scale(int)));
+        /* Arc controller */
+        connect(_side_widget->addArc, SIGNAL(clicked()), _gl_widget, SLOT(add_arc()));
+        connect(_side_widget->deleteArc, SIGNAL(clicked()), _gl_widget, SLOT(delete_arc()));
+        connect(_side_widget->doArcOperation, SIGNAL(clicked()), _gl_widget, SLOT(do_arc_operation()));
 
-
-
+        /* Patch controller */
+        connect(_side_widget->addPatch, SIGNAL(clicked()), _gl_widget, SLOT(add_patch()));
+        connect(_side_widget->deletePatch, SIGNAL(clicked()), _gl_widget, SLOT(delete_patch()));
+        connect(_side_widget->doPatchOperation, SIGNAL(clicked()), _gl_widget, SLOT(do_patch_operation()));
     }
 
     //--------------------------------

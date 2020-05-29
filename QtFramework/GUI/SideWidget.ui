@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>298</width>
-    <height>701</height>
+    <height>775</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -43,7 +43,7 @@
       <x>3</x>
       <y>21</y>
       <width>261</width>
-      <height>261</height>
+      <height>231</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -223,7 +223,7 @@
      <item row="7" column="0">
       <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>homework</string>
+        <string>Homework</string>
        </property>
        <property name="buddy">
         <cstring>hwComboBox</cstring>
@@ -242,27 +242,27 @@
      <x>10</x>
      <y>280</y>
      <width>261</width>
-     <height>141</height>
+     <height>181</height>
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
-   <widget class="QWidget" name="curves">
+   <widget class="QWidget" name="Various">
     <attribute name="title">
-     <string>Curves</string>
+     <string>Various</string>
     </attribute>
     <widget class="QCheckBox" name="cb0">
      <property name="geometry">
       <rect>
        <x>10</x>
        <y>0</y>
-       <width>70</width>
-       <height>17</height>
+       <width>121</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>d0</string>
+      <string>Show 0th derivative</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="cb1">
@@ -270,217 +270,74 @@
       <rect>
        <x>10</x>
        <y>20</y>
-       <width>70</width>
-       <height>17</height>
+       <width>121</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>d1</string>
+      <string>Show 1st derivative</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="cb2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>40</y>
-       <width>70</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>d2</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="curve_box">
-     <property name="geometry">
-      <rect>
-       <x>80</x>
-       <y>40</y>
-       <width>151</width>
+       <y>50</y>
+       <width>121</width>
        <height>21</height>
       </rect>
      </property>
+     <property name="text">
+      <string>Show 2nd derivative</string>
+     </property>
     </widget>
-    <widget class="QLabel" name="label_9">
+    <widget class="QCheckBox" name="uiso_cb">
      <property name="geometry">
       <rect>
-       <x>120</x>
-       <y>10</y>
-       <width>91</width>
-       <height>16</height>
+       <x>150</x>
+       <y>0</y>
+       <width>71</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Curve</string>
+      <string>U-Isolines</string>
      </property>
     </widget>
-    <widget class="QSlider" name="derivate_slider">
+    <widget class="QCheckBox" name="viso_cb">
      <property name="geometry">
       <rect>
-       <x>80</x>
-       <y>80</y>
-       <width>160</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="sliderPosition">
-      <number>99</number>
-     </property>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="models">
-    <attribute name="title">
-     <string>Models</string>
-    </attribute>
-    <widget class="QComboBox" name="model_box">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>60</y>
-       <width>171</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_10">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>60</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Model</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_11">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>90</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Color</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="colorcb">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>90</y>
-       <width>171</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="cblines">
-     <property name="geometry">
-      <rect>
-       <x>190</x>
-       <y>20</y>
+       <x>150</x>
+       <y>30</y>
        <width>70</width>
        <height>17</height>
       </rect>
      </property>
      <property name="text">
-      <string>Lines</string>
+      <string>V-Isolines</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="deaniBut">
+    <widget class="QCheckBox" name="net_cb">
      <property name="geometry">
       <rect>
-       <x>100</x>
-       <y>20</y>
-       <width>75</width>
-       <height>23</height>
+       <x>150</x>
+       <y>50</y>
+       <width>91</width>
+       <height>31</height>
       </rect>
      </property>
      <property name="text">
-      <string>Deanimate</string>
+      <string>Control net</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
-    <widget class="QPushButton" name="aniBut">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>75</width>
-       <height>23</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Animate</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="surfaces">
-    <attribute name="title">
-     <string>Surfaces</string>
-    </attribute>
-    <widget class="QComboBox" name="surfacecb">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>20</y>
-       <width>121</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_12">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>20</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Surface</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="colorcb_2">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>60</y>
-       <width>121</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_13">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>60</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Color</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_3">
-    <attribute name="title">
-     <string>Patch</string>
-    </attribute>
     <widget class="QCheckBox" name="patch_cb">
      <property name="geometry">
       <rect>
-       <x>10</x>
-       <y>10</y>
+       <x>150</x>
+       <y>80</y>
        <width>70</width>
        <height>17</height>
       </rect>
@@ -492,334 +349,16 @@
       <bool>true</bool>
      </property>
     </widget>
-    <widget class="QCheckBox" name="net_cb">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>40</y>
-       <width>81</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Control net</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="uiso_cb">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>10</y>
-       <width>70</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>U-Isolines</string>
-     </property>
-    </widget>
-    <widget class="QCheckBox" name="viso_cb">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>40</y>
-       <width>70</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>V-Isolines</string>
-     </property>
-    </widget>
    </widget>
-  </widget>
-  <widget class="QTabWidget" name="tabWidget_2">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>440</y>
-     <width>261</width>
-     <height>221</height>
-    </rect>
-   </property>
-   <property name="currentIndex">
-    <number>1</number>
-   </property>
    <widget class="QWidget" name="tab">
-    <attribute name="title">
-     <string>Interpolating</string>
-    </attribute>
-    <widget class="QLabel" name="label_14">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>10</y>
-       <width>61</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Select Point</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="data_p_combo_box">
-     <property name="geometry">
-      <rect>
-       <x>110</x>
-       <y>10</y>
-       <width>69</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="data_z_spin_box">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>150</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <double>-5.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="data_y_spin_box">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>110</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <double>-5.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="data_x_spin_box">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>70</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="minimum">
-      <double>-5.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>5.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.500000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_17">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>150</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Z offset</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_15">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>80</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>X offset</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_16">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>110</y>
-       <width>47</width>
-       <height>13</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Y offset</string>
-     </property>
-    </widget>
-   </widget>
-   <widget class="QWidget" name="tab_2">
     <attribute name="title">
      <string>Shaders</string>
     </attribute>
-    <widget class="QCheckBox" name="shader_checkb">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>10</y>
-       <width>70</width>
-       <height>17</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Shaders</string>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="tooncolorcb2">
-     <property name="geometry">
-      <rect>
-       <x>60</x>
-       <y>90</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <double>1.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="tooncolorcb1">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>90</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <double>1.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="tooncolorcb3">
-     <property name="geometry">
-      <rect>
-       <x>120</x>
-       <y>90</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <double>1.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="shader_comboBox">
-     <property name="geometry">
-      <rect>
-       <x>90</x>
-       <y>10</y>
-       <width>111</width>
-       <height>22</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QDoubleSpinBox" name="tooncolorcb4">
-     <property name="geometry">
-      <rect>
-       <x>180</x>
-       <y>90</y>
-       <width>51</width>
-       <height>22</height>
-      </rect>
-     </property>
-     <property name="maximum">
-      <double>1.000000000000000</double>
-     </property>
-     <property name="singleStep">
-      <double>0.100000000000000</double>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_18">
-     <property name="geometry">
-      <rect>
-       <x>20</x>
-       <y>70</y>
-       <width>16</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>R</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_19">
-     <property name="geometry">
-      <rect>
-       <x>80</x>
-       <y>70</y>
-       <width>16</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>G</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_20">
-     <property name="geometry">
-      <rect>
-       <x>140</x>
-       <y>70</y>
-       <width>16</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>B</string>
-     </property>
-    </widget>
-    <widget class="QLabel" name="label_21">
-     <property name="geometry">
-      <rect>
-       <x>200</x>
-       <y>70</y>
-       <width>16</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>A</string>
-     </property>
-    </widget>
     <widget class="QDoubleSpinBox" name="reflectionscalingsb">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>160</y>
+       <x>10</x>
+       <y>120</y>
        <width>61</width>
        <height>22</height>
       </rect>
@@ -831,11 +370,163 @@
       <double>0.500000000000000</double>
      </property>
     </widget>
-    <widget class="QDoubleSpinBox" name="reflectionsmoothingsb">
+    <widget class="QDoubleSpinBox" name="tooncolorcb2">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>70</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_20">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>50</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>B</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_22">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>61</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Scale Factor</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="tooncolorcb3">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>70</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_21">
+     <property name="geometry">
+      <rect>
+       <x>210</x>
+       <y>50</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>A</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="tooncolorcb4">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>70</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_19">
      <property name="geometry">
       <rect>
        <x>90</x>
-       <y>160</y>
+       <y>50</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>G</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_24">
+     <property name="geometry">
+      <rect>
+       <x>190</x>
+       <y>100</y>
+       <width>47</width>
+       <height>13</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Shading</string>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="tooncolorcb1">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>51</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <double>1.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.100000000000000</double>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_23">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>100</y>
+       <width>51</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Smoothing</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="shader_comboBox">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>20</y>
+       <width>111</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QDoubleSpinBox" name="reflectionsmoothingsb">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>120</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -850,8 +541,8 @@
     <widget class="QDoubleSpinBox" name="reflectionshadingsb">
      <property name="geometry">
       <rect>
-       <x>180</x>
-       <y>160</y>
+       <x>190</x>
+       <y>120</y>
        <width>51</width>
        <height>22</height>
       </rect>
@@ -863,44 +554,838 @@
       <double>0.500000000000000</double>
      </property>
     </widget>
-    <widget class="QLabel" name="label_22">
+    <widget class="QCheckBox" name="shader_checkb">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>70</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Shaders</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_18">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>50</y>
+       <width>16</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>R</string>
+     </property>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QTabWidget" name="tabWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>470</y>
+     <width>271</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="currentIndex">
+    <number>0</number>
+   </property>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Arcs</string>
+    </attribute>
+    <widget class="QPushButton" name="addArc">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>10</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add arc</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="arcColorBox">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>10</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Color</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>40</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select arc</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="deleteArcBox">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>40</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deleteArc">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>40</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete arc</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>80</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select arc 1 / Dir.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="selectArc1">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>80</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_13">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>110</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select arc 2 / Dir.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="selectArc2">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>110</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>140</y>
-       <width>61</width>
-       <height>16</height>
+       <width>81</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Scale Factor</string>
+      <string>Material</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_23">
+    <widget class="QComboBox" name="arcMaterial">
      <property name="geometry">
       <rect>
-       <x>90</x>
+       <x>100</x>
        <y>140</y>
-       <width>51</width>
-       <height>16</height>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Brass</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Gold</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silver</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Emerald</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Pearl</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Ruby</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Turquoise</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_14">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>170</y>
+       <width>81</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Smoothing</string>
+      <string>Vertex of arc 1</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
-    <widget class="QLabel" name="label_24">
+    <widget class="QLabel" name="label_15">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>200</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Vertex of arc 2</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="directionArc1">
      <property name="geometry">
       <rect>
        <x>180</x>
-       <y>140</y>
-       <width>47</width>
-       <height>13</height>
+       <y>80</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Left</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Right</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="directionArc2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>110</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Left</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Right</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="vertexArc1">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>170</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="vertexArc2">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>200</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_16">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>230</y>
+       <width>81</width>
+       <height>21</height>
       </rect>
      </property>
      <property name="text">
-      <string>Shading</string>
+      <string>Operation</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="operationBox">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>230</y>
+       <width>91</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Move vertex</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Shift arc</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Continue existing</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Join existing</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Merge existing</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QPushButton" name="doArcOperation">
+     <property name="geometry">
+      <rect>
+       <x>194</x>
+       <y>230</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Go!</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_5">
+    <attribute name="title">
+     <string>Patches</string>
+    </attribute>
+    <widget class="QComboBox" name="selectDirection1">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>80</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>North</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Northwest</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>West</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Southwest</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>South</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Southeast</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>East</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Northeast</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QLabel" name="label_17">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>40</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select patch</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="addPatch">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>10</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Add patch</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="deletePatch">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>40</y>
+       <width>75</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Delete patch</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="patchColorBox">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>10</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Red</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Green</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Blue</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Yellow</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Magenta</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Cyan</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="deletePatchBox">
+     <property name="geometry">
+      <rect>
+       <x>70</x>
+       <y>40</y>
+       <width>81</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_32">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>10</y>
+       <width>61</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Color</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_33">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>80</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select patch 1 / Dir.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_34">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>110</y>
+       <width>101</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Select patch 2 / Dir.</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="selectPatch2">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>110</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="selectPatch1">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>80</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="doPatchOperation">
+     <property name="geometry">
+      <rect>
+       <x>194</x>
+       <y>230</y>
+       <width>61</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Go!</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="selectPatchVertex2">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>200</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="selectPatchMaterial">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>140</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Brass</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Gold</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silver</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Emerald</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Pearl</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Ruby</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Turquoise</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="patchOperation">
+     <property name="geometry">
+      <rect>
+       <x>90</x>
+       <y>230</y>
+       <width>91</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>Move vertex</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Shift patch</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Continue existing</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Join existing</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Merge existing</string>
+      </property>
+     </item>
+    </widget>
+    <widget class="QComboBox" name="selectPatchVertex1">
+     <property name="geometry">
+      <rect>
+       <x>100</x>
+       <y>170</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_35">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>170</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Vertex of patch 1</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_36">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>230</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Operation</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_37">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>140</y>
+       <width>81</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Material</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_39">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>200</y>
+       <width>91</width>
+       <height>21</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Vertex of patch 2</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="selectDirection2">
+     <property name="geometry">
+      <rect>
+       <x>180</x>
+       <y>110</y>
+       <width>71</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <item>
+      <property name="text">
+       <string>North</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Northwest</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>West</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Southwest</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>South</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Southeast</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>East</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Northeast</string>
+      </property>
+     </item>
     </widget>
    </widget>
   </widget>

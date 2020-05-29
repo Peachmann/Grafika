@@ -12,6 +12,7 @@
 #include "../Biquadratic/BiquadraticPatches3.h"
 #include "../Biquadratic/BiquadraticArcs3.h"
 #include "../Core/ShaderPrograms.h"
+#include "SideWidget.h"
 
 namespace cagd
 {
@@ -20,6 +21,8 @@ namespace cagd
         Q_OBJECT
 
     private:
+
+        SideWidget *_side_widget;
 
         // variables defining the projection matrix
         double       _aspect;            // aspect ratio of the rendering window
@@ -110,6 +113,8 @@ namespace cagd
         void initializeGL();
         void paintGL();
         void resizeGL(int w, int h);
+        void mousePressEvent(QMouseEvent *event);
+        void set_side_widget(SideWidget *w);
 
         virtual ~GLWidget();
 
@@ -172,8 +177,19 @@ namespace cagd
         /* Other */
         void renderCyclic();
         void arc();
+        void patch();
         void renderArc();
         void set_derivative_scale(int);
+
+        /* Arc controller */
+        void add_arc();
+        void delete_arc();
+        void do_arc_operation();
+
+        /* Patch controller */
+        void add_patch();
+        void delete_patch();
+        void do_patch_operation();
 
    private:
         void testMatrices();
