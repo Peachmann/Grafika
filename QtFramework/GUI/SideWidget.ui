@@ -1053,32 +1053,37 @@
      </property>
      <item>
       <property name="text">
-       <string>Red</string>
+       <string>Ruby</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Green</string>
+       <string>Emerald</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Blue</string>
+       <string>Turqoise</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Yellow</string>
+       <string>Gold</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Magenta</string>
+       <string>Pearl</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Cyan</string>
+       <string>Brass</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Silver</string>
       </property>
      </item>
     </widget>

@@ -1,5 +1,6 @@
 #include "BiquadraticCompostieCurves3.h"
 #include <iostream>
+#include <qmessagebox.h>
 
 using namespace cagd;
 
@@ -245,6 +246,8 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
 
     _attributes[attr_size].color = new Color4(0.2f,0.7f,0.8f);
 
+    _attributes[attr_size].arc->UpdateVertexBufferObjectsOfData();
+
     //Reset image if exists
     if(_attributes[attr_size].image)
     {
@@ -340,8 +343,6 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
 
     return GL_TRUE;
 
-
-
 }
 
 GLboolean BiquadraticCompositeCurve3::RenderArcs(GLboolean d1, GLboolean d2, GLboolean polygon)
@@ -404,6 +405,9 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
 
     ArcAttributes* first = &_attributes[arc_index];
     // set the chosen arc
+    //std::cout<<"Shifting color: "<<_attributes[arc_index].color<<std::endl;
+
+
     for(GLint i = 0; i < 4; i++) {
         GLdouble x = _attributes[arc_index].arc->GetData(i).x();
         first->arc->SetData(i, DCoordinate3(x + offset, first->arc->GetData(i).y(), first->arc->GetData(i).z()));
@@ -423,9 +427,12 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
             GLdouble x = next->arc->GetData(i).x();
             next->arc->SetData(i, DCoordinate3(x + offset, next->arc->GetData(i).y(), next->arc->GetData(i).z()));
         }
-
+        std::cout<<"Shifting color: "<<next->color<<std::endl;
         UpdateArc_2(*next,30,3);
-        next = next->previous;
+        QMessageBox MsgBox;
+        MsgBox.setText("2nd in next");
+        MsgBox.exec();
+        next = next->next;
     }
 
     if(next == nullptr) {
@@ -436,7 +443,11 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
                 GLdouble x = next->arc->GetData(i).x();
                 next->arc->SetData(i, DCoordinate3(x + offset, next->arc->GetData(i).y(), next->arc->GetData(i).z()));
             }
+            std::cout<<"Shifting color: "<<next->color<<std::endl;
             UpdateArc_2(*next,30,3);
+            QMessageBox MsgBox;
+            MsgBox.setText("3rd shift in prev irany");
+            MsgBox.exec();
             next = next->next;
         }
     }
@@ -639,6 +650,7 @@ GLboolean BiquadraticCompositeCurve3::moveOnAllAxis(const size_t &arc_index, GLd
     }
     return GL_TRUE;
 }
+
 
 std::vector<BiquadraticCompositeCurve3::ArcAttributes> BiquadraticCompositeCurve3::get_attributes()
 {

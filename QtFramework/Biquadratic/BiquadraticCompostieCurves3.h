@@ -23,6 +23,8 @@ namespace cagd {
 
             GLint index;
 
+            GLboolean visited = false;
+
             ArcAttributes *previous, *next; //they are initialized as nulltpr by default
 
             //TO DO ctor, copy const (deep copy), operator= (deep copy), dtor
@@ -96,6 +98,8 @@ namespace cagd {
         GLboolean moveOnAxisY(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisZ(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAllAxis(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz);
+
+
 
         std::vector<ArcAttributes> get_attributes();
 

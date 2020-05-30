@@ -111,6 +111,7 @@ void GLWidget::initializeGL()
     patch();
     loadColors();
     curve();
+    surface();
 
 }
 
@@ -170,11 +171,119 @@ void GLWidget::paintGL()
         }
     }
 
-    if(_homeworkID == 1)
+    else if(_homeworkID == 3)
+    {
+        if(_uisolines && _visolines)
+        {
+            if(_d1)
+            {
+                if(_control_net_status)
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+                }
+                else
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_TRUE,GL_FALSE);
+                }
+
+            }
+            else
+            {
+                if(_control_net_status)
+                {
+                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_TRUE,GL_TRUE);
+                }
+                else
+                {
+                     _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_TRUE,GL_FALSE);
+                }
+            }
+        }
+        else if(_uisolines && !_visolines)
+        {
+            if(_d1)
+            {
+                if(_control_net_status)
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_FALSE,GL_TRUE);
+                }
+                else
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_FALSE,GL_FALSE);
+                }
+
+            }
+            else
+            {
+                if(_control_net_status)
+                {
+                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_FALSE,GL_TRUE);
+                }
+                else
+                {
+                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_FALSE,GL_FALSE);
+                }
+            }
+        }
+        else if(_visolines && !_uisolines)
+        {
+            if(_d1)
+            {
+                if(_control_net_status)
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_TRUE,GL_TRUE);
+                }
+                else
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_TRUE,GL_FALSE);
+                }
+
+            }
+            else
+            {
+                if(_control_net_status)
+                {
+                     _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_TRUE,GL_TRUE);
+                }
+                else
+                {
+                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_TRUE,GL_FALSE);
+                }
+            }
+        }
+        else
+        {
+            if(_d1)
+            {
+                if(_control_net_status)
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_FALSE,GL_TRUE);
+                }
+                else
+                {
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_FALSE,GL_FALSE);
+                }
+
+            }
+            else
+            {
+                if(_control_net_status)
+                {
+                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_FALSE,GL_TRUE);
+                }
+                else
+                {
+                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+                }
+            }
+        }
+    }
+
+    else if(_homeworkID == 1)
     {
         renderArc();
     }
-    if(_homeworkID == 0)
+    else if(_homeworkID == 0)
     {
         glewInit();
 
@@ -235,32 +344,6 @@ void GLWidget::paintGL()
 
     }
 
-
-    /* -- SURFACES------
-     *
-
-        DirectionalLight *dl = 0;
-
-        HCoordinate3 direction(0.0,0.0,1.0,1.0);
-        Color4 ambient(0.4,0.4,0.4,1.0);
-        Color4 diffuse(0.8,0.8,0.8,1.0);
-        Color4 specular(1.0,1.0,1.0,1.0);
-
-        dl = new DirectionalLight(GL_LIGHT0,direction,ambient,diffuse,specular);
-
-        if(dl)
-        {
-            dl->Enable();
-            MatFBRuby.Apply();
-            _surface->Render();
-            dl->Disable();
-        }
-
-        if(dl)
-        {
-            delete dl,dl = 0;
-        }
-        */
     // pops the current matrix stack, replacing the current matrix with the one below it on the stack,
     // i.e., the original model view matrix is restored
     glPopMatrix();
@@ -1383,6 +1466,35 @@ void GLWidget::add_patch() {
     _side_widget->deletePatchBox->addItem(_side_widget->patchColorBox->currentText());
     _side_widget->selectPatch1->addItem(_side_widget->patchColorBox->currentText());
     _side_widget->selectPatch2->addItem(_side_widget->patchColorBox->currentText());
+
+    switch (_side_widget->patchColorBox->currentIndex()) {
+        case 0 :
+            _composite_surface->InsertNewIsolatedPatch(_surfaceindex,MatFBRuby);
+        break;
+        case 1 :
+            _composite_surface->InsertNewIsolatedPatch(_surfaceindex,MatFBEmerald);
+        break;
+        case 2:
+            _composite_surface->InsertNewIsolatedPatch(_surfaceindex,MatFBTurquoise);
+        break;
+        case 3:
+            _composite_surface->InsertNewIsolatedPatch(_surfaceindex,MatFBGold);
+        break;
+        case 4:
+            _composite_surface->InsertNewIsolatedPatch(_surfaceindex,MatFBPearl);
+        break;
+        case 5:
+            _composite_surface->InsertNewIsolatedPatch(_surfaceindex,MatFBBrass);
+        break;
+        case 6:
+            _composite_surface->InsertNewIsolatedPatch(_surfaceindex,MatFBSilver);
+        break;
+    }
+
+
+    _surfaceindex++;
+
+    updateGL();
 }
 
 void GLWidget::delete_patch() {
@@ -1456,6 +1568,12 @@ void GLWidget::loadColors()
     _colors[5] = new Color4(0.0,1.0,1.0,1.0);
 }
 
+void GLWidget::surface()
+{
+    _composite_surface = new BiquadraticCompositeSurface3();
+    cout<<"Surface created!"<<endl;
+}
+
 GLWidget::~GLWidget()
 {
     if (_pc) delete _pc;
@@ -1486,6 +1604,9 @@ GLWidget::~GLWidget()
     _image_of_arc = nullptr;
 
     if(_curve)
-        _curve = nullptr;
+        delete _curve, _curve = nullptr;
+
+    if(_composite_surface)
+        delete _composite_surface,_composite_surface = nullptr;
 }
 }

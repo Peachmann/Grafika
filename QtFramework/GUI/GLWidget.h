@@ -53,7 +53,7 @@ namespace cagd
         TriangulatedMesh3* _surface;
         GLint _surfID = 0;
         GLint _curveID = 0;
-        GLint _homeworkID = 1000;
+        GLint _homeworkID = 0;
         GLint _modelID = 0;
         GLint _colorID = 0;
         GLint _polyID = 0;
@@ -108,7 +108,11 @@ namespace cagd
 
         BiquadraticCompositeCurve3 *_curve;
 
+        /* Surface */
+
+        BiquadraticCompositeSurface3 *_composite_surface;
         void *depth;
+        GLuint _surfaceindex = 0;
 
     signals:
         void xcoordhasChanged(double);
@@ -206,6 +210,9 @@ namespace cagd
         /* Curve */
         void curve();
         void loadColors();
+
+        /* Suface */
+        void surface();
 
    private:
         void testMatrices();
