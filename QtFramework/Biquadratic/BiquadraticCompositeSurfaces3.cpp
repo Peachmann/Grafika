@@ -446,12 +446,178 @@ GLboolean BiquadraticCompositeSurface3::JoinExistingPatches(const size_t &patch_
 
 GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch_index1, Direction direction1, const size_t &patch_index2, Direction direction2)
 {
+
+    if(patch_index1 == patch_index2)
+        return GL_FALSE;
+
+    RowMatrix<DCoordinate3> newPoints;
+    newPoints.ResizeColumns(4);
+    GLdouble x1,x2,y1,y2,z1,z2;
+    GLuint patch1_position1,patch1_position2,patch2_position1,path2_position2;
+
+    for(GLuint i = 0 ; i < 4; i++)
+    {
+        switch (direction1) {
+            case N:
+                _attributes[patch_index1].patch->GetData(2,i,x1,y1,z1);
+                patch1_position1 = i;
+                patch1_position2 = 3;
+                _attributes[patch_index1].neighbours[N] = &_attributes[patch_index2];
+            break;
+
+        }
+
+        switch (direction2) {
+            case W:
+                _attributes[patch_index2].patch->GetData(1,i,x2,y2,z2);
+                patch2_position1 = 0;
+                patch1_position2 = i;
+                _attributes[patch_index2].neighbours[W] = &_attributes[patch_index1];
+           break;
+        }
+
+        _attributes[patch_index1].patch->SetData(patch1_position1,patch1_position2,(x1 + x2)/2.0,(y1 + y2)/2.0,(z1 + z2)/2.0);
+        _attributes[patch_index2].patch->SetData(patch2_position1,patch2_position1,(x1 + x2)/2.0,(y1 + y2)/2.0,(z1 + z2)/2.0);
+    }
+
+    _attributes[patch_index1].patch->UpdateVertexBufferObjectsOfData();
+
+    if(!UpdatePatch(patch_index1))
+        return GL_FALSE;
+
+    _attributes[patch_index2].patch->UpdateVertexBufferObjectsOfData();
+
+    if(!UpdatePatch(patch_index2))
+        return GL_FALSE;
+
+    vector<PatchAttributes*> visited;
+    visited.push_back(&_attributes[patch_index1]);
+    visited.push_back(&_attributes[patch_index2]);
+
+
+    for(GLuint i = 0; i < 8;i++)
+    {
+        if(_attributes[patch_index1].neighbours[i] && _attributes[patch_index1].neighbours[i] != &_attributes[patch_index2])
+        {
+            GLuint index = _attributes[patch_index1].neighbours[i]->index;
+            GLuint j = 0;
+            for(j = 0; j < 8; j++)
+            {
+                if(_attributes[patch_index1].neighbours[i]->neighbours[j] == &_attributes[patch_index1])
+                    break;
+            }
+
+            BiquadraticCompositeSurface3::Direction dir1 = BiquadraticCompositeSurface3::Direction(i);
+            BiquadraticCompositeSurface3::Direction dir2 = BiquadraticCompositeSurface3::Direction(j);
+            //mergeOthers
+
+        }
+
+        if(_attributes[patch_index2].neighbours[i] && _attributes[patch_index2].neighbours[i] != &_attributes[patch_index1])
+        {
+            GLuint index = _attributes[patch_index2].neighbours[i]->index;
+            GLuint j = 0;
+            for(j = 0; j < 8; j++)
+            {
+                if(_attributes[patch_index2].neighbours[i]->neighbours[j] == &_attributes[patch_index2])
+                    break;
+            }
+
+            BiquadraticCompositeSurface3::Direction dir1 = BiquadraticCompositeSurface3::Direction(i);
+            BiquadraticCompositeSurface3::Direction dir2 = BiquadraticCompositeSurface3::Direction(j);
+            //mergeOthers
+
+        }
+    }
+
     return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeSurface3::MergerOthers(GLuint index1, GLuint index2, Direction d1, Direction d2, std::vector<PatchAttributes *> visited)
+{
+
 }
 
 GLboolean BiquadraticCompositeSurface3::ShiftPatch(GLuint index, GLdouble off_x, GLdouble off_y, GLdouble off_z)
 {
     return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeSurface3::UpdatePatch(GLuint index)
+{
+    //GenerateIMage
+    if(_attributes[index].mesh)
+        delete _attributes[index].mesh, _attributes[index].mesh = nullptr;
+    _attributes[index].mesh = _attributes[index].patch->GenerateImage(30,30);
+
+    if(!_attributes[index].mesh)
+    {
+        return GL_FALSE;
+    }
+
+    //UpdateVBO
+    if(!_attributes[index].mesh->UpdateVertexBufferObjects())
+    {
+        return GL_FALSE;
+    }
+
+    //ISOLINE RESET
+    if(_attributes[index].u_isolines)
+    {
+        for(GLuint i = 0; i < _attributes[index].u_isolines->GetColumnCount(); i++)
+        {
+            if((*_attributes[index].u_isolines)[i])
+            {
+                delete (*_attributes[index].u_isolines)[i], (*_attributes[index].u_isolines)[i] = nullptr;
+            }
+        }
+    }
+    delete _attributes[index].u_isolines,_attributes[index].u_isolines = nullptr;
+
+    if(_attributes[index].v_isolines)
+    {
+        for(GLuint i = 0; i < _attributes[index].v_isolines->GetColumnCount(); i++)
+        {
+            if((*_attributes[index].v_isolines)[i])
+            {
+                delete (*_attributes[index].v_isolines)[i], (*_attributes[index].v_isolines)[i] = nullptr;
+            }
+        }
+    }
+    delete _attributes[index].v_isolines,_attributes[index].v_isolines = nullptr;
+
+    _attributes[index].u_isolines = _attributes[index].patch->GenerateUIsoparametricLines(30,1,30);
+
+    if(!_attributes[index].u_isolines)
+    {
+        return GL_FALSE;
+    }
+
+    for(GLuint i = 0; i < _attributes[index].u_isolines->GetColumnCount();i++)
+    {
+        if(!(*_attributes[index].u_isolines)[i]->UpdateVertexBufferObjects())
+        {
+            return GL_FALSE;
+        }
+    }
+
+    _attributes[index].v_isolines = _attributes[index].patch->GenerateVIsoparametricLines(30,1,30);
+
+    if(!_attributes[index].v_isolines)
+    {
+        return GL_FALSE;
+    }
+
+    for(GLuint i = 0; i < _attributes[index].v_isolines->GetColumnCount();i++)
+    {
+        if(!(*_attributes[index].v_isolines)[i]->UpdateVertexBufferObjects())
+        {
+            return GL_FALSE;
+        }
+    }
+
+    return GL_TRUE;
+
 }
 
 GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_lines, GLboolean v_lines, GLboolean polygon)

@@ -71,6 +71,9 @@ namespace cagd {
 
             GLboolean ShiftPatch(GLuint index, GLdouble off_x, GLdouble off_y, GLdouble off_z);
 
+            GLboolean UpdatePatch(GLuint index);
+
+            GLboolean MergerOthers(GLuint index1, GLuint index2, Direction d1, Direction d2, std::vector<PatchAttributes*> visited);
 
 
             //other setters/getters
