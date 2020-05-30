@@ -229,6 +229,9 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
     _attributes[attr_size].arc->SetData(2,(2.0 * p3 - p2));
     _attributes[attr_size].arc->SetData(3,p3);
 
+    _attributes[attr_size].previous = &_attributes[arc_index2];
+    _attributes[attr_size].next = &_attributes[arc_index1];
+
     _attributes[attr_size].color = new Color4(0.2f,0.7f,0.8f);
 
     //Reset image if exists
@@ -260,16 +263,13 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
 
 GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_index, Direction direction)
 {
-    std::cout<<__LINE__<<std::endl;
     //Insert new attribute (arc)
     GLint attr_size = _attributes.size();
     _attributes.resize(attr_size + 1);
     _attributes[attr_size].arc = new BiquadraticArcs3();
-    std::cout<<__LINE__<<std::endl;
     if((direction == LEFT && _attributes[arc_index].previous != nullptr) || (direction == RIGHT && _attributes[arc_index].next != nullptr)) {
         return GL_FALSE;
     }
-    std::cout<<__LINE__<<std::endl;
     if(!_attributes[attr_size].arc)
     {
         _attributes.pop_back();
@@ -278,7 +278,6 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
 
     DCoordinate3 p0, p1;
     // setting up the first 2 points
-    std::cout<<__LINE__<<std::endl;
     switch (direction) {
 
     case LEFT:
@@ -295,7 +294,6 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
         std :: cout << "That should not have happened..." << std :: endl;
         return GL_FALSE;
     }
-    std::cout<<__LINE__<<std::endl;
     // calculating new arc points
     _attributes[attr_size].arc->SetData(0,p0);
     _attributes[attr_size].arc->SetData(1,(2.0 * p0 - p1) );
@@ -383,7 +381,6 @@ void BiquadraticCompositeCurve3::UpdateArc(GLuint index, GLuint max_order_of_der
         delete _attributes[index].image;
         _attributes[index].image = nullptr;
     }
-    std::cout<<__LINE__<<std::endl;
     //Generate image
     _attributes[index].image = _attributes[index].arc->GenerateImage(max_order_of_derivatives,div_point_count);
 
@@ -395,19 +392,20 @@ void BiquadraticCompositeCurve3::UpdateArc(GLuint index, GLuint max_order_of_der
 GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdouble offset) {
 
     ArcAttributes* first = &_attributes[arc_index];
-    std:: cout<< &first << " " << &_attributes[arc_index] << std::endl;
     // set the chosen arc
     for(GLint i = 0; i < 4; i++) {
         GLdouble x = _attributes[arc_index].arc->GetData(i).x();
         first->arc->SetData(i, DCoordinate3(x + offset, first->arc->GetData(i).y(), first->arc->GetData(i).z()));
     }
     UpdateArc_2(*first,30,3);
+    std::cout<< first->index << std::endl;
 
     ArcAttributes *next;
     next = first->previous;
 
     while(next != nullptr) {
-        if(next->arc == first->arc) {
+        std::cout<< next->index << std::endl;
+        if(next == first) {
             break;
         }
         for(GLint i = 0; i < 4; i++) {
@@ -422,6 +420,7 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
     if(next == nullptr) {
         next = first->next;
         while(next != nullptr) {
+            std::cout<< next->index << std::endl;
             for(GLint i = 0; i < 4; i++) {
                 GLdouble x = next->arc->GetData(i).x();
                 next->arc->SetData(i, DCoordinate3(x + offset, next->arc->GetData(i).y(), next->arc->GetData(i).z()));
