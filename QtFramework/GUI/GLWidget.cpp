@@ -1513,9 +1513,45 @@ void GLWidget::do_patch_operation() {
     string patch2 = _side_widget->selectPatch2->currentText().toStdString();
     string direction1 = _side_widget->selectDirection1->currentText().toStdString();
     string direction2 = _side_widget->selectDirection2->currentText().toStdString();
+    BiquadraticCompositeSurface3::Direction dir1, dir2;
 
     GLuint index1 = _side_widget->selectPatch1->currentIndex();
     GLuint index2 = _side_widget->selectPatch2->currentIndex();
+
+    if(direction1 == "North")
+        dir1 = BiquadraticCompositeSurface3::N;
+    else if(direction1 == "West")
+        dir1 = BiquadraticCompositeSurface3::W;
+    else if(direction1 == "East")
+        dir1 = BiquadraticCompositeSurface3::E;
+    else if(direction1 == "South")
+        dir1 = BiquadraticCompositeSurface3::S;
+    else if(direction1 == "Northwest")
+        dir1 = BiquadraticCompositeSurface3::NW;
+    else if(direction1 == "Northeast")
+        dir1 = BiquadraticCompositeSurface3::NE;
+    else if(direction1 == "Southeast")
+        dir1 = BiquadraticCompositeSurface3::SE;
+    else if(direction1 == "Southwest")
+        dir1 = BiquadraticCompositeSurface3::SW;
+
+    if(direction2 == "North")
+        dir2 = BiquadraticCompositeSurface3::N;
+    else if(direction2 == "West")
+        dir2 = BiquadraticCompositeSurface3::W;
+    else if(direction2 == "East")
+        dir2 = BiquadraticCompositeSurface3::E;
+    else if(direction2 == "South")
+        dir2 = BiquadraticCompositeSurface3::S;
+    else if(direction2 == "Northwest")
+        dir2 = BiquadraticCompositeSurface3::NW;
+    else if(direction2 == "Northeast")
+        dir2 = BiquadraticCompositeSurface3::NE;
+    else if(direction2 == "Southeast")
+        dir2 = BiquadraticCompositeSurface3::SE;
+    else if(direction2 == "Southwest")
+        dir2 = BiquadraticCompositeSurface3::SW;
+
 
     GLuint operation = _side_widget->patchOperation->currentIndex();
 
@@ -1533,29 +1569,14 @@ void GLWidget::do_patch_operation() {
     // Continue
     case 2:
         cout<<"Continue"<<endl;
-        if(direction1 == "North")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::N);
-        else if (direction1 == "West")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::W);
-        else if (direction1 == "East")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::E);
-        else if (direction1 == "South")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::S);
-        else if (direction1 == "Northwest")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::NW);
-        else if (direction1 == "Northeast")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::NE);
-        else if (direction1 == "Southeast")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::SE);
-        else if (direction1 == "Southwest")
-            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::SW);
-        // continue(patch1, direction1);
+        _composite_surface->ContinueExistingPatch(0, dir1);
         break;
 
     // Join
     case 3:
         // join(patch1, patch2, direction1, direction2);
-
+        cout<<"Join"<<endl;
+        _composite_surface->JoinExistingPatches(0,dir1,1,dir2);
         break;
 
     // Merge
