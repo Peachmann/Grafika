@@ -281,6 +281,7 @@ namespace cagd
         template <typename T>
         T RowMatrix<T>::operator ()(GLuint column) const
         {
+            std::cout<<this->_data[0][column]<<std::endl;
         return this->_data[0][column];
         }
 

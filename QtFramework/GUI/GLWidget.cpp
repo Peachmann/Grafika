@@ -1314,6 +1314,7 @@ void GLWidget::do_arc_operation() {
     // Move
     case 0:
         // hopefully mouseevent handler
+        _curve->moveOnAxisX(index1,-5.0);
         break;
 
     //Shift

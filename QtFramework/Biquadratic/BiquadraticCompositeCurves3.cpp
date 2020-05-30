@@ -174,9 +174,9 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
 
     //If selected arcs have already neighbours
     if((direction1 == LEFT && _attributes[arc_index1].previous != nullptr) ||
-       (direction1 == RIGHT && _attributes[arc_index1].next != nullptr) ||
-       (direction2 == LEFT && _attributes[arc_index2].previous != nullptr) ||
-       (direction2 == RIGHT && _attributes[arc_index2].next != nullptr)) {
+            (direction1 == RIGHT && _attributes[arc_index1].next != nullptr) ||
+            (direction2 == LEFT && _attributes[arc_index2].previous != nullptr) ||
+            (direction2 == RIGHT && _attributes[arc_index2].next != nullptr)) {
         return GL_FALSE;
     }
 
@@ -404,7 +404,7 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
     }
 
     //Generate image
-    first.image = first.arc->GenerateImage(3,30);
+    first.image = first.arc->GenerateImage(2,30);
 
     //Error in generate
     if(!first.image)
@@ -413,78 +413,73 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
     //Update VBO
     if(!first.image->UpdateVertexBufferObjects())
     {
-        //If error delete generated arc/image
-        delete first.arc;
-        delete first.image;
-        _attributes.resize(_attributes.size() - 1);
         return GL_FALSE;
     }
 
-    first = *first.previous;
+    ArcAttributes *next;
+    next = first.previous;
 
-    while(first.arc != nullptr && first.arc != _attributes[arc_index].arc) {
-        for(GLint i = 0; i < 4; i++) {
-            first.arc->SetData(i, first.arc->GetData(i) + off);
+    while(next != nullptr) {
+        if(next->index == first.index) {
+            break;
         }
-        first.arc->UpdateVertexBufferObjectsOfData();
+        std::cout<<__LINE__<<std::endl;
+        for(GLint i = 0; i < 4; i++) {
+            next->arc->SetData(i, next->arc->GetData(i) + off);
+        }
+
+        next->arc->UpdateVertexBufferObjectsOfData();
 
         //Reset image if exists
-        if(first.image)
+        if(next->image)
         {
-            delete first.image;
-            first.image = nullptr;
+            delete next->image;
+            next->image = nullptr;
         }
 
         //Generate image
-        first.image = first.arc->GenerateImage(3,30);
+        next->image = next->arc->GenerateImage(2,30);
 
         //Error in generate
-        if(!first.image)
+        if(!next->image)
             return GL_FALSE;
 
         //Update VBO
-        if(!first.image->UpdateVertexBufferObjects())
+        if(!next->image->UpdateVertexBufferObjects())
         {
-            //If error delete generated arc/image
-            delete first.arc;
-            delete first.image;
-            _attributes.resize(_attributes.size() - 1);
+            return GL_FALSE;
         }
-        first = *first.previous;
+        next = next->previous;
     }
 
-    if(first.arc == nullptr) {
-        first = *_attributes[arc_index].next;
-        while(first.arc != nullptr) {
+    if(next == nullptr) {
+        next = first.next;
+        while(next != nullptr) {
             for(GLint i = 0; i < 4; i++) {
-                first.arc->SetData(i, first.arc->GetData(i) + off);
+                next->arc->SetData(i, next->arc->GetData(i) + off);
             }
-            first.arc->UpdateVertexBufferObjectsOfData();
+            next->arc->UpdateVertexBufferObjectsOfData();
 
             //Reset image if exists
-            if(first.image)
+            if(next->image)
             {
-                delete first.image;
-                first.image = nullptr;
+                delete next->image;
+                next->image = nullptr;
             }
 
             //Generate image
-            first.image = first.arc->GenerateImage(3,30);
+            next->image = next->arc->GenerateImage(2,30);
 
             //Error in generate
-            if(!first.image)
+            if(!next->image)
                 return GL_FALSE;
 
             //Update VBO
-            if(!first.image->UpdateVertexBufferObjects())
+            if(!next->image->UpdateVertexBufferObjects())
             {
-                //If error delete generated arc/image
-                delete first.arc;
-                delete first.image;
-                _attributes.resize(_attributes.size() - 1);
                 return GL_FALSE;
             }
-            first = *first.next;
+            next = next->next;
         }
     }
 
