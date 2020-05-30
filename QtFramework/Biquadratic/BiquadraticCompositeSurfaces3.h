@@ -75,11 +75,14 @@ namespace cagd {
 
             //other setters/getters
 
-            void SetShaderForAll();
-            void SetShaderByIndex(GLuint index);
+            void SetShaderForAll(ShaderProgram &shader);
+            void SetShaderByIndex(GLuint index, ShaderProgram &shader);
 
-            void SetMaterialForAll();
-            void SetMaterialByIndex(GLuint index);
+            void SetMaterialForAll(Material &material);
+            void SetMaterialByIndex(GLuint index, Material &material);
+
+            PatchAttributes getPatchAttributes(GLuint index);
+
         };
     };
 #endif // BIQUADRATICCOMPOSITESURFACES3_H

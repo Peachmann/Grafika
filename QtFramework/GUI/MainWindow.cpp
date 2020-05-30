@@ -87,6 +87,7 @@ namespace cagd
         connect(_side_widget->addPatch, SIGNAL(clicked()), _gl_widget, SLOT(add_patch()));
         connect(_side_widget->deletePatch, SIGNAL(clicked()), _gl_widget, SLOT(delete_patch()));
         connect(_side_widget->doPatchOperation, SIGNAL(clicked()), _gl_widget, SLOT(do_patch_operation()));
+        connect(_side_widget->selectPatchMaterial,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(change_patch_material(int)));
     }
 
     //--------------------------------

@@ -28,9 +28,9 @@ namespace cagd
 //--------------------------------
 GLWidget::GLWidget(QWidget *parent, const QGLFormat &format): QGLWidget(format, parent)
 {
-    _timer = new QTimer(this);
-    _timer->setInterval(0);
-    connect(_timer,SIGNAL(timeout()),this,SLOT(_animate()));
+   // _timer = new QTimer(this);
+   // _timer->setInterval(0);
+   // connect(_timer,SIGNAL(timeout()),this,SLOT(_animate()));
 
     models = RowMatrix<TriangulatedMesh3>(17);
     surfaces = RowMatrix<ParametricSurface3*>(7);
@@ -653,7 +653,7 @@ void GLWidget::_models()
     {
         if(models[7].UpdateVertexBufferObjects(GL_DYNAMIC_DRAW))
         {
-            _timer->start();
+            //_timer->start();
             _angle = 0.0;
             glEnable(GL_LIGHT0);
             glEnable(GL_NORMALIZE);
@@ -952,7 +952,7 @@ void GLWidget::_animate()
     _model.UnmapNormalBuffer();
     _model.UnmapVertexBuffer();
 
-    updateGL();
+    // updateGL();
 
 }
 
@@ -1540,6 +1540,37 @@ void GLWidget::do_patch_operation() {
     }
 }
 
+/* NOT WORKING */
+void GLWidget::change_patch_material(int value)
+{
+    GLuint patch = _side_widget->selectPatch1->currentIndex();
+    BiquadraticCompositeSurface3::PatchAttributes pa = _composite_surface->getPatchAttributes(patch);
+    switch (value) {
+        case 0:
+            pa.material = &MatFBBrass;
+        break;
+        case 1:
+            pa.material = &MatFBGold;
+        break;
+        case 2:
+            pa.material = &MatFBSilver;
+        break;
+        case 3:
+            pa.material = &MatFBEmerald;
+        break;
+        case 4:
+            pa.material = &MatFBPearl;
+        break;
+        case 5:
+            pa.material = &MatFBRuby;
+        break;
+        case 6:
+            pa.material = &MatFBTurquoise;
+        break;
+    }
+
+    updateGL();
+}
 /* Curve */
 void GLWidget::curve()
 {

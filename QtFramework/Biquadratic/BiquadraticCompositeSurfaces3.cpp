@@ -396,26 +396,37 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
     return GL_TRUE;
 }
 
-void BiquadraticCompositeSurface3::SetShaderForAll()
+void BiquadraticCompositeSurface3::SetShaderForAll(ShaderProgram &shader)
 {
 
+     for(GLuint i = 0; i < _attributes.size(); i++)
+     {
+         _attributes[i].shader = &shader;
+     }
 }
 
-void BiquadraticCompositeSurface3::SetShaderByIndex(GLuint index)
+void BiquadraticCompositeSurface3::SetShaderByIndex(GLuint index, ShaderProgram &shader)
 {
-
+    _attributes[index].shader = &shader;
 }
 
-void BiquadraticCompositeSurface3::SetMaterialForAll()
+void BiquadraticCompositeSurface3::SetMaterialForAll(Material &material)
 {
-
+    for(GLuint i = 0; i < _attributes.size(); i++)
+    {
+        _attributes[i].material = &material;
+    }
 }
 
-void BiquadraticCompositeSurface3::SetMaterialByIndex(GLuint index)
+void BiquadraticCompositeSurface3::SetMaterialByIndex(GLuint index, Material &material)
 {
-
+    _attributes[index].material = &material;
 }
 
+BiquadraticCompositeSurface3::PatchAttributes BiquadraticCompositeSurface3::getPatchAttributes(GLuint index)
+{
+    return _attributes[index];
+}
 
 
 

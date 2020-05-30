@@ -206,6 +206,7 @@ namespace cagd
         void add_patch();
         void delete_patch();
         void do_patch_operation();
+        void change_patch_material(int value);
 
         /* Curve */
         void curve();
