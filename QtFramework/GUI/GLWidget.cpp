@@ -1505,12 +1505,12 @@ void GLWidget::delete_patch() {
 
 void GLWidget::do_patch_operation() {
     // If patch ID is string (else, get index)
-    string patch1 = _side_widget->selectArc1->currentText().toStdString();
-    string patch2 = _side_widget->selectArc2->currentText().toStdString();
-    string direction1 = _side_widget->directionArc1->currentText().toStdString();
-    string direction2 = _side_widget->directionArc2->currentText().toStdString();
+    string patch1 = _side_widget->selectPatch1->currentText().toStdString();
+    string patch2 = _side_widget->selectPatch2->currentText().toStdString();
+    string direction1 = _side_widget->selectDirection1->currentText().toStdString();
+    string direction2 = _side_widget->selectDirection2->currentText().toStdString();
 
-    GLuint operation = _side_widget->operationBox->currentIndex();
+    GLuint operation = _side_widget->patchOperation->currentIndex();
 
     switch (operation) {
     // Move
@@ -1525,6 +1525,23 @@ void GLWidget::do_patch_operation() {
 
     // Continue
     case 2:
+        cout<<"Continue"<<endl;
+        if(direction1 == "North")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::N);
+        else if (direction1 == "West")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::W);
+        else if (direction1 == "East")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::E);
+        else if (direction1 == "South")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::S);
+        else if (direction1 == "Northwest")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::NW);
+        else if (direction1 == "Northeast")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::NE);
+        else if (direction1 == "Southeast")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::SE);
+        else if (direction1 == "Southwest")
+            _composite_surface->ContinueExistingPatch(0, BiquadraticCompositeSurface3::SW);
         // continue(patch1, direction1);
         break;
 
@@ -1538,6 +1555,10 @@ void GLWidget::do_patch_operation() {
         // merge(patch1, patch2, direction1, direction2);
         break;
     }
+
+    cout<<"Before update"<<endl;
+    updateGL();
+    cout<<"After update"<<endl;
 }
 
 /* NOT WORKING */

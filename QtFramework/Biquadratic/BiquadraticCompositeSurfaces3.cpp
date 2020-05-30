@@ -341,7 +341,6 @@ int BiquadraticCompositeSurface3::GetDirectionIndex(Direction direction) const {
 GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patch_index, Direction direction)
 {
     int direc_ind = GetDirectionIndex(direction);
-
     //check if it already has this neighbor
     if(_attributes[patch_index].neighbours[direc_ind] != nullptr) {
         return GL_FALSE;
@@ -420,20 +419,184 @@ GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patc
             }
         }
     } else { // NE, SE, SW, NW
+        DCoordinate3 p0, p1, p2, p3;
         switch (direc_ind) {
 
         case 1:
+            //get
+            _attributes[patch_index].patch->GetData(1,2,p0);
+            _attributes[patch_index].patch->GetData(1,3,p1);
+            _attributes[patch_index].patch->GetData(0,2,p2);
+            _attributes[patch_index].patch->GetData(0,3,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, 4.0 * p3 - 3.0 * p1);
+            _attributes[attr_size].patch->SetData(0,1, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(0,2, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(0,3, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            _attributes[attr_size].patch->SetData(1,0, 3.0 * p3 - 2.0 * p1);
+            _attributes[attr_size].patch->SetData(1,1, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,2, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            _attributes[attr_size].patch->SetData(1,3, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(2,0, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(2,1, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(2,2, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,3, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(3,0, p3);
+            _attributes[attr_size].patch->SetData(3,1, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(3,2, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(3,3, 4.0 * p3 - 3.0 * p2);
+            //neighbours
+            _attributes[patch_index].neighbours[1] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[5] = &_attributes[patch_index];
+
             break;
         case 3:
+            //get
+            _attributes[patch_index].patch->GetData(2,2,p0);
+            _attributes[patch_index].patch->GetData(2,3,p1);
+            _attributes[patch_index].patch->GetData(3,2,p2);
+            _attributes[patch_index].patch->GetData(3,3,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, p3);
+            _attributes[attr_size].patch->SetData(0,1, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(0,2, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(0,3, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(1,0, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(1,1, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(1,2, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,3, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(2,0, 3.0 * p3 - 2.0 * p1);
+            _attributes[attr_size].patch->SetData(2,1, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,2, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            _attributes[attr_size].patch->SetData(2,3, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(3,0, 4.0 * p3 - 3.0 * p1);
+            _attributes[attr_size].patch->SetData(3,1, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(3,2, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(3,3, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            //neighbours
+            _attributes[patch_index].neighbours[3] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[7] = &_attributes[patch_index];
             break;
         case 5:
+            //get
+            _attributes[patch_index].patch->GetData(2,1,p0);
+            _attributes[patch_index].patch->GetData(2,0,p1);
+            _attributes[patch_index].patch->GetData(3,1,p2);
+            _attributes[patch_index].patch->GetData(3,0,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(0,1, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(0,2, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(0,3, p3);
+            _attributes[attr_size].patch->SetData(1,0, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(1,1, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,2, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(1,3, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(2,0, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(2,1, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            _attributes[attr_size].patch->SetData(2,2, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,3, 3.0 * p3 - 2.0 * p1);
+            _attributes[attr_size].patch->SetData(3,0, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            _attributes[attr_size].patch->SetData(3,1, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(3,2, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(3,3, 4.0 * p3 - 3.0 * p1);
+            //neighbours
+            _attributes[patch_index].neighbours[5] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[1] = &_attributes[patch_index];
             break;
         case 7:
+            //get
+            _attributes[patch_index].patch->GetData(1,1,p0);
+            _attributes[patch_index].patch->GetData(1,0,p1);
+            _attributes[patch_index].patch->GetData(0,1,p2);
+            _attributes[patch_index].patch->GetData(0,0,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            _attributes[attr_size].patch->SetData(0,1, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(0,2, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(0,3, 4.0 * p3 - 3.0 * p1);
+            _attributes[attr_size].patch->SetData(1,0, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(1,1, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            _attributes[attr_size].patch->SetData(1,2, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,3, 3.0 * p3 - 2.0 * p1);
+            _attributes[attr_size].patch->SetData(2,0, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(2,1, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,2, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(2,3, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(3,0, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(3,1, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(3,2, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(3,3, p3);
+            //neighbours
+            _attributes[patch_index].neighbours[7] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[3] = &_attributes[patch_index];
             break;
         default:
             std::cout<<"We should not be here..."<<std::endl;
             return GL_FALSE;
         }
+    }
+
+    _attributes[attr_size].material = &MatFBRuby;
+
+    //Update dataVBO
+    _attributes[attr_size].patch->UpdateVertexBufferObjectsOfData();
+
+    // U isoparametric lines
+    _attributes[attr_size].u_isolines = _attributes[attr_size].patch->GenerateUIsoparametricLines(30,1,30);
+
+    if(!_attributes[attr_size].u_isolines)
+    {
+        std::cout<<"Cannot create uisoline !\n";
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+    // U isoparametric lines UpdateVBO
+    for(GLuint i = 0; i < _attributes[attr_size].u_isolines->GetColumnCount();i++)
+    {
+        if(!(*_attributes[attr_size].u_isolines)[i]->UpdateVertexBufferObjects())
+        {
+            std::cout<<"Cannot update uisoline !\n";
+            _attributes.pop_back();
+            return GL_FALSE;
+        }
+    }
+
+    _attributes[attr_size].v_isolines = _attributes[attr_size].patch->GenerateVIsoparametricLines(30,1,30);
+
+    if(!_attributes[attr_size].v_isolines)
+    {
+        std::cout<<"Cannot create visoline !\n";
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    for(GLuint  i = 0; i < _attributes[attr_size].v_isolines->GetColumnCount();i++)
+    {
+        if(!(*_attributes[attr_size].v_isolines)[i]->UpdateVertexBufferObjects())
+        {
+            std::cout<<"Cannot update visoline !\n";
+            _attributes.pop_back();
+            return GL_FALSE;
+        }
+    }
+
+    //Generate Image/Mesh
+    _attributes[attr_size].mesh = _attributes[attr_size].patch->GenerateImage(30,30);
+
+    if(!_attributes[attr_size].mesh)
+    {
+        std::cout<<"Image/mesh not created!\n";
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    //UpdateVBO
+    if(!_attributes[attr_size].mesh->UpdateVertexBufferObjects())
+    {
+        std::cout<<"Cannot update VBO!\n";
+        _attributes.pop_back();
+        return GL_FALSE;
     }
 
     return GL_TRUE;
@@ -535,7 +698,7 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
 
 GLboolean BiquadraticCompositeSurface3::MergerOthers(GLuint index1, GLuint index2, Direction d1, Direction d2, std::vector<PatchAttributes *> visited)
 {
-
+    return GL_TRUE;
 }
 
 GLboolean BiquadraticCompositeSurface3::ShiftPatch(GLuint index, GLdouble off_x, GLdouble off_y, GLdouble off_z)
@@ -654,7 +817,6 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
                 }
             }
         }
-
         if(polygon)
         {
             glLineWidth(3.0f);
@@ -662,7 +824,6 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
             _attributes[i].patch->RenderData();
             glLineWidth(1.0f);
         }
-
         glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
         glEnable(GL_NORMALIZE);
@@ -672,8 +833,6 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
             _attributes[i].material->Apply();
             _attributes[i].mesh->Render();
         }
-
-
 
         glDisable(GL_LIGHTING);
         glDisable(GL_LIGHT0);
