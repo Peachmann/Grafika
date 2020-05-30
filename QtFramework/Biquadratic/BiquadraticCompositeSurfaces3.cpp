@@ -604,6 +604,241 @@ GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patc
 
 GLboolean BiquadraticCompositeSurface3::JoinExistingPatches(const size_t &patch_index1, Direction direction1, const size_t &patch_index2, Direction direction2)
 {
+    int direc_ind1 = GetDirectionIndex(direction1);
+    int direc_ind2 = GetDirectionIndex(direction2);
+    //check if it already has this neighbor
+    if(_attributes[patch_index1].neighbours[direc_ind1] != nullptr || _attributes[patch_index2].neighbours[direc_ind2] != nullptr) {
+        return GL_FALSE;
+    }
+
+    GLint attr_size = _attributes.size();
+    _attributes.resize(attr_size + 1);
+    _attributes[attr_size].patch = new BiquadraticPatch3();
+
+    if(!_attributes[attr_size].patch)
+    {
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    if(direc_ind1 % 2 == 0 && direc_ind2 % 2 == 0) {
+        for(int i = 0; i < 4; i++) {
+            DCoordinate3 p0, p1, p2, p3;
+            switch(direc_ind1) {
+
+            case 0:
+                //get
+                _attributes[patch_index1].patch->GetData(0,i,p0);
+                _attributes[patch_index1].patch->GetData(1,i,p1);
+                break;
+            case 2:
+                //get
+                _attributes[patch_index1].patch->GetData(i,3,p0);
+                _attributes[patch_index1].patch->GetData(i,2,p1);
+                break;
+            case 4:
+                //get
+                _attributes[patch_index1].patch->GetData(3,i,p0);
+                _attributes[patch_index1].patch->GetData(2,i,p1);
+                break;
+            case 6:
+                //get
+                _attributes[patch_index1].patch->GetData(i,0,p0);
+                _attributes[patch_index1].patch->GetData(i,1,p1);
+                break;
+
+            }
+            switch(direc_ind2) {
+
+            case 0:
+                //get
+                _attributes[patch_index2].patch->GetData(0,i,p3);
+                _attributes[patch_index2].patch->GetData(1,i,p2);
+                break;
+            case 2:
+                //get
+                _attributes[patch_index2].patch->GetData(i,3,p3);
+                _attributes[patch_index2].patch->GetData(i,2,p2);
+                break;
+            case 4:
+                //get
+                _attributes[patch_index2].patch->GetData(3,i,p3);
+                _attributes[patch_index2].patch->GetData(2,i,p2);
+                break;
+            case 6:
+                //get
+                _attributes[patch_index2].patch->GetData(i,0,p3);
+                _attributes[patch_index2].patch->GetData(i,1,p2);
+                break;
+
+            }
+            //set
+            _attributes[attr_size].patch->SetData(i,0, p0);
+            _attributes[attr_size].patch->SetData(i,1, 2.0 * p0 - p1);
+            _attributes[attr_size].patch->SetData(i,2, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(i,3, p3);
+        }
+        _attributes[attr_size].neighbours[2] = &_attributes[patch_index2];
+        _attributes[attr_size].neighbours[6] = &_attributes[patch_index1];
+        _attributes[patch_index1].neighbours[direc_ind1] = &_attributes[attr_size];
+        _attributes[patch_index2].neighbours[direc_ind2] = &_attributes[attr_size];
+    } else if(direc_ind1 % 2 == 1 && direc_ind2 % 2 == 1) {
+        DCoordinate3 p0, p1, p2, p3, p4, p5, p6, p7;
+        switch(direc_ind1) {
+
+        case 1:
+            //get
+            _attributes[patch_index1].patch->GetData(0,4,p0);
+            _attributes[patch_index1].patch->GetData(0,3,p1);
+            _attributes[patch_index1].patch->GetData(1,4,p2);
+            _attributes[patch_index1].patch->GetData(1,3,p3);
+            break;
+        case 3:
+            //get
+            _attributes[patch_index1].patch->GetData(3,3,p0);
+            _attributes[patch_index1].patch->GetData(2,3,p1);
+            _attributes[patch_index1].patch->GetData(3,2,p2);
+            _attributes[patch_index1].patch->GetData(2,2,p3);
+            break;
+        case 5:
+            //get
+            _attributes[patch_index1].patch->GetData(3,0,p0);
+            _attributes[patch_index1].patch->GetData(2,0,p1);
+            _attributes[patch_index1].patch->GetData(3,1,p2);
+            _attributes[patch_index1].patch->GetData(2,1,p3);
+            break;
+        case 7:
+            //get
+            _attributes[patch_index1].patch->GetData(0,0,p0);
+            _attributes[patch_index1].patch->GetData(0,1,p1);
+            _attributes[patch_index1].patch->GetData(1,0,p2);
+            _attributes[patch_index1].patch->GetData(1,1,p3);
+            break;
+
+        }
+        switch(direc_ind2) {
+
+        case 1:
+            //get
+            _attributes[patch_index2].patch->GetData(0,4,p7);
+            _attributes[patch_index2].patch->GetData(0,3,p6);
+            _attributes[patch_index2].patch->GetData(1,4,p5);
+            _attributes[patch_index2].patch->GetData(1,3,p4);
+            break;
+        case 3:
+            //get
+            _attributes[patch_index2].patch->GetData(3,3,p7);
+            _attributes[patch_index2].patch->GetData(2,3,p6);
+            _attributes[patch_index2].patch->GetData(3,2,p5);
+            _attributes[patch_index2].patch->GetData(2,2,p4);
+            break;
+        case 5:
+            //get
+            _attributes[patch_index2].patch->GetData(3,0,p7);
+            _attributes[patch_index2].patch->GetData(2,0,p6);
+            _attributes[patch_index2].patch->GetData(3,1,p5);
+            _attributes[patch_index2].patch->GetData(2,1,p4);
+            break;
+        case 7:
+            //get
+            _attributes[patch_index2].patch->GetData(0,0,p7);
+            _attributes[patch_index2].patch->GetData(0,1,p6);
+            _attributes[patch_index2].patch->GetData(1,0,p5);
+            _attributes[patch_index2].patch->GetData(1,1,p4);
+            break;
+
+        }
+
+        //set
+        _attributes[attr_size].patch->SetData(0,0, p0);//
+        _attributes[attr_size].patch->SetData(0,1, 2.0 * p0 - p2);//
+        _attributes[attr_size].patch->SetData(1,0, 2.0 * p0 - p1);//
+        _attributes[attr_size].patch->SetData(1,1, 2.0 * p0 - p3); //
+        _attributes[attr_size].patch->SetData(0,2, 2.0 * p0 - p1);
+        _attributes[attr_size].patch->SetData(0,3, p3);
+        _attributes[attr_size].patch->SetData(1,2, p7 + p0 - p4 - p3 + 0.5 * p6 + 0.5 * p1); //
+        _attributes[attr_size].patch->SetData(1,3, p3);
+        _attributes[attr_size].patch->SetData(2,0, p0);
+        _attributes[attr_size].patch->SetData(2,1, 2.0 * p0 - p1);
+        _attributes[attr_size].patch->SetData(3,0, p0);
+        _attributes[attr_size].patch->SetData(3,1, 2.0 * p0 - p1);
+        _attributes[attr_size].patch->SetData(2,2, 2.0 * p7 - p4);//
+        _attributes[attr_size].patch->SetData(2,3, 2.0 * p7 - p5);//
+        _attributes[attr_size].patch->SetData(3,2, 2.0 * p7 - p6);//
+        _attributes[attr_size].patch->SetData(3,3, p7); //
+
+        _attributes[attr_size].neighbours[3] = &_attributes[patch_index2];
+        _attributes[attr_size].neighbours[7] = &_attributes[patch_index1];
+        _attributes[patch_index1].neighbours[direc_ind1] = &_attributes[attr_size];
+        _attributes[patch_index2].neighbours[direc_ind2] = &_attributes[attr_size];
+    } else if(direc_ind1 % 2 == 1) {
+
+    } else if(direc_ind2 % 2 == 1) {
+
+    }
+
+    _attributes[attr_size].material = &MatFBRuby;
+
+    //Update dataVBO
+    _attributes[attr_size].patch->UpdateVertexBufferObjectsOfData();
+
+    // U isoparametric lines
+    _attributes[attr_size].u_isolines = _attributes[attr_size].patch->GenerateUIsoparametricLines(30,1,30);
+
+    if(!_attributes[attr_size].u_isolines)
+    {
+        std::cout<<"Cannot create uisoline !\n";
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+    // U isoparametric lines UpdateVBO
+    for(GLuint i = 0; i < _attributes[attr_size].u_isolines->GetColumnCount();i++)
+    {
+        if(!(*_attributes[attr_size].u_isolines)[i]->UpdateVertexBufferObjects())
+        {
+            std::cout<<"Cannot update uisoline !\n";
+            _attributes.pop_back();
+            return GL_FALSE;
+        }
+    }
+
+    _attributes[attr_size].v_isolines = _attributes[attr_size].patch->GenerateVIsoparametricLines(30,1,30);
+
+    if(!_attributes[attr_size].v_isolines)
+    {
+        std::cout<<"Cannot create visoline !\n";
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    for(GLuint  i = 0; i < _attributes[attr_size].v_isolines->GetColumnCount();i++)
+    {
+        if(!(*_attributes[attr_size].v_isolines)[i]->UpdateVertexBufferObjects())
+        {
+            std::cout<<"Cannot update visoline !\n";
+            _attributes.pop_back();
+            return GL_FALSE;
+        }
+    }
+
+    //Generate Image/Mesh
+    _attributes[attr_size].mesh = _attributes[attr_size].patch->GenerateImage(30,30);
+
+    if(!_attributes[attr_size].mesh)
+    {
+        std::cout<<"Image/mesh not created!\n";
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    //UpdateVBO
+    if(!_attributes[attr_size].mesh->UpdateVertexBufferObjects())
+    {
+        std::cout<<"Cannot update VBO!\n";
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
     return GL_TRUE;
 }
 
@@ -621,22 +856,22 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
     for(GLuint i = 0 ; i < 4; i++)
     {
         switch (direction1) {
-            case N:
-                _attributes[patch_index1].patch->GetData(2,i,x1,y1,z1);
-                patch1_position1 = i;
-                patch1_position2 = 3;
-                _attributes[patch_index1].neighbours[N] = &_attributes[patch_index2];
+        case N:
+            _attributes[patch_index1].patch->GetData(2,i,x1,y1,z1);
+            patch1_position1 = i;
+            patch1_position2 = 3;
+            _attributes[patch_index1].neighbours[N] = &_attributes[patch_index2];
             break;
 
         }
 
         switch (direction2) {
-            case W:
-                _attributes[patch_index2].patch->GetData(1,i,x2,y2,z2);
-                patch2_position1 = 0;
-                patch1_position2 = i;
-                _attributes[patch_index2].neighbours[W] = &_attributes[patch_index1];
-           break;
+        case W:
+            _attributes[patch_index2].patch->GetData(1,i,x2,y2,z2);
+            patch2_position1 = 0;
+            patch1_position2 = i;
+            _attributes[patch_index2].neighbours[W] = &_attributes[patch_index1];
+            break;
         }
 
         _attributes[patch_index1].patch->SetData(patch1_position1,patch1_position2,(x1 + x2)/2.0,(y1 + y2)/2.0,(z1 + z2)/2.0);
