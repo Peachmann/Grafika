@@ -125,6 +125,9 @@ GLboolean BiquadraticCompositeCurve3::MergeExistingArcs(const size_t &arc_index1
         _attributes[arc_index1].arc->SetData(3, (point1 + point2) / 2.0);
         _attributes[arc_index2].arc->SetData(0,(point1 + point2) / 2.0);
 
+        _attributes[arc_index1].next = &_attributes[arc_index2];
+        _attributes[arc_index2].previous = &_attributes[arc_index1];
+
     }
 
     if(direction1 == RIGHT && direction2 == RIGHT)
@@ -134,6 +137,9 @@ GLboolean BiquadraticCompositeCurve3::MergeExistingArcs(const size_t &arc_index1
 
         _attributes[arc_index1].arc->SetData(3,(point1 + point2) / 2.0);
         _attributes[arc_index2].arc->SetData(3,(point1 + point2) / 2.0);
+
+        _attributes[arc_index1].next = &_attributes[arc_index2];
+        _attributes[arc_index2].next = &_attributes[arc_index1];
     }
 
     if(direction1 == LEFT && direction2 == LEFT)
@@ -143,6 +149,9 @@ GLboolean BiquadraticCompositeCurve3::MergeExistingArcs(const size_t &arc_index1
 
         _attributes[arc_index1].arc->SetData(0,(point1 + point2) / 2.0);
         _attributes[arc_index2].arc->SetData(0,(point1 + point2) / 2.0);
+
+        _attributes[arc_index1].previous = &_attributes[arc_index2];
+        _attributes[arc_index2].previous = &_attributes[arc_index1];
     }
 
     if(direction1 == LEFT && direction2 == RIGHT)
@@ -152,6 +161,9 @@ GLboolean BiquadraticCompositeCurve3::MergeExistingArcs(const size_t &arc_index1
 
         _attributes[arc_index1].arc->SetData(0,(point1 + point2) / 2.0);
         _attributes[arc_index2].arc->SetData(3,(point1 + point2) / 2.0);
+
+        _attributes[arc_index1].previous = &_attributes[arc_index2];
+        _attributes[arc_index2].next = &_attributes[arc_index1];
     }
 
 
@@ -159,8 +171,7 @@ GLboolean BiquadraticCompositeCurve3::MergeExistingArcs(const size_t &arc_index1
     UpdateArc(arc_index1,div_point_count,max_order_of_derivatives);
     UpdateArc(arc_index2,div_point_count,max_order_of_derivatives);
 
-    _attributes[arc_index1].next = &_attributes[arc_index2];
-    _attributes[arc_index2].previous = &_attributes[arc_index1];
+
 
     return GL_TRUE;
 }
@@ -432,100 +443,6 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
     return GL_TRUE;
 }
 
-
-GLboolean BiquadraticCompositeCurve3::ShiftArc(const size_t &arc_index, GLdouble off_x, GLdouble off_y, GLdouble off_z)
-{
-    GLdouble curr_x,curr_y,curr_z;
-
-
-    for(GLuint i = 0 ; i < 4; i++)
-    {
-        curr_x = _attributes[arc_index].arc->GetData(i).x();
-        curr_y = _attributes[arc_index].arc->GetData(i).y();
-        curr_z = _attributes[arc_index].arc->GetData(i).z();
-
-        curr_x += off_x;
-        curr_z += off_z;
-        curr_y += off_y;
-
-        _attributes[arc_index].arc->SetData(i,DCoordinate3(curr_x,curr_y,curr_z));
-    }
-    /*
-    //UpdateVBO of Data
-    _attributes[arc_index].arc->UpdateVertexBufferObjectsOfData();
-
-    //Reset image if exists
-    if(_attributes[arc_index].image)
-    {
-        delete _attributes[arc_index].image;
-        _attributes[arc_index].image = nullptr;
-    }
-
-    //Generate image
-    _attributes[arc_index].image = _attributes[arc_index].arc->GenerateImage(3,30);
-
-    //Error in generate
-    if(!_attributes[arc_index].image)
-        return GL_FALSE;
-
-    //Update VBO
-    if(!_attributes[arc_index].image->UpdateVertexBufferObjects())
-    {
-        //If error delete generated arc/image
-        delete _attributes[arc_index].arc;
-        delete _attributes[arc_index].image;
-        _attributes.resize(_attributes.size() - 1);
-        return GL_FALSE;
-    }
-    */
-
-    UpdateArc_2(arc_index,30,3);
-    if(_attributes[arc_index].next)
-    {
-        ShiftArc(*_attributes[arc_index].next,off_x,off_y,off_z,&_attributes[arc_index]);
-    }
-
-    if(_attributes[arc_index].previous)
-    {
-        ShiftArc(*_attributes[arc_index].previous,off_x,off_y,off_z,&_attributes[arc_index]);
-    }
-
-    return GL_TRUE;
-}
-
-
-
-GLboolean BiquadraticCompositeCurve3::ShiftArc(ArcAttributes &arc_att, GLdouble off_x, GLdouble off_y, GLdouble off_z,ArcAttributes *first)
-{
-    GLdouble curr_x,curr_y,curr_z;
-
-    for(GLuint i = 0 ; i < 4; i++)
-    {
-        curr_x = arc_att.arc->GetData(i).x();
-        curr_y = arc_att.arc->GetData(i).y();
-        curr_z = arc_att.arc->GetData(i).z();
-
-        curr_x += off_x;
-        curr_z += off_z;
-        curr_y += off_y;
-
-        arc_att.arc->SetData(i,DCoordinate3(curr_x,curr_y,curr_z));
-
-        UpdateArc_2(arc_att,30,3);
-        if(arc_att.next && arc_att.next != first)
-        {
-            ShiftArc(*arc_att.next,off_x,off_y,off_z,first);
-        }
-
-        if(arc_att.previous != first)
-        {
-            ShiftArc(*arc_att.previous,off_x,off_y,off_z,first);
-        }
-
-        return GL_TRUE;
-    }
-}
-
 GLboolean BiquadraticCompositeCurve3::UpdateArc_2(GLuint arc_index, GLuint div_point_count, GLuint max_order_of_derivatives)
 {
     //UpdateVBO of Data
@@ -590,215 +507,136 @@ GLboolean BiquadraticCompositeCurve3::UpdateArc_2(ArcAttributes &arc_att, GLuint
 
 GLboolean BiquadraticCompositeCurve3::moveOnAxisY(const size_t &arc_index, GLdouble offset) {
 
-    ArcAttributes first = _attributes[arc_index];
-    DCoordinate3 off = *new DCoordinate3(0.0, offset, 0.0);
+    ArcAttributes* first = &_attributes[arc_index];
     // set the chosen arc
     for(GLint i = 0; i < 4; i++) {
-        first.arc->SetData(i, first.arc->GetData(i) + off);
+        GLdouble y = _attributes[arc_index].arc->GetData(i).y();
+        first->arc->SetData(i, DCoordinate3(first->arc->GetData(i).x(), y + offset, first->arc->GetData(i).z()));
     }
+    UpdateArc_2(*first,30,3);
+    std::cout<< first->index << std::endl;
 
-    first.arc->UpdateVertexBufferObjectsOfData();
+    ArcAttributes *next;
+    next = first->previous;
 
-    //Reset image if exists
-    if(first.image)
-    {
-        delete first.image;
-        first.image = nullptr;
-    }
-
-    //Generate image
-    first.image = first.arc->GenerateImage(3,30);
-
-    //Error in generate
-    if(!first.image)
-        return GL_FALSE;
-
-    //Update VBO
-    if(!first.image->UpdateVertexBufferObjects())
-    {
-        //If error delete generated arc/image
-        delete first.arc;
-        delete first.image;
-        _attributes.resize(_attributes.size() - 1);
-        return GL_FALSE;
-    }
-
-    first = *first.previous;
-
-    while(first.arc != nullptr && first.arc != _attributes[arc_index].arc) {
+    while(next != nullptr) {
+        std::cout<< next->index << std::endl;
+        if(next == first) {
+            break;
+        }
         for(GLint i = 0; i < 4; i++) {
-            first.arc->SetData(i, first.arc->GetData(i) + off);
-        }
-        first.arc->UpdateVertexBufferObjectsOfData();
-
-        //Reset image if exists
-        if(first.image)
-        {
-            delete first.image;
-            first.image = nullptr;
+            GLdouble y = next->arc->GetData(i).y();
+            next->arc->SetData(i, DCoordinate3(next->arc->GetData(i).x(), y + offset, next->arc->GetData(i).z()));
         }
 
-        //Generate image
-        first.image = first.arc->GenerateImage(3,30);
-
-        //Error in generate
-        if(!first.image)
-            return GL_FALSE;
-
-        //Update VBO
-        if(!first.image->UpdateVertexBufferObjects())
-        {
-            //If error delete generated arc/image
-            delete first.arc;
-            delete first.image;
-            _attributes.resize(_attributes.size() - 1);
-            return GL_FALSE;
-        }
-        first = *first.previous;
+        UpdateArc_2(*next,30,3);
+        next = next->previous;
     }
 
-    if(first.arc == nullptr) {
-        first = *_attributes[arc_index].next;
-        while(first.arc != nullptr) {
+    if(next == nullptr) {
+        next = first->next;
+        while(next != nullptr) {
+            std::cout<< next->index << std::endl;
             for(GLint i = 0; i < 4; i++) {
-                first.arc->SetData(i, first.arc->GetData(i) + off);
+                GLdouble y = next->arc->GetData(i).y();
+                next->arc->SetData(i, DCoordinate3(next->arc->GetData(i).x(), y + offset, next->arc->GetData(i).z()));
             }
-            first.arc->UpdateVertexBufferObjectsOfData();
-
-            //Reset image if exists
-            if(first.image)
-            {
-                delete first.image;
-                first.image = nullptr;
-            }
-
-            //Generate image
-            first.image = first.arc->GenerateImage(3,30);
-
-            //Error in generate
-            if(!first.image)
-                return GL_FALSE;
-
-            //Update VBO
-            if(!first.image->UpdateVertexBufferObjects())
-            {
-                //If error delete generated arc/image
-                delete first.arc;
-                delete first.image;
-                _attributes.resize(_attributes.size() - 1);
-                return GL_FALSE;
-            }
-            first = *first.next;
+            UpdateArc_2(*next,30,3);
+            next = next->next;
         }
     }
-
     return GL_TRUE;
 }
 
 GLboolean BiquadraticCompositeCurve3::moveOnAxisZ(const size_t &arc_index, GLdouble offset) {
 
-    ArcAttributes first = _attributes[arc_index];
-    DCoordinate3 off = *new DCoordinate3(0.0, 0.0, offset);
+    ArcAttributes* first = &_attributes[arc_index];
     // set the chosen arc
     for(GLint i = 0; i < 4; i++) {
-        first.arc->SetData(i, first.arc->GetData(i) + off);
+        GLdouble z = _attributes[arc_index].arc->GetData(i).z();
+        first->arc->SetData(i, DCoordinate3(first->arc->GetData(i).x(), first->arc->GetData(i).y(), z + offset));
     }
+    UpdateArc_2(*first,30,3);
+    std::cout<< first->index << std::endl;
 
-    first.arc->UpdateVertexBufferObjectsOfData();
+    ArcAttributes *next;
+    next = first->previous;
 
-    //Reset image if exists
-    if(first.image)
-    {
-        delete first.image;
-        first.image = nullptr;
-    }
-
-    //Generate image
-    first.image = first.arc->GenerateImage(3,30);
-
-    //Error in generate
-    if(!first.image)
-        return GL_FALSE;
-
-    //Update VBO
-    if(!first.image->UpdateVertexBufferObjects())
-    {
-        //If error delete generated arc/image
-        delete first.arc;
-        delete first.image;
-        _attributes.resize(_attributes.size() - 1);
-        return GL_FALSE;
-    }
-
-    first = *first.previous;
-
-    while(first.arc != nullptr && first.arc != _attributes[arc_index].arc) {
+    while(next != nullptr) {
+        std::cout<< next->index << std::endl;
+        if(next == first) {
+            break;
+        }
         for(GLint i = 0; i < 4; i++) {
-            first.arc->SetData(i, first.arc->GetData(i) + off);
-        }
-        first.arc->UpdateVertexBufferObjectsOfData();
-
-        //Reset image if exists
-        if(first.image)
-        {
-            delete first.image;
-            first.image = nullptr;
+            GLdouble z = next->arc->GetData(i).z();
+            next->arc->SetData(i, DCoordinate3(next->arc->GetData(i).x(), next->arc->GetData(i).y(), z + offset));
         }
 
-        //Generate image
-        first.image = first.arc->GenerateImage(3,30);
-
-        //Error in generate
-        if(!first.image)
-            return GL_FALSE;
-
-        //Update VBO
-        if(!first.image->UpdateVertexBufferObjects())
-        {
-            //If error delete generated arc/image
-            delete first.arc;
-            delete first.image;
-            _attributes.resize(_attributes.size() - 1);
-            return GL_FALSE;
-        }
-        first = *first.previous;
+        UpdateArc_2(*next,30,3);
+        next = next->previous;
     }
 
-    if(first.arc == nullptr) {
-        first = *_attributes[arc_index].next;
-        while(first.arc != nullptr) {
+    if(next == nullptr) {
+        next = first->next;
+        while(next != nullptr) {
+            std::cout<< next->index << std::endl;
             for(GLint i = 0; i < 4; i++) {
-                first.arc->SetData(i, first.arc->GetData(i) + off);
+                GLdouble z = next->arc->GetData(i).z();
+                next->arc->SetData(i, DCoordinate3(next->arc->GetData(i).x(), next->arc->GetData(i).y(), z + offset));
             }
-            first.arc->UpdateVertexBufferObjectsOfData();
-
-            //Reset image if exists
-            if(first.image)
-            {
-                delete first.image;
-                first.image = nullptr;
-            }
-
-            //Generate image
-            first.image = first.arc->GenerateImage(3,30);
-
-            //Error in generate
-            if(!first.image)
-                return GL_FALSE;
-
-            //Update VBO
-            if(!first.image->UpdateVertexBufferObjects())
-            {
-                //If error delete generated arc/image
-                delete first.arc;
-                delete first.image;
-                _attributes.resize(_attributes.size() - 1);
-                return GL_FALSE;
-            }
-            first = *first.next;
+            UpdateArc_2(*next,30,3);
+            next = next->next;
         }
     }
+    return GL_TRUE;
+}
 
+GLboolean BiquadraticCompositeCurve3::moveOnAllAxis(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz) {
+
+    ArcAttributes* first = &_attributes[arc_index];
+    // set the chosen arc
+    for(GLint i = 0; i < 4; i++) {
+        GLdouble x = _attributes[arc_index].arc->GetData(i).x();
+        GLdouble y = _attributes[arc_index].arc->GetData(i).y();
+        GLdouble z = _attributes[arc_index].arc->GetData(i).z();
+        first->arc->SetData(i, DCoordinate3(x + offx, y + offy, z + offz));
+    }
+    UpdateArc_2(*first,30,3);
+    std::cout<< first->index << std::endl;
+
+    ArcAttributes *next;
+    next = first->previous;
+
+    while(next != nullptr) {
+        std::cout<< next->index << std::endl;
+        if(next == first) {
+            break;
+        }
+        for(GLint i = 0; i < 4; i++) {
+            GLdouble x = next->arc->GetData(i).x();
+            GLdouble y = next->arc->GetData(i).y();
+            GLdouble z = next->arc->GetData(i).z();
+            next->arc->SetData(i, DCoordinate3(x + offx, y + offy, z + offz));
+        }
+
+        UpdateArc_2(*next,30,3);
+        next = next->previous;
+    }
+
+    if(next == nullptr) {
+        next = first->next;
+        while(next != nullptr) {
+            std::cout<< next->index << std::endl;
+            for(GLint i = 0; i < 4; i++) {
+                GLdouble x = next->arc->GetData(i).x();
+                GLdouble y = next->arc->GetData(i).y();
+                GLdouble z = next->arc->GetData(i).z();
+                next->arc->SetData(i, DCoordinate3(x + offx, y + offy, z + offz));
+            }
+            UpdateArc_2(*next,30,3);
+            next = next->next;
+        }
+    }
     return GL_TRUE;
 }
 

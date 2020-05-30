@@ -94,8 +94,7 @@ namespace cagd {
         GLboolean moveOnAxisX(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisY(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisZ(const size_t &arc_index, GLdouble offset);
-        GLboolean ShiftArc(const size_t &arc_index,GLdouble off_x,GLdouble off_y,GLdouble off_z);
-        GLboolean ShiftArc(ArcAttributes &arc_att,GLdouble off_x,GLdouble off_y,GLdouble off_z,ArcAttributes *first);
+        GLboolean moveOnAllAxis(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz);
 
         std::vector<ArcAttributes> get_attributes();
 
