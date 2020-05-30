@@ -1323,6 +1323,7 @@ void GLWidget::do_arc_operation() {
     //Shift
     case 1:
         // hopefully mouseevent handler
+        _curve->moveControlPointAll(index1, 2, -1.0, 2.0, -0.5);
         break;
 
     // Continue

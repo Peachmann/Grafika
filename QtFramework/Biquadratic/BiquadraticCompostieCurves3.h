@@ -91,12 +91,19 @@ namespace cagd {
         GLboolean UpdateArc_2(GLuint index,GLuint div_point_count, GLuint max_order_of_derivatives);
         GLboolean UpdateArc_2(ArcAttributes &arc_att,GLuint div_point_count, GLuint max_order_of_derivatives);
 
+        //movements along x,y,z axis
         GLboolean moveOnAxisX(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisY(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisZ(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAllAxis(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz);
 
         std::vector<ArcAttributes> get_attributes();
+
+        //moving control points
+        GLboolean moveControlPointX(const size_t &arc_index, const size_t &point_index, GLdouble offset);
+        GLboolean moveControlPointY(const size_t &arc_index, const size_t &point_index, GLdouble offset);
+        GLboolean moveControlPointZ(const size_t &arc_index, const size_t &point_index, GLdouble offset);
+        GLboolean moveControlPointAll(const size_t &arc_index, const size_t &point_index, GLdouble offx, GLdouble offy, GLdouble offz);
 
     };
 }

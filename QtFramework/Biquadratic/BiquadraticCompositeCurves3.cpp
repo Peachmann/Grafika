@@ -644,3 +644,133 @@ std::vector<BiquadraticCompositeCurve3::ArcAttributes> BiquadraticCompositeCurve
 {
     return _attributes;
 }
+
+GLboolean BiquadraticCompositeCurve3::moveControlPointX(const size_t &arc_index, const size_t &point_index, GLdouble offset) {
+
+    ArcAttributes* first = &_attributes[arc_index];
+    // set the chosen arc
+    GLdouble x = _attributes[arc_index].arc->GetData(point_index).x();
+    first->arc->SetData(point_index, DCoordinate3(x + offset, first->arc->GetData(point_index).y(), first->arc->GetData(point_index).z()));
+
+    UpdateArc_2(*first,30,3);
+
+    if(point_index < 2) {
+        ArcAttributes *next;
+        next = first->previous;
+
+        if(next != nullptr) {
+            next->arc->SetData(3, DCoordinate3(first->arc->GetData(0)));
+            next->arc->SetData(2, 2.0 * first->arc->GetData(0) - first->arc->GetData(1));
+            UpdateArc_2(*next,30,3);
+        }
+
+    } else {
+        ArcAttributes *next;
+        next = first->next;
+
+        if(next != nullptr) {
+            next->arc->SetData(0, DCoordinate3(first->arc->GetData(3)));
+            next->arc->SetData(1, 2.0 * first->arc->GetData(3) - first->arc->GetData(2));
+            UpdateArc_2(*next,30,3);
+        }
+    }
+
+    return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeCurve3::moveControlPointY(const size_t &arc_index, const size_t &point_index, GLdouble offset) {
+    ArcAttributes* first = &_attributes[arc_index];
+    // set the chosen arc
+    GLdouble y = _attributes[arc_index].arc->GetData(point_index).y();
+    first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x(), y + offset, first->arc->GetData(point_index).z()));
+
+    UpdateArc_2(*first,30,3);
+
+    if(point_index < 2) {
+        ArcAttributes *next;
+        next = first->previous;
+
+        if(next != nullptr) {
+            next->arc->SetData(3, DCoordinate3(first->arc->GetData(0)));
+            next->arc->SetData(2, 2.0 * first->arc->GetData(0) - first->arc->GetData(1));
+            UpdateArc_2(*next,30,3);
+        }
+
+    } else {
+        ArcAttributes *next;
+        next = first->next;
+
+        if(next != nullptr) {
+            next->arc->SetData(0, DCoordinate3(first->arc->GetData(3)));
+            next->arc->SetData(1, 2.0 * first->arc->GetData(3) - first->arc->GetData(2));
+            UpdateArc_2(*next,30,3);
+        }
+    }
+
+    return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeCurve3::moveControlPointZ(const size_t &arc_index, const size_t &point_index, GLdouble offset) {
+
+    ArcAttributes* first = &_attributes[arc_index];
+    // set the chosen arc
+    GLdouble z = _attributes[arc_index].arc->GetData(point_index).z();
+    first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x(), first->arc->GetData(point_index).y(), z + offset));
+
+    UpdateArc_2(*first,30,3);
+
+    if(point_index < 2) {
+        ArcAttributes *next;
+        next = first->previous;
+
+        if(next != nullptr) {
+            next->arc->SetData(3, DCoordinate3(first->arc->GetData(0)));
+            next->arc->SetData(2, 2.0 * first->arc->GetData(0) - first->arc->GetData(1));
+            UpdateArc_2(*next,30,3);
+        }
+
+    } else {
+        ArcAttributes *next;
+        next = first->next;
+
+        if(next != nullptr) {
+            next->arc->SetData(0, DCoordinate3(first->arc->GetData(3)));
+            next->arc->SetData(1, 2.0 * first->arc->GetData(3) - first->arc->GetData(2));
+            UpdateArc_2(*next,30,3);
+        }
+    }
+
+    return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeCurve3::moveControlPointAll(const size_t &arc_index, const size_t &point_index, GLdouble offx, GLdouble offy, GLdouble offz) {
+
+    ArcAttributes* first = &_attributes[arc_index];
+    // set the chosen arc
+    first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
+
+    UpdateArc_2(*first,30,3);
+
+    if(point_index < 2) {
+        ArcAttributes *next;
+        next = first->previous;
+
+        if(next != nullptr) {
+            next->arc->SetData(3, DCoordinate3(first->arc->GetData(0)));
+            next->arc->SetData(2, 2.0 * first->arc->GetData(0) - first->arc->GetData(1));
+            UpdateArc_2(*next,30,3);
+        }
+
+    } else {
+        ArcAttributes *next;
+        next = first->next;
+
+        if(next != nullptr) {
+            next->arc->SetData(0, DCoordinate3(first->arc->GetData(3)));
+            next->arc->SetData(1, 2.0 * first->arc->GetData(3) - first->arc->GetData(2));
+            UpdateArc_2(*next,30,3);
+        }
+    }
+
+    return GL_TRUE;
+}
