@@ -38,19 +38,19 @@ BiquadraticCompositeSurface3::PatchAttributes::PatchAttributes(const PatchAttrib
     }
 
     if (rhs.v_isolines)
+    {
+        for (GLuint j = 0; j < rhs.v_isolines->GetColumnCount(); j++)
         {
-            for (GLuint j = 0; j < rhs.v_isolines->GetColumnCount(); j++)
+            if ((*rhs.v_isolines)[j])
             {
-                if ((*rhs.v_isolines)[j])
-                {
-                    (*v_isolines)[j] = new GenericCurve3(*(*rhs.u_isolines)[j]);
-                }
+                (*v_isolines)[j] = new GenericCurve3(*(*rhs.u_isolines)[j]);
             }
         }
+    }
 
-        for (GLuint i = 0; i < 8; i++) {
-            neighbours[i] = rhs.neighbours[i];
-        }
+    for (GLuint i = 0; i < 8; i++) {
+        neighbours[i] = rhs.neighbours[i];
+    }
 }
 
 BiquadraticCompositeSurface3::PatchAttributes& BiquadraticCompositeSurface3::PatchAttributes::operator=(const PatchAttributes &rhs)
@@ -106,19 +106,19 @@ BiquadraticCompositeSurface3::PatchAttributes& BiquadraticCompositeSurface3::Pat
         }
 
         if (rhs.v_isolines)
+        {
+            for (GLuint j = 0; j < rhs.v_isolines->GetColumnCount(); j++)
             {
-                for (GLuint j = 0; j < rhs.v_isolines->GetColumnCount(); j++)
+                if ((*rhs.v_isolines)[j])
                 {
-                    if ((*rhs.v_isolines)[j])
-                    {
-                        (*v_isolines)[j] = new GenericCurve3(*(*rhs.u_isolines)[j]);
-                    }
+                    (*v_isolines)[j] = new GenericCurve3(*(*rhs.u_isolines)[j]);
                 }
             }
+        }
 
-            for (GLuint i = 0; i < 8; i++) {
-                neighbours[i] = rhs.neighbours[i];
-            }
+        for (GLuint i = 0; i < 8; i++) {
+            neighbours[i] = rhs.neighbours[i];
+        }
     }
     return *this;
 }
@@ -134,26 +134,26 @@ BiquadraticCompositeSurface3::PatchAttributes::~PatchAttributes()
     if(u_isolines)
     {
         for (GLuint i = 0; i < u_isolines->GetColumnCount(); i++)
-                {
-                    if ((*u_isolines)[i])
-                    {
-                        delete (*u_isolines)[i], (*u_isolines)[i] = nullptr;
-                    }
-                }
-                delete u_isolines, u_isolines = nullptr;
+        {
+            if ((*u_isolines)[i])
+            {
+                delete (*u_isolines)[i], (*u_isolines)[i] = nullptr;
+            }
+        }
+        delete u_isolines, u_isolines = nullptr;
     }
 
     if (v_isolines)
+    {
+        for (GLuint j = 0; j < v_isolines->GetColumnCount(); j++)
         {
-            for (GLuint j = 0; j < v_isolines->GetColumnCount(); j++)
+            if ((*v_isolines)[j])
             {
-                if ((*v_isolines)[j])
-                {
-                    delete (*v_isolines)[j], (*v_isolines)[j] = nullptr;
-                }
+                delete (*v_isolines)[j], (*v_isolines)[j] = nullptr;
             }
-            delete v_isolines, v_isolines = nullptr;
         }
+        delete v_isolines, v_isolines = nullptr;
+    }
 }
 
 BiquadraticCompositeSurface3::BiquadraticCompositeSurface3(GLuint max)
@@ -313,8 +313,129 @@ GLboolean BiquadraticCompositeSurface3::InsertNewIsolatedPatch(GLuint index, Mat
 
 }
 
+int BiquadraticCompositeSurface3::GetDirectionIndex(Direction direction) const {
+
+    switch(direction) {
+
+    case N:
+        return 0;
+    case NE:
+        return 1;
+    case E:
+        return 2;
+    case SE:
+        return 3;
+    case S:
+        return 4;
+    case SW:
+        return 5;
+    case W:
+        return 6;
+    case NW:
+        return 7;
+    default:
+        return -1;
+    }
+}
+
 GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patch_index, Direction direction)
 {
+    int direc_ind = GetDirectionIndex(direction);
+
+    //check if it already has this neighbor
+    if(_attributes[patch_index].neighbours[direc_ind] != nullptr) {
+        return GL_FALSE;
+    }
+
+    GLint attr_size = _attributes.size();
+    _attributes.resize(attr_size + 1);
+    _attributes[attr_size].patch = new BiquadraticPatch3();
+
+    if(!_attributes[attr_size].patch)
+    {
+        _attributes.pop_back();
+        return GL_FALSE;
+    }
+
+    if(direc_ind % 2 == 0) { // N, E, S, W
+        for(int i = 0; i < 4; i++) {
+            DCoordinate3 p0, p1;
+            switch (direc_ind) {
+
+            case 0:
+                //get
+                _attributes[patch_index].patch->GetData(0,i,p0);
+                _attributes[patch_index].patch->GetData(1,i,p1);
+                //set
+                _attributes[attr_size].patch->SetData(3,i, p0);
+                _attributes[attr_size].patch->SetData(2,i, 2.0 * p0 - p1);
+                _attributes[attr_size].patch->SetData(1,i, 3.0 * p0 - 2.0 * p1);
+                _attributes[attr_size].patch->SetData(0,i, 4.0 * p0 - 3.0 * p1);
+                //neighbours
+                _attributes[patch_index].neighbours[0] = &_attributes[attr_size];
+                _attributes[attr_size].neighbours[4] = &_attributes[patch_index];
+                break;
+            case 2:
+                //get
+                _attributes[patch_index].patch->GetData(i,3,p0);
+                _attributes[patch_index].patch->GetData(i,2,p1);
+                //set
+                _attributes[attr_size].patch->SetData(i,0, p0);
+                _attributes[attr_size].patch->SetData(i,1, 2.0 * p0 - p1);
+                _attributes[attr_size].patch->SetData(i,2, 3.0 * p0 - 2.0 * p1);
+                _attributes[attr_size].patch->SetData(i,3, 4.0 * p0 - 3.0 * p1);
+                //neighbours
+                _attributes[patch_index].neighbours[2] = &_attributes[attr_size];
+                _attributes[attr_size].neighbours[6] = &_attributes[patch_index];
+                break;
+            case 4:
+                //get
+                _attributes[patch_index].patch->GetData(3,i,p0);
+                _attributes[patch_index].patch->GetData(2,i,p1);
+                //set
+                _attributes[attr_size].patch->SetData(0,i, p0);
+                _attributes[attr_size].patch->SetData(1,i, 2.0 * p0 - p1);
+                _attributes[attr_size].patch->SetData(2,i, 3.0 * p0 - 2.0 * p1);
+                _attributes[attr_size].patch->SetData(3,i, 4.0 * p0 - 3.0 * p1);
+                //neighbours
+                _attributes[patch_index].neighbours[4] = &_attributes[attr_size];
+                _attributes[attr_size].neighbours[0] = &_attributes[patch_index];
+                break;
+            case 6:
+                //get
+                _attributes[patch_index].patch->GetData(i,0,p0);
+                _attributes[patch_index].patch->GetData(i,1,p1);
+                //set
+                _attributes[attr_size].patch->SetData(i,3, p0);
+                _attributes[attr_size].patch->SetData(i,2, 2.0 * p0 - p1);
+                _attributes[attr_size].patch->SetData(i,1, 3.0 * p0 - 2.0 * p1);
+                _attributes[attr_size].patch->SetData(i,0, 4.0 * p0 - 3.0 * p1);
+                //neighbours
+                _attributes[patch_index].neighbours[6] = &_attributes[attr_size];
+                _attributes[attr_size].neighbours[2] = &_attributes[patch_index];
+                break;
+            default:
+                std::cout<<"We should not be here..."<<std::endl;
+                return GL_FALSE;
+            }
+        }
+    } else { // NE, SE, SW, NW
+        switch (direc_ind) {
+
+        case 1:
+            break;
+        case 3:
+            break;
+        case 5:
+            break;
+        case 7:
+            break;
+        default:
+            std::cout<<"We should not be here..."<<std::endl;
+            return GL_FALSE;
+        }
+    }
+
     return GL_TRUE;
 }
 
@@ -368,17 +489,17 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
             }
         }
 
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
-        glEnable(GL_NORMALIZE);
-
         if(polygon)
         {
             glLineWidth(3.0f);
             glColor3f(1.0,1.0,1.0);
             _attributes[i].patch->RenderData();
-             glLineWidth(1.0f);
+            glLineWidth(1.0f);
         }
+
+        glEnable(GL_LIGHTING);
+        glEnable(GL_LIGHT0);
+        glEnable(GL_NORMALIZE);
 
         if(_attributes[i].mesh)
         {
@@ -399,10 +520,10 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
 void BiquadraticCompositeSurface3::SetShaderForAll(ShaderProgram &shader)
 {
 
-     for(GLuint i = 0; i < _attributes.size(); i++)
-     {
-         _attributes[i].shader = &shader;
-     }
+    for(GLuint i = 0; i < _attributes.size(); i++)
+    {
+        _attributes[i].shader = &shader;
+    }
 }
 
 void BiquadraticCompositeSurface3::SetShaderByIndex(GLuint index, ShaderProgram &shader)

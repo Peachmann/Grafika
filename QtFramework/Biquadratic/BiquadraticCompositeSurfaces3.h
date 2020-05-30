@@ -83,6 +83,8 @@ namespace cagd {
 
             PatchAttributes getPatchAttributes(GLuint index);
 
+            //direction converter
+            int GetDirectionIndex(Direction direction) const;
         };
     };
 #endif // BIQUADRATICCOMPOSITESURFACES3_H
