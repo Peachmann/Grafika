@@ -79,7 +79,7 @@ GLboolean GenericCurve3::RenderDerivatives(GLuint order, GLenum render_mode) con
     cout<<max_order<<endl;
     cout<<_vbo_derivative.GetRowCount()<<endl;
     cout<<"NE"<<endl;
-    if (order >= max_order || _vbo_derivative.GetRowCount() <= order/*!_vbo_derivative(order)*/)
+    if (order >= max_order || !_vbo_derivative(order))
         return GL_FALSE;
 
     GLuint point_count = _derivative.GetColumnCount();

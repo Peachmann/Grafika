@@ -394,37 +394,39 @@ void BiquadraticCompositeCurve3::UpdateArc(GLuint index, GLuint max_order_of_der
 
 GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdouble offset) {
 
-    ArcAttributes first = _attributes[arc_index];
-    DCoordinate3 off = *new DCoordinate3(offset, 0.0, 0.0);
+    ArcAttributes* first = &_attributes[arc_index];
+    std:: cout<< &first << " " << &_attributes[arc_index] << std::endl;
     // set the chosen arc
     for(GLint i = 0; i < 4; i++) {
-        first.arc->SetData(i, first.arc->GetData(i) + off);
+        GLdouble x = _attributes[arc_index].arc->GetData(i).x();
+        first->arc->SetData(i, DCoordinate3(x + offset, first->arc->GetData(i).y(), first->arc->GetData(i).z()));
     }
-    UpdateArc_2(first,30,3);
+    UpdateArc_2(*first,30,3);
 
     ArcAttributes *next;
-    next = first.previous;
+    next = first->previous;
 
     while(next != nullptr) {
-        if(next->arc == first.arc) {
+        if(next->arc == first->arc) {
             break;
         }
-        std::cout<<__LINE__<<std::endl;
         for(GLint i = 0; i < 4; i++) {
-            next->arc->SetData(i, next->arc->GetData(i) + off);
+            GLdouble x = next->arc->GetData(i).x();
+            next->arc->SetData(i, DCoordinate3(x + offset, next->arc->GetData(i).y(), next->arc->GetData(i).z()));
         }
 
-        UpdateArc_2(first,30,3);
+        UpdateArc_2(*next,30,3);
         next = next->previous;
     }
 
     if(next == nullptr) {
-        next = first.next;
+        next = first->next;
         while(next != nullptr) {
             for(GLint i = 0; i < 4; i++) {
-                next->arc->SetData(i, next->arc->GetData(i) + off);
+                GLdouble x = next->arc->GetData(i).x();
+                next->arc->SetData(i, DCoordinate3(x + offset, next->arc->GetData(i).y(), next->arc->GetData(i).z()));
             }
-           UpdateArc_2(first,30,3);
+            UpdateArc_2(*next,30,3);
             next = next->next;
         }
     }

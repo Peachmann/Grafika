@@ -1314,8 +1314,8 @@ void GLWidget::do_arc_operation() {
     // Move
     case 0:
         // hopefully mouseevent handler
-        //_curve->moveOnAxisX(index1,-5.0);
-        _curve->ShiftArc(index1,-1.0,0.0,0.0);
+        _curve->moveOnAxisX(index1,-5.0);
+        //_curve->ShiftArc(index1,-1.0,0.0,0.0);
         break;
 
     //Shift
@@ -1330,7 +1330,6 @@ void GLWidget::do_arc_operation() {
         else
             _curve->ContinueExistingArc(index1,BiquadraticCompositeCurve3::LEFT);
         // continue(arc1, direction1);
-        _curve->ContinueExistingArc(0,BiquadraticCompositeCurve3::RIGHT);
         break;
 
     // Join
