@@ -190,6 +190,7 @@ GLboolean BiquadraticCompositeSurface3::InsertNewIsolatedPatch(GLuint index, Mat
 
     _attributes.resize(n + 1);
     _attributes[n].index = index;
+    std::cout<<"New patch given index of: "<<_attributes[n].index<<endl;
     _attributes[n].material = &material;
 
     _attributes[n].patch = new (nothrow) BiquadraticPatch3();
@@ -616,31 +617,98 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
     RowMatrix<DCoordinate3> newPoints;
     newPoints.ResizeColumns(4);
     GLdouble x1,x2,y1,y2,z1,z2;
-    GLuint patch1_position1,patch1_position2,patch2_position1,path2_position2;
+    GLuint patch1_position1,patch1_position2,patch2_position1,patch2_position2;
 
     for(GLuint i = 0 ; i < 4; i++)
     {
         switch (direction1) {
-            case N:
-                _attributes[patch_index1].patch->GetData(2,i,x1,y1,z1);
+        case E:
+            _attributes[patch_index1].patch->GetData(2,i,x1,y1,z1);
+            patch1_position1 = 3;
+            patch1_position2 = i;
+            _attributes[patch_index1].neighbours[E] = &_attributes[patch_index2];
+            break;
+        case W:
+            _attributes[patch_index1].patch->GetData(1,i,x1,y1,z1);
+            patch1_position1 = 0;
+            patch1_position2 = i;
+            _attributes[patch_index1].neighbours[W] = &_attributes[patch_index2];
+            break;
+        case S:
+            _attributes[patch_index1].patch->GetData(i,1,x1,y1,z1);
+            patch1_position1 = i;
+            patch1_position2 = 0;
+            _attributes[patch_index1].neighbours[S] = &_attributes[patch_index2];
+            break;
+        case N:
+            _attributes[patch_index1].patch->GetData(i,2,x1,y1,z1);
+            patch1_position1 = i;
+            patch1_position2 = 3;
+            _attributes[patch_index1].neighbours[N] = &_attributes[patch_index2];
+            break;
+        case NE:
+            if(i < 2 )
+            {
+                _attributes[patch_index1].patch->GetData(i,2,x1,y1,z1);
                 patch1_position1 = i;
                 patch1_position2 = 3;
-                _attributes[patch_index1].neighbours[N] = &_attributes[patch_index2];
+                _attributes[patch_index1].neighbours[NE] = &_attributes[patch_index2];
+            }
+            else
+            {
+                _attributes[patch_index1].patch->GetData(2,i,x1,y1,z1);
+                patch1_position1 = 3;
+                patch1_position2 = i;
+                _attributes[patch_index1].neighbours[NE] = &_attributes[patch_index2];
+            }
+            break;
+        }
+        switch (direction2) {
+        case E:
+            _attributes[patch_index2].patch->GetData(2,i,x2,y2,z2);
+            patch2_position1 = 3;
+            patch2_position2 = i;
+            _attributes[patch_index2].neighbours[E] = &_attributes[patch_index1];
+            break;
+        case W:
+            _attributes[patch_index2].patch->GetData(1,i,x2,y2,z2);
+            patch2_position1 = 0;
+            patch2_position2 = i;
+            _attributes[patch_index2].neighbours[W] = &_attributes[patch_index1];
+            break;
+        case S:
+            _attributes[patch_index2].patch->GetData(i,1,x2,y2,z2);
+            patch2_position1 = i;
+            patch2_position2 = 0;
+            _attributes[patch_index2].neighbours[S] = &_attributes[patch_index1];
+            break;
+        case N:
+            _attributes[patch_index2].patch->GetData(i,2,x2,y2,z2);
+            patch2_position1 = i;
+            patch2_position2 = 3;
+            _attributes[patch_index2].neighbours[N] = &_attributes[patch_index1];
+            break;
+        case NW:
+            if(i < 2 )
+            {
+                _attributes[patch_index2].patch->GetData(i,2,x2,y2,z2);
+                patch2_position1 = i;
+                patch2_position2 = 3;
+                _attributes[patch_index2].neighbours[N] = &_attributes[patch_index1];
+            }
+            else
+            {
+                _attributes[patch_index2].patch->GetData(1,i,x2,y2,z2);
+                patch2_position1 = 0;
+                patch2_position2 = i;
+                _attributes[patch_index2].neighbours[W] = &_attributes[patch_index1];
+            }
             break;
 
         }
 
-        switch (direction2) {
-            case W:
-                _attributes[patch_index2].patch->GetData(1,i,x2,y2,z2);
-                patch2_position1 = 0;
-                patch1_position2 = i;
-                _attributes[patch_index2].neighbours[W] = &_attributes[patch_index1];
-           break;
-        }
-
         _attributes[patch_index1].patch->SetData(patch1_position1,patch1_position2,(x1 + x2)/2.0,(y1 + y2)/2.0,(z1 + z2)/2.0);
-        _attributes[patch_index2].patch->SetData(patch2_position1,patch2_position1,(x1 + x2)/2.0,(y1 + y2)/2.0,(z1 + z2)/2.0);
+        _attributes[patch_index2].patch->SetData(patch2_position1,patch2_position2,(x1 + x2)/2.0,(y1 + y2)/2.0,(z1 + z2)/2.0);
     }
 
     _attributes[patch_index1].patch->UpdateVertexBufferObjectsOfData();
@@ -672,6 +740,7 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
 
             BiquadraticCompositeSurface3::Direction dir1 = BiquadraticCompositeSurface3::Direction(i);
             BiquadraticCompositeSurface3::Direction dir2 = BiquadraticCompositeSurface3::Direction(j);
+            MergerOthers(patch_index1,index,dir1,dir2,visited);
             //mergeOthers
 
         }
@@ -689,6 +758,7 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
             BiquadraticCompositeSurface3::Direction dir1 = BiquadraticCompositeSurface3::Direction(i);
             BiquadraticCompositeSurface3::Direction dir2 = BiquadraticCompositeSurface3::Direction(j);
             //mergeOthers
+            MergerOthers(patch_index2,index,dir1,dir2,visited);
 
         }
     }
@@ -698,7 +768,112 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
 
 GLboolean BiquadraticCompositeSurface3::MergerOthers(GLuint index1, GLuint index2, Direction d1, Direction d2, std::vector<PatchAttributes *> visited)
 {
+    RowMatrix<DCoordinate3> newPoints;
+    newPoints.ResizeColumns(4);
+    GLdouble x1,x2,y1,y2,z1,z2;
+    GLuint patch1_position1,patch1_position2,patch2_position1,patch2_position2;
+
+    for(GLuint i = 0; i < 4; i++)
+    {
+        switch (d2) {
+           case W:
+                _attributes[index2].patch->GetData(1,i,x2,y2,z2);
+                patch1_position1 = 1;
+                patch1_position2 = i;
+                patch2_position1 = 0;
+                patch2_position2 = i;
+            break;
+            case E:
+                _attributes[index2].patch->GetData(2,i,x2,y2,z2);
+                patch1_position1 = 2;
+                patch1_position2 = i;
+                patch2_position1 = 3;
+                patch2_position2 = i;
+            break;
+            case S:
+                _attributes[index2].patch->GetData(i,1,x2,y2,z2);
+                patch1_position1 = i;
+                patch1_position2 = 1;
+                patch2_position1 = i;
+                patch2_position2 = 0;
+            break;
+            case N:
+                _attributes[index2].patch->GetData(i,2,x2,y2,z2);
+                patch1_position1 = i;
+                patch1_position2 = 2;
+                patch2_position1 = i;
+                patch2_position2 = 3;
+            break;
+        }
+
+        switch (d1) {
+            case E:
+                _attributes[index1].patch->GetData(3,i,x1,y1,z1);
+                _attributes[index2].patch->SetData(patch1_position1,patch1_position2,
+                                                   2.0 * (*_attributes[index1].patch)(3,i) - (*_attributes[index1].patch)(2,i));
+            break;
+            case W:
+                 _attributes[index1].patch->GetData(0,i,x1,y1,z1);
+                 _attributes[index2].patch->SetData(patch1_position1,patch1_position2,
+                                                    2.0*(*_attributes[index1].patch)(0,i) - (*_attributes[index1].patch)(1,i));
+            break;
+            case S:
+                _attributes[index1].patch->GetData(i,0,x1,y1,z1);
+                _attributes[index2].patch->SetData(patch1_position1,patch1_position2,
+                                                   2.0 * (*_attributes[index1].patch)(i,0) - (*_attributes[index1].patch)(i,1));
+            break;
+            case N:
+                _attributes[index1].patch->GetData(i,3,x1,y1,z1);
+                _attributes[index2].patch->SetData(patch1_position1,patch1_position2,
+                                                   2.0* (*_attributes[index1].patch)(i,3) - (*_attributes[index1].patch)(i,2));
+            break;
+
+        }
+
+        _attributes[index2].patch->SetData(patch2_position1,patch2_position2,x1,y1,z1);
+
+    }
+
+    _attributes[index2].patch->UpdateVertexBufferObjectsOfData();
+
+    UpdatePatch(index2);
+
+    visited.push_back(&_attributes[index2]);
+
+    for(GLuint i = 0; i < 8; i++)
+    {
+        if(_attributes[index2].neighbours[i])
+        {
+            bool ok = true;
+            for(GLuint k = 0; k < visited.size(); k++)
+            {
+                if(visited[k] == _attributes[index2].neighbours[i])
+                {
+                    ok = false;
+                    break;
+                }
+            }
+
+            if(ok)
+            {
+                GLuint index = _attributes[index2].neighbours[i]->index;
+                int j;
+                for(int j = 0; j < 8;j++)
+                {
+                    if(_attributes[index2].neighbours[i]->neighbours[j] == &_attributes[index2])
+                        break;
+                }
+
+                BiquadraticCompositeSurface3::Direction dir1 = BiquadraticCompositeSurface3::Direction(i);
+                BiquadraticCompositeSurface3::Direction dir2 = BiquadraticCompositeSurface3::Direction(j);
+                MergerOthers(index2,index,dir1,dir2,visited);
+            }
+        }
+    }
+
+
     return GL_TRUE;
+
 }
 
 GLboolean BiquadraticCompositeSurface3::ShiftPatch(GLuint index, GLdouble off_x, GLdouble off_y, GLdouble off_z)
@@ -872,6 +1047,16 @@ void BiquadraticCompositeSurface3::SetMaterialByIndex(GLuint index, Material &ma
 BiquadraticCompositeSurface3::PatchAttributes BiquadraticCompositeSurface3::getPatchAttributes(GLuint index)
 {
     return _attributes[index];
+}
+
+GLuint BiquadraticCompositeSurface3::getPatchIndex(GLuint patch_index)
+{
+    return _attributes[patch_index].index;
+}
+
+void BiquadraticCompositeSurface3::clear()
+{
+    _attributes.clear();
 }
 
 

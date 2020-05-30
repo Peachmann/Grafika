@@ -1107,7 +1107,7 @@ void GLWidget::set_shader(int value)
         _shaderID = value;
         _currentShader = _shaders(value);
         _currentShader.Enable();
-
+        _composite_surface->SetShaderForAll(_currentShader);
         updateGL();
 
         //_currentShader.Disable();
@@ -1501,6 +1501,10 @@ void GLWidget::delete_patch() {
     _side_widget->selectPatch1->removeItem(_side_widget->deletePatchBox->currentIndex());
     _side_widget->selectPatch2->removeItem(_side_widget->deletePatchBox->currentIndex());
     _side_widget->deletePatchBox->removeItem(_side_widget->deletePatchBox->currentIndex());
+
+    _composite_surface->clear();
+    _surfaceindex = 0;
+    updateGL();
 }
 
 void GLWidget::do_patch_operation() {
@@ -1509,6 +1513,9 @@ void GLWidget::do_patch_operation() {
     string patch2 = _side_widget->selectPatch2->currentText().toStdString();
     string direction1 = _side_widget->selectDirection1->currentText().toStdString();
     string direction2 = _side_widget->selectDirection2->currentText().toStdString();
+
+    GLuint index1 = _side_widget->selectPatch1->currentIndex();
+    GLuint index2 = _side_widget->selectPatch2->currentIndex();
 
     GLuint operation = _side_widget->patchOperation->currentIndex();
 
@@ -1548,17 +1555,62 @@ void GLWidget::do_patch_operation() {
     // Join
     case 3:
         // join(patch1, patch2, direction1, direction2);
+
         break;
 
     // Merge
     case 4:
         // merge(patch1, patch2, direction1, direction2);
+        BiquadraticCompositeSurface3::Direction dir1,dir2;
+        if(direction1 == "North")
+        {
+            dir1 = BiquadraticCompositeSurface3::N;
+        }
+        else if(direction1 == "East")
+        {
+            dir1 = BiquadraticCompositeSurface3::E;
+        }
+        else if(direction1 == "South")
+        {
+             dir1 = BiquadraticCompositeSurface3::S;
+        }
+        else if(direction1 == "West")
+        {
+            dir1 = BiquadraticCompositeSurface3::W;
+        }
+        else
+        {
+            cout<<"NORTHEAST FOR 1"<<endl;
+            dir1 = BiquadraticCompositeSurface3::NE;
+        }
+
+        if(direction2 == "North")
+        {
+            dir2 = BiquadraticCompositeSurface3::N;
+        }
+        else if(direction2 == "East")
+        {
+            dir2 = BiquadraticCompositeSurface3::E;
+        }
+        else if(direction2 == "South")
+        {
+             dir2 = BiquadraticCompositeSurface3::S;
+        }
+        else if(direction2 == "West")
+        {
+            dir2 = BiquadraticCompositeSurface3::W;
+        }
+        else
+        {
+            cout<<"NORTHWEST FOR 2"<<endl;
+            dir2 = BiquadraticCompositeSurface3::NW;
+        }
+
+        _composite_surface->MergeExistingPatches(_composite_surface->getPatchIndex(index1),dir1,_composite_surface->getPatchIndex(index2),dir2);
         break;
     }
 
-    cout<<"Before update"<<endl;
     updateGL();
-    cout<<"After update"<<endl;
 }
 
 /* NOT WORKING */
