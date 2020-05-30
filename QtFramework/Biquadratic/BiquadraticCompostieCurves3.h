@@ -85,14 +85,17 @@ namespace cagd {
 
         //other setters/getters
 
-        GLboolean SetCurveData(GLuint index, GLuint div_point_count = 30, GLuint max_order_of_derivatives  = 2);
+        GLboolean SetCurveData(GLuint index, GLuint div_point_count = 30, GLuint max_order_of_derivatives  = 3);
 
-        void UpdateArc(GLuint index, GLuint div_point_count = 30, GLuint max_order_of_derivatives = 2);
+        void UpdateArc(GLuint index, GLuint div_point_count = 30, GLuint max_order_of_derivatives = 3);
+        GLboolean UpdateArc_2(GLuint index,GLuint div_point_count, GLuint max_order_of_derivatives);
+        GLboolean UpdateArc_2(ArcAttributes &arc_att,GLuint div_point_count, GLuint max_order_of_derivatives);
 
         GLboolean moveOnAxisX(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisY(const size_t &arc_index, GLdouble offset);
         GLboolean moveOnAxisZ(const size_t &arc_index, GLdouble offset);
-
+        GLboolean ShiftArc(const size_t &arc_index,GLdouble off_x,GLdouble off_y,GLdouble off_z);
+        GLboolean ShiftArc(ArcAttributes &arc_att,GLdouble off_x,GLdouble off_y,GLdouble off_z,ArcAttributes *first);
 
         std::vector<ArcAttributes> get_attributes();
 

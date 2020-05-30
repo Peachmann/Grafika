@@ -60,6 +60,7 @@ GenericCurve3& GenericCurve3::operator =(const GenericCurve3& rhs)
 // vertex buffer object handling methods
 GLvoid GenericCurve3::DeleteVertexBufferObjects()
 {
+    //std::cout<<_vbo_derivative<<std::endl;
     for (GLuint i = 0; i < _vbo_derivative.GetColumnCount(); ++i)
     {
         if (_vbo_derivative(i))
@@ -84,6 +85,7 @@ GLboolean GenericCurve3::RenderDerivatives(GLuint order, GLenum render_mode) con
     GLuint point_count = _derivative.GetColumnCount();
 
     glEnableClientState(GL_VERTEX_ARRAY);
+        std::cout<<__LINE__<<std::endl;
         glBindBuffer(GL_ARRAY_BUFFER, _vbo_derivative(order));
             glVertexPointer(3, GL_FLOAT, 0, (const GLvoid *)0);
 
@@ -126,9 +128,9 @@ GLboolean GenericCurve3::UpdateVertexBufferObjects(GLdouble scale,GLenum usage_f
         usage_flag != GL_DYNAMIC_DRAW && usage_flag != GL_DYNAMIC_READ && usage_flag != GL_DYNAMIC_COPY &&
         usage_flag != GL_STATIC_DRAW  && usage_flag != GL_STATIC_READ  && usage_flag != GL_STATIC_COPY)
         return GL_FALSE;
-
+    std::cout<<__LINE__<<std::endl;
     DeleteVertexBufferObjects();
-
+     std::cout<<__LINE__<<std::endl;
     _usage_flag = usage_flag;
 
     for(GLuint d = 0; d < _vbo_derivative.GetColumnCount(); ++d)
@@ -142,30 +144,31 @@ GLboolean GenericCurve3::UpdateVertexBufferObjects(GLdouble scale,GLenum usage_f
                 glDeleteBuffers(1, &_vbo_derivative(i));
                 _vbo_derivative(i) = 0;
             }
-
+             std::cout<<__LINE__<<std::endl;
             return GL_FALSE;
         }
     }
-
+     std::cout<<__LINE__<<std::endl;
     GLuint curve_point_count = _derivative.GetColumnCount();
 
     GLfloat *coordinate = 0;
-
+     std::cout<<__LINE__<<std::endl;
     // curve points
     GLuint curve_point_byte_size = 3 * curve_point_count * sizeof(GLfloat);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vbo_derivative(0));
     glBufferData(GL_ARRAY_BUFFER, curve_point_byte_size, 0, _usage_flag);
-
+     std::cout<<__LINE__<<std::endl;
     coordinate = (GLfloat*)glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
     if (!coordinate)
     {
+         std::cout<<__LINE__<<std::endl;
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         DeleteVertexBufferObjects();
         return GL_FALSE;
     }
-
+     std::cout<<__LINE__<<std::endl;
     for (GLuint i = 0; i < curve_point_count; ++i)
     {
         for (GLuint j = 0; j < 3; ++j)
@@ -174,19 +177,21 @@ GLboolean GenericCurve3::UpdateVertexBufferObjects(GLdouble scale,GLenum usage_f
             ++coordinate;
         }
     }
-
+     std::cout<<__LINE__<<std::endl;
     if (!glUnmapBuffer(GL_ARRAY_BUFFER))
     {
+         std::cout<<__LINE__<<std::endl;
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         DeleteVertexBufferObjects();
         return GL_FALSE;
     }
-
+     std::cout<<__LINE__<<std::endl;
     // higher order derivatives
     GLuint higher_order_derivative_byte_size = 2 * curve_point_byte_size;
 
     for (GLuint d = 1; d < _derivative.GetRowCount(); ++d)
     {
+         std::cout<<__LINE__<<std::endl;
         glBindBuffer(GL_ARRAY_BUFFER, _vbo_derivative(d));
         glBufferData(GL_ARRAY_BUFFER, higher_order_derivative_byte_size, 0, _usage_flag);
 
@@ -194,6 +199,7 @@ GLboolean GenericCurve3::UpdateVertexBufferObjects(GLdouble scale,GLenum usage_f
 
         if (!coordinate)
         {
+             std::cout<<__LINE__<<std::endl;
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             DeleteVertexBufferObjects();
             return GL_FALSE;
@@ -216,14 +222,15 @@ GLboolean GenericCurve3::UpdateVertexBufferObjects(GLdouble scale,GLenum usage_f
 
         if (!glUnmapBuffer(GL_ARRAY_BUFFER))
         {
+             std::cout<<__LINE__<<std::endl;
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             DeleteVertexBufferObjects();
             return GL_FALSE;
         }
     }
-
+     std::cout<<__LINE__<<std::endl;
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-
+     std::cout<<__LINE__<<std::endl;
     return GL_TRUE;
 }
 

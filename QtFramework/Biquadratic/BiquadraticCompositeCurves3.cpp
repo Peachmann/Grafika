@@ -260,15 +260,16 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
 
 GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_index, Direction direction)
 {
+    std::cout<<__LINE__<<std::endl;
     //Insert new attribute (arc)
     GLint attr_size = _attributes.size();
     _attributes.resize(attr_size + 1);
     _attributes[attr_size].arc = new BiquadraticArcs3();
-
+    std::cout<<__LINE__<<std::endl;
     if((direction == LEFT && _attributes[arc_index].previous != nullptr) || (direction == RIGHT && _attributes[arc_index].next != nullptr)) {
         return GL_FALSE;
     }
-
+    std::cout<<__LINE__<<std::endl;
     if(!_attributes[attr_size].arc)
     {
         _attributes.pop_back();
@@ -277,6 +278,7 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
 
     DCoordinate3 p0, p1;
     // setting up the first 2 points
+    std::cout<<__LINE__<<std::endl;
     switch (direction) {
 
     case LEFT:
@@ -293,6 +295,7 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
         std :: cout << "That should not have happened..." << std :: endl;
         return GL_FALSE;
     }
+    std::cout<<__LINE__<<std::endl;
     // calculating new arc points
     _attributes[attr_size].arc->SetData(0,p0);
     _attributes[attr_size].arc->SetData(1,(2.0 * p0 - p1) );
@@ -327,6 +330,9 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
     }
 
     return GL_TRUE;
+
+
+
 }
 
 GLboolean BiquadraticCompositeCurve3::RenderArcs(GLboolean d1, GLboolean d2, GLboolean polygon)
@@ -361,7 +367,6 @@ GLboolean BiquadraticCompositeCurve3::RenderArcs(GLboolean d1, GLboolean d2, GLb
             _attributes[i].image ->RenderDerivatives(2,GL_POINTS);
         }
 
-        //RENDER 1 1.5 0
 
     }
 
@@ -378,13 +383,14 @@ void BiquadraticCompositeCurve3::UpdateArc(GLuint index, GLuint max_order_of_der
         delete _attributes[index].image;
         _attributes[index].image = nullptr;
     }
-
+    std::cout<<__LINE__<<std::endl;
     //Generate image
     _attributes[index].image = _attributes[index].arc->GenerateImage(max_order_of_derivatives,div_point_count);
 
     //Update VBO
     _attributes[index].image->UpdateVertexBufferObjects();
 }
+
 
 GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdouble offset) {
 
@@ -394,33 +400,13 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
     for(GLint i = 0; i < 4; i++) {
         first.arc->SetData(i, first.arc->GetData(i) + off);
     }
-    first.arc->UpdateVertexBufferObjectsOfData();
-
-    //Reset image if exists
-    if(first.image)
-    {
-        delete first.image;
-        first.image = nullptr;
-    }
-
-    //Generate image
-    first.image = first.arc->GenerateImage(2,30);
-
-    //Error in generate
-    if(!first.image)
-        return GL_FALSE;
-
-    //Update VBO
-    if(!first.image->UpdateVertexBufferObjects())
-    {
-        return GL_FALSE;
-    }
+    UpdateArc_2(first,30,3);
 
     ArcAttributes *next;
     next = first.previous;
 
     while(next != nullptr) {
-        if(next->index == first.index) {
+        if(next->arc == first.arc) {
             break;
         }
         std::cout<<__LINE__<<std::endl;
@@ -428,27 +414,7 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
             next->arc->SetData(i, next->arc->GetData(i) + off);
         }
 
-        next->arc->UpdateVertexBufferObjectsOfData();
-
-        //Reset image if exists
-        if(next->image)
-        {
-            delete next->image;
-            next->image = nullptr;
-        }
-
-        //Generate image
-        next->image = next->arc->GenerateImage(2,30);
-
-        //Error in generate
-        if(!next->image)
-            return GL_FALSE;
-
-        //Update VBO
-        if(!next->image->UpdateVertexBufferObjects())
-        {
-            return GL_FALSE;
-        }
+        UpdateArc_2(first,30,3);
         next = next->previous;
     }
 
@@ -458,31 +424,166 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisX(const size_t &arc_index, GLdou
             for(GLint i = 0; i < 4; i++) {
                 next->arc->SetData(i, next->arc->GetData(i) + off);
             }
-            next->arc->UpdateVertexBufferObjectsOfData();
-
-            //Reset image if exists
-            if(next->image)
-            {
-                delete next->image;
-                next->image = nullptr;
-            }
-
-            //Generate image
-            next->image = next->arc->GenerateImage(2,30);
-
-            //Error in generate
-            if(!next->image)
-                return GL_FALSE;
-
-            //Update VBO
-            if(!next->image->UpdateVertexBufferObjects())
-            {
-                return GL_FALSE;
-            }
+           UpdateArc_2(first,30,3);
             next = next->next;
         }
     }
+    return GL_TRUE;
+}
 
+
+GLboolean BiquadraticCompositeCurve3::ShiftArc(const size_t &arc_index, GLdouble off_x, GLdouble off_y, GLdouble off_z)
+{
+    GLdouble curr_x,curr_y,curr_z;
+
+
+    for(GLuint i = 0 ; i < 4; i++)
+    {
+        curr_x = _attributes[arc_index].arc->GetData(i).x();
+        curr_y = _attributes[arc_index].arc->GetData(i).y();
+        curr_z = _attributes[arc_index].arc->GetData(i).z();
+
+        curr_x += off_x;
+        curr_z += off_z;
+        curr_y += off_y;
+
+        _attributes[arc_index].arc->SetData(i,DCoordinate3(curr_x,curr_y,curr_z));
+    }
+    /*
+    //UpdateVBO of Data
+    _attributes[arc_index].arc->UpdateVertexBufferObjectsOfData();
+
+    //Reset image if exists
+    if(_attributes[arc_index].image)
+    {
+        delete _attributes[arc_index].image;
+        _attributes[arc_index].image = nullptr;
+    }
+
+    //Generate image
+    _attributes[arc_index].image = _attributes[arc_index].arc->GenerateImage(3,30);
+
+    //Error in generate
+    if(!_attributes[arc_index].image)
+        return GL_FALSE;
+
+    //Update VBO
+    if(!_attributes[arc_index].image->UpdateVertexBufferObjects())
+    {
+        //If error delete generated arc/image
+        delete _attributes[arc_index].arc;
+        delete _attributes[arc_index].image;
+        _attributes.resize(_attributes.size() - 1);
+        return GL_FALSE;
+    }
+    */
+
+    UpdateArc_2(arc_index,30,3);
+    if(_attributes[arc_index].next)
+    {
+        ShiftArc(*_attributes[arc_index].next,off_x,off_y,off_z,&_attributes[arc_index]);
+    }
+
+    if(_attributes[arc_index].previous)
+    {
+        ShiftArc(*_attributes[arc_index].previous,off_x,off_y,off_z,&_attributes[arc_index]);
+    }
+
+    return GL_TRUE;
+}
+
+
+
+GLboolean BiquadraticCompositeCurve3::ShiftArc(ArcAttributes &arc_att, GLdouble off_x, GLdouble off_y, GLdouble off_z,ArcAttributes *first)
+{
+    GLdouble curr_x,curr_y,curr_z;
+
+    for(GLuint i = 0 ; i < 4; i++)
+    {
+        curr_x = arc_att.arc->GetData(i).x();
+        curr_y = arc_att.arc->GetData(i).y();
+        curr_z = arc_att.arc->GetData(i).z();
+
+        curr_x += off_x;
+        curr_z += off_z;
+        curr_y += off_y;
+
+        arc_att.arc->SetData(i,DCoordinate3(curr_x,curr_y,curr_z));
+
+        UpdateArc_2(arc_att,30,3);
+        if(arc_att.next && arc_att.next != first)
+        {
+            ShiftArc(*arc_att.next,off_x,off_y,off_z,first);
+        }
+
+        if(arc_att.previous != first)
+        {
+            ShiftArc(*arc_att.previous,off_x,off_y,off_z,first);
+        }
+
+        return GL_TRUE;
+    }
+}
+
+GLboolean BiquadraticCompositeCurve3::UpdateArc_2(GLuint arc_index, GLuint div_point_count, GLuint max_order_of_derivatives)
+{
+    //UpdateVBO of Data
+    _attributes[arc_index].arc->UpdateVertexBufferObjectsOfData();
+
+    //Reset image if exists
+    if(_attributes[arc_index].image)
+    {
+        delete _attributes[arc_index].image;
+        _attributes[arc_index].image = nullptr;
+    }
+
+    //Generate image
+    _attributes[arc_index].image = _attributes[arc_index].arc->GenerateImage(max_order_of_derivatives,div_point_count);
+
+    //Error in generate
+    if(!_attributes[arc_index].image)
+        return GL_FALSE;
+
+    //Update VBO
+    if(!_attributes[arc_index].image->UpdateVertexBufferObjects())
+    {
+        //If error delete generated arc/image
+        delete _attributes[arc_index].arc;
+        delete _attributes[arc_index].image;
+        _attributes.resize(_attributes.size() - 1);
+        return GL_FALSE;
+    }
+    return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeCurve3::UpdateArc_2(ArcAttributes &arc_att, GLuint div_point_count, GLuint max_order_of_derivatives)
+{
+    //UpdateVBO of Data
+    arc_att.arc->UpdateVertexBufferObjectsOfData();
+
+    //Reset image if exists
+    if(arc_att.image)
+    {
+        delete arc_att.image;
+        arc_att.image = nullptr;
+    }
+
+    //Generate image
+    arc_att.image = arc_att.arc->GenerateImage(max_order_of_derivatives,div_point_count);
+
+    //Error in generate
+    if(!arc_att.image)
+        return GL_FALSE;
+
+    //Update VBO
+    if(!arc_att.image->UpdateVertexBufferObjects())
+    {
+        //If error delete generated arc/image
+        delete arc_att.arc;
+        delete arc_att.image;
+        _attributes.resize(_attributes.size() - 1);
+        return GL_FALSE;
+    }
     return GL_TRUE;
 }
 
