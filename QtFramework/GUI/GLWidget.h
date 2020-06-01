@@ -114,6 +114,11 @@ namespace cagd
         void *depth;
         GLuint _surfaceindex = 0;
 
+        /* Double spinboxes */
+        GLdouble x_value;
+        GLdouble y_value;
+        GLdouble z_value;
+
     signals:
         void xcoordhasChanged(double);
         void ycoordhasChanged(double);
@@ -196,6 +201,8 @@ namespace cagd
         void renderArc();
         void set_derivative_scale(int);
 
+
+
         /* Arc controller */
         void add_arc();
         void delete_arc();
@@ -207,6 +214,8 @@ namespace cagd
         void delete_patch();
         void do_patch_operation();
         void change_patch_material(int value);
+
+        void shift();
 
         /* Curve */
         void curve();

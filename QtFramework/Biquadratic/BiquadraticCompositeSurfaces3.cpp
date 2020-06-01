@@ -862,6 +862,7 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
             patch1_position1 = 3;
             patch1_position2 = i;
             _attributes[patch_index1].neighbours[E] = &_attributes[patch_index2];
+
             break;
         case W:
             _attributes[patch_index1].patch->GetData(1,i,x1,y1,z1);
@@ -910,6 +911,7 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
             patch2_position1 = 0;
             patch2_position2 = i;
             _attributes[patch_index2].neighbours[W] = &_attributes[patch_index1];
+
             break;
         case S:
             _attributes[patch_index2].patch->GetData(i,1,x2,y2,z2);
@@ -1113,9 +1115,110 @@ GLboolean BiquadraticCompositeSurface3::MergerOthers(GLuint index1, GLuint index
 
 GLboolean BiquadraticCompositeSurface3::ShiftPatch(GLuint index, GLdouble off_x, GLdouble off_y, GLdouble off_z)
 {
+
+    DCoordinate3 point,shiftPoint;
+    shiftPoint = DCoordinate3(off_x,off_z,off_y);
+
+    for(GLuint i = 0 ; i < 4; i++)
+    {
+        for(GLuint j = 0 ; j < 4; j++)
+        {
+            _attributes[index].patch->GetData(i,j,point);
+            _attributes[index].patch->SetData(i,j,point + shiftPoint);
+        }
+    }
+    _attributes[index].patch->UpdateVertexBufferObjectsOfData();
+    if(!UpdatePatch(index))
+      {
+        std::cout<<"Error in Update!\n";
+      }
+
+    std::vector<PatchAttributes*> visited;
+    visited.push_back(&_attributes[index]);
+
+    for(GLuint i = 0 ; i < 8; i++)
+    {
+
+        GLboolean ok = GL_TRUE;
+        if(_attributes[index].neighbours[i])
+        {
+
+            for(GLuint j = 0 ; j < visited.size(); j++)
+            {
+                if(visited[j] == _attributes[index].neighbours[i])
+                {
+                    ok = GL_FALSE;
+                    break;
+                }
+            }
+            if(ok)
+            {
+
+                ShiftNeighbours((*_attributes[index].neighbours[i]),visited,off_x,off_y,off_z);
+            }
+        }
+    }
+
+    /*
+    for(GLuint i = 0; i < _attributes.size();i++)
+    {
+        PrintNeighbours(i);
+    }
+    */
     return GL_TRUE;
 }
 
+
+GLboolean BiquadraticCompositeSurface3::ShiftNeighbours(PatchAttributes &attr, std::vector<PatchAttributes *> visited, GLdouble off_x, GLdouble off_y, GLdouble off_z)
+{
+    DCoordinate3 point,shiftPoint;
+    shiftPoint = DCoordinate3(off_x,off_y,off_z);
+
+    for(int i = 0 ; i < 4; i++)
+    {
+        for(int j = 0 ; j < 4; j++)
+        {
+            attr.patch->GetData(i,j,point);
+            attr.patch->SetData(i,j,point + shiftPoint);
+        }
+    }
+
+    attr.patch->UpdateVertexBufferObjectsOfData();
+
+    GLuint index;
+
+    for(index = 0; index < _attributes.size();index++)
+    {
+        if(&_attributes[index] == &attr)
+            break;
+    }
+
+    UpdatePatch(index);
+
+    visited.push_back(&attr);
+
+    for(GLuint i = 0; i < 8; i++)
+    {
+        GLboolean ok = GL_TRUE;
+        if(attr.neighbours[i])
+        {
+            for(GLuint j = 0 ; j < visited.size(); j++)
+            {
+                if(visited[j] == attr.neighbours[i])
+                {
+                    ok = GL_FALSE;
+                    break;
+                }
+            }
+            if(ok)
+            {
+                ShiftNeighbours((*attr.neighbours[i]),visited,off_x,off_y,off_z);
+            }
+        }
+    }
+
+    return GL_TRUE;
+}
 GLboolean BiquadraticCompositeSurface3::UpdatePatch(GLuint index)
 {
     //GenerateIMage
@@ -1287,6 +1390,20 @@ BiquadraticCompositeSurface3::PatchAttributes BiquadraticCompositeSurface3::getP
 GLuint BiquadraticCompositeSurface3::getPatchIndex(GLuint patch_index)
 {
     return _attributes[patch_index].index;
+}
+
+void BiquadraticCompositeSurface3::PrintNeighbours(GLuint index)
+{
+    //N, NW, W,SW,S,SE,E,NE
+    std::cout<<_attributes[index].material<<endl;
+    cout<<"N: "<<_attributes[index].neighbours[0]<<endl;
+    cout<<"NE: "<<_attributes[index].neighbours[7]<<endl;
+    cout<<"E: "<<_attributes[index].neighbours[6]<<endl;
+    cout<<"SE: "<<_attributes[index].neighbours[5]<<endl;
+    cout<<"S: "<<_attributes[index].neighbours[4]<<endl;
+    cout<<"SW: "<<_attributes[index].neighbours[3]<<endl;
+    cout<<"W: "<<_attributes[index].neighbours[2]<<endl;
+    cout<<"NW: "<<_attributes[index].neighbours[1]<<endl;
 }
 
 void BiquadraticCompositeSurface3::clear()

@@ -1634,6 +1634,21 @@ void GLWidget::do_patch_operation() {
     updateGL();
 }
 
+void GLWidget::shift()
+{
+    GLdouble xvalue = _side_widget->xspinbox->value();
+    GLdouble yvalue = _side_widget->yspinbox->value();
+    GLdouble zvalue = _side_widget->zspinbox->value();
+
+    GLuint index = _side_widget->selectPatch1->currentIndex();
+
+
+    _composite_surface->ShiftPatch(index,xvalue,yvalue,zvalue);
+
+
+    updateGL();
+}
+
 /* NOT WORKING */
 void GLWidget::change_patch_material(int value)
 {

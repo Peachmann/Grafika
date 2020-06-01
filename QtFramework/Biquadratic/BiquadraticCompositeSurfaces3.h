@@ -73,6 +73,8 @@ namespace cagd {
 
             GLboolean UpdatePatch(GLuint index);
 
+            GLboolean ShiftNeighbours(PatchAttributes &patch, std::vector<PatchAttributes*> visited, GLdouble off_x,GLdouble off_y, GLdouble off_z);
+
             GLboolean MergerOthers(GLuint index1, GLuint index2, Direction d1, Direction d2, std::vector<PatchAttributes*> visited);
 
 
@@ -90,6 +92,9 @@ namespace cagd {
 
             //direction converter
             int GetDirectionIndex(Direction direction) const;
+
+            //Neighbour printer
+            void PrintNeighbours(GLuint index);
 
             void clear();
         };
