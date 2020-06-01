@@ -1649,32 +1649,114 @@ void GLWidget::shift()
     updateGL();
 }
 
+void GLWidget::set_individual_shader(int value)
+{
+    GLuint index = _side_widget->selectPatch1->currentIndex();
+    if(value != _shaderID)
+    {
+        _shaderID = value;
+        _currentShader = _shaders(value);
+        //_currentShader.Enable();
+        //_composite_surface->SetShaderForAll(_currentShader);
+        _composite_surface->SetShaderByIndex(index, _currentShader);
+        updateGL();
+
+        //_currentShader.Disable();
+    }
+}
+
 /* NOT WORKING */
 void GLWidget::change_patch_material(int value)
 {
     GLuint patch = _side_widget->selectPatch1->currentIndex();
-    BiquadraticCompositeSurface3::PatchAttributes pa = _composite_surface->getPatchAttributes(patch);
+
     switch (value) {
         case 0:
-            pa.material = &MatFBBrass;
+            _composite_surface->SetMaterialByIndex(patch,MatFBBrass);
+            _side_widget->selectPatch1->removeItem(patch);
+            _side_widget->selectPatch1->insertItem(patch,"Brass");
+
+                _side_widget->deletePatchBox->removeItem(patch);
+                _side_widget->deletePatchBox->insertItem(patch,"Brass");
+
+                _side_widget->selectPatch2->removeItem(patch);
+                _side_widget->selectPatch2->insertItem(patch,"Brass");
+
+
         break;
         case 1:
-            pa.material = &MatFBGold;
+        _composite_surface->SetMaterialByIndex(patch,MatFBGold);
+        _side_widget->selectPatch1->removeItem(patch);
+        _side_widget->selectPatch1->insertItem(patch,"Gold");
+        _side_widget->selectPatch1->currentIndexChanged(patch);
+
+            _side_widget->deletePatchBox->removeItem(patch);
+            _side_widget->deletePatchBox->insertItem(patch,"Gold");
+
+            _side_widget->selectPatch2->removeItem(patch);
+            _side_widget->selectPatch2->insertItem(patch,"Gold");
+            _side_widget->selectPatch2->currentIndexChanged(patch);
+
         break;
         case 2:
-            pa.material = &MatFBSilver;
+        _composite_surface->SetMaterialByIndex(patch,MatFBSilver);
+        _side_widget->selectPatch1->removeItem(patch);
+        _side_widget->selectPatch1->insertItem(patch,"Silver");
+        if(_side_widget->deletePatchBox->currentIndex() == patch)
+
+            _side_widget->deletePatchBox->removeItem(patch);
+            _side_widget->deletePatchBox->insertItem(patch,"Silver");
+
+
+            _side_widget->selectPatch2->removeItem(patch);
+            _side_widget->selectPatch2->insertItem(patch,"Silver");
+
         break;
         case 3:
-            pa.material = &MatFBEmerald;
+        _composite_surface->SetMaterialByIndex(patch,MatFBEmerald);
+        _side_widget->selectPatch1->removeItem(patch);
+        _side_widget->selectPatch1->insertItem(patch,"Emerald");
+
+            _side_widget->deletePatchBox->removeItem(patch);
+            _side_widget->deletePatchBox->insertItem(patch,"Emerald");
+
+            _side_widget->selectPatch2->removeItem(patch);
+            _side_widget->selectPatch2->insertItem(patch,"Emerald");
+
         break;
         case 4:
-            pa.material = &MatFBPearl;
+        _composite_surface->SetMaterialByIndex(patch,MatFBPearl);
+        _side_widget->selectPatch1->removeItem(patch);
+        _side_widget->selectPatch1->insertItem(patch,"Pearl");
+
+            _side_widget->deletePatchBox->removeItem(patch);
+            _side_widget->deletePatchBox->insertItem(patch,"Pearl");
+
+            _side_widget->selectPatch2->removeItem(patch);
+            _side_widget->selectPatch2->insertItem(patch,"Pearl");
+
         break;
         case 5:
-            pa.material = &MatFBRuby;
+        _composite_surface->SetMaterialByIndex(patch,MatFBRuby);
+        _side_widget->selectPatch1->removeItem(patch);
+        _side_widget->selectPatch1->insertItem(patch,"Ruby");
+
+            _side_widget->deletePatchBox->removeItem(patch);
+            _side_widget->deletePatchBox->insertItem(patch,"Ruby");
+
+            _side_widget->selectPatch2->removeItem(patch);
+            _side_widget->selectPatch2->insertItem(patch,"Ruby");
+
         break;
         case 6:
-            pa.material = &MatFBTurquoise;
+        _composite_surface->SetMaterialByIndex(patch,MatFBTurquoise);
+        _side_widget->selectPatch1->removeItem(patch);
+        _side_widget->selectPatch1->insertItem(patch,"Turqoise");
+        _side_widget->deletePatchBox->removeItem(patch);
+        _side_widget->deletePatchBox->insertItem(patch,"Turqoise");
+        _side_widget->selectPatch2->removeItem(patch);
+        _side_widget->selectPatch2->insertItem(patch,"Turqoise");
+
         break;
     }
 

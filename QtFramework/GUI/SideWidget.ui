@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>298</width>
-    <height>863</height>
+    <height>887</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -588,7 +588,7 @@
      <x>10</x>
      <y>470</y>
      <width>271</width>
-     <height>301</height>
+     <height>341</height>
     </rect>
    </property>
    <property name="currentIndex">
@@ -1096,6 +1096,9 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="editable">
+      <bool>false</bool>
+     </property>
     </widget>
     <widget class="QLabel" name="label_32">
      <property name="geometry">
@@ -1154,6 +1157,9 @@
        <height>22</height>
       </rect>
      </property>
+     <property name="editable">
+      <bool>false</bool>
+     </property>
     </widget>
     <widget class="QComboBox" name="selectPatch1">
      <property name="geometry">
@@ -1163,6 +1169,9 @@
        <width>71</width>
        <height>22</height>
       </rect>
+     </property>
+     <property name="editable">
+      <bool>false</bool>
      </property>
     </widget>
     <widget class="QPushButton" name="doPatchOperation">
@@ -1398,7 +1407,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>800</y>
+     <y>830</y>
      <width>62</width>
      <height>22</height>
     </rect>
@@ -1414,7 +1423,7 @@
    <property name="geometry">
     <rect>
      <x>110</x>
-     <y>800</y>
+     <y>830</y>
      <width>62</width>
      <height>22</height>
     </rect>
@@ -1430,7 +1439,7 @@
    <property name="geometry">
     <rect>
      <x>190</x>
-     <y>800</y>
+     <y>830</y>
      <width>62</width>
      <height>22</height>
     </rect>
@@ -1446,7 +1455,7 @@
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>830</y>
+     <y>860</y>
      <width>75</width>
      <height>23</height>
     </rect>
@@ -1459,7 +1468,7 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>780</y>
+     <y>810</y>
      <width>47</width>
      <height>13</height>
     </rect>
@@ -1475,7 +1484,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>780</y>
+     <y>810</y>
      <width>41</width>
      <height>20</height>
     </rect>
@@ -1491,7 +1500,7 @@
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>780</y>
+     <y>810</y>
      <width>47</width>
      <height>13</height>
     </rect>

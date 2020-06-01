@@ -176,6 +176,7 @@ namespace cagd
         void _load_shaders();
         void enable_shader(int value);
         void set_shader(int value);
+        void set_individual_shader(int value);
 
         /* Toon Color Changer */
         void set_toon_color_1(double value);

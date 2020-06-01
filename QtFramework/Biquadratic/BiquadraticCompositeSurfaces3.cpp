@@ -999,7 +999,6 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
 
         }
     }
-
     return GL_TRUE;
 }
 
@@ -1367,6 +1366,10 @@ void BiquadraticCompositeSurface3::SetShaderForAll(ShaderProgram &shader)
 void BiquadraticCompositeSurface3::SetShaderByIndex(GLuint index, ShaderProgram &shader)
 {
     _attributes[index].shader = &shader;
+    cout<<"Shader set for: " <<index<<endl;
+    _attributes[index].shader->Enable();
+
+
 }
 
 void BiquadraticCompositeSurface3::SetMaterialForAll(Material &material)
