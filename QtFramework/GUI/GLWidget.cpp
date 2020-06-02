@@ -1559,6 +1559,8 @@ void GLWidget::do_patch_operation() {
     // Move
     case 0:
         // hopefully mouseevent handler
+        cout<<"MOVECP"<<endl;
+        _composite_surface->MoveControlPoint(0,2,2,0,0,1);
         break;
 
     //Shift

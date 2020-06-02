@@ -77,7 +77,7 @@ namespace cagd {
 
             GLboolean MergerOthers(GLuint index1, GLuint index2, Direction d1, Direction d2, std::vector<PatchAttributes*> visited);
 
-            GLboolean MoveControlPoint(GLuint &patch_index, GLuint &point_i, GLuint &point_j, GLdouble x, GLdouble y, GLdouble z);
+            GLboolean MoveControlPoint(GLuint patch_index, GLuint point_i, GLuint point_j, GLdouble x, GLdouble y, GLdouble z);
             GLboolean MoveControlPointNeighbours(GLuint patch_index, int point_i, int point_j, DCoordinate3 point, std::vector<PatchAttributes*> visited);
 
 

@@ -1506,7 +1506,7 @@ void BiquadraticCompositeSurface3::clear()
     _attributes.clear();
 }
 
-GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint &patch_index, GLuint &point_i, GLuint &point_j, GLdouble x, GLdouble y, GLdouble z) {
+GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLuint point_i, GLuint point_j, GLdouble x, GLdouble y, GLdouble z) {
 
     DCoordinate3 shiftPoint(x,y,z);
 
@@ -1524,14 +1524,263 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint &patch_index, GL
     } else {
 
         GLuint sum = 4 * point_i + point_j;
+        int i = 0, j = 0;
         switch(sum) {
         case 5:
+            if(_attributes[patch_index].neighbours[2] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[2]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[4] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[4]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[3] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[3]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, shiftPoint, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, shiftPoint, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, shiftPoint, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, shiftPoint, visited);
+                    break;
+                }
+            }
             break;
         case 6:
+            if(_attributes[patch_index].neighbours[2] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[2]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[0] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[0]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[1] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[1]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, shiftPoint, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, shiftPoint, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, shiftPoint, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, shiftPoint, visited);
+                    break;
+                }
+            }
             break;
         case 9:
+            if(_attributes[patch_index].neighbours[4] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[4]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[6] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[6]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[5] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[5]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, shiftPoint, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, shiftPoint, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, shiftPoint, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, shiftPoint, visited);
+                    break;
+                }
+            }
             break;
         case 10:
+            if(_attributes[patch_index].neighbours[0] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[0]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[6] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[6]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 2, 2, -shiftPoint, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 2, -shiftPoint, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 1, 1, -shiftPoint, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 1, -shiftPoint, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[7] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[7]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, shiftPoint, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, shiftPoint, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, shiftPoint, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, shiftPoint, visited);
+                    break;
+                }
+            }
             break;
         }
     }
@@ -1560,37 +1809,92 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPointNeighbours(GLuint patch_
     } else {
 
         GLuint sum = 4 * point_i + point_j;
-        DCoordinate3 p0, p1, p2, np;
-        int i = 0, j = 0;
+        int i = 0, j = 0, x = 0, y = 0;
+        DCoordinate3 p0, p1;
         switch(sum) {
         case 5:
-            if(_attributes[patch_index].neighbours[6] != nullptr) {
+            if(_attributes[patch_index].neighbours[2] != nullptr) {
                 i = 0; j = 0;
-                while(_attributes[i].patch != _attributes[patch_index].neighbours[6]->patch) { i++; }
-                _attributes[patch_index].patch->GetData(1,0,p0);
-                _attributes[patch_index].patch->GetData(1,1,p1);
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[2]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[4] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[4]->patch) { i++; }
                 while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
                 switch(j) {
 
                 case 0:
-                    _attributes[i].patch->GetData(1,1,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 1, 1, np, visited);
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
                     break;
                 case 2:
-                    _attributes[i].patch->GetData(1,2,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 1, 2, np, visited);
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
                     break;
                 case 4:
-                    _attributes[i].patch->GetData(2,2,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 2, 2, np, visited);
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
                     break;
                 case 6:
-                    _attributes[i].patch->GetData(2,1,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 2, 1, np, visited);
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[3] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[3]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, point, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, point, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, point, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, point, visited);
+                    break;
+                }
+            }
+            break;
+        case 6:
+            if(_attributes[patch_index].neighbours[2] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[2]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
                     break;
                 }
             }
@@ -1598,41 +1902,172 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPointNeighbours(GLuint patch_
             if(_attributes[patch_index].neighbours[0] != nullptr) {
                 i = 0; j = 0;
                 while(_attributes[i].patch != _attributes[patch_index].neighbours[0]->patch) { i++; }
-                _attributes[patch_index].patch->GetData(1,0,p0);
-                _attributes[patch_index].patch->GetData(1,1,p1);
                 while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
                 switch(j) {
 
                 case 0:
-                    _attributes[i].patch->GetData(1,1,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 1, 1, np, visited);
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
                     break;
                 case 2:
-                    _attributes[i].patch->GetData(1,2,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 1, 2, np, visited);
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
                     break;
                 case 4:
-                    _attributes[i].patch->GetData(2,2,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 2, 2, np, visited);
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
                     break;
                 case 6:
-                    _attributes[i].patch->GetData(2,1,p2);
-                    np = 2.0 * p0 - p1 - p2;
-                    MoveControlPointNeighbours(i, 2, 1, np, visited);
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
                     break;
                 }
             }
 
+            if(_attributes[patch_index].neighbours[1] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[1]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
 
-            break;
-        case 6:
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, point, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, point, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, point, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, point, visited);
+                    break;
+                }
+            }
             break;
         case 9:
+            if(_attributes[patch_index].neighbours[4] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[4]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[6] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[6]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[5] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[5]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, point, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, point, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, point, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, point, visited);
+                    break;
+                }
+            }
             break;
         case 10:
+            if(_attributes[patch_index].neighbours[0] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[0]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[6] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[6]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    MoveControlPointNeighbours(i, 2, 2, -point, visited);
+                    break;
+                case 2:
+                    MoveControlPointNeighbours(i, 1, 2, -point, visited);
+                    break;
+                case 4:
+                    MoveControlPointNeighbours(i, 1, 1, -point, visited);
+                    break;
+                case 6:
+                    MoveControlPointNeighbours(i, 2, 1, -point, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[7] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[7]->patch) { i++; }
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 1:
+                    MoveControlPointNeighbours(i, 1, 2, point, visited);
+                    break;
+                case 3:
+                    MoveControlPointNeighbours(i, 1, 1, point, visited);
+                    break;
+                case 5:
+                    MoveControlPointNeighbours(i, 2, 1, point, visited);
+                    break;
+                case 7:
+                    MoveControlPointNeighbours(i, 2, 2, point, visited);
+                    break;
+                }
+            }
             break;
         }
     }
