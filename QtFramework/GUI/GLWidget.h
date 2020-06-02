@@ -118,6 +118,15 @@ namespace cagd
         GLdouble x_value;
         GLdouble y_value;
         GLdouble z_value;
+        double _locator[3];
+        bool first = true, _pickPhase = false;
+        GLuint selectBuffer[100];
+        GLint viewport[4], hits;
+        GLenum drawmode;
+        GLdouble x, y, z;
+        double goodpoints[3];
+        void drawControlPoints(bool);
+        void getCoords(DCoordinate3 point);
 
     signals:
         void xcoordhasChanged(double);
@@ -133,6 +142,7 @@ namespace cagd
         void initializeGL();
         void paintGL();
         void resizeGL(int w, int h);
+        void mouseReleaseEvent(QMouseEvent *event);
         void mousePressEvent(QMouseEvent *event);
         void set_side_widget(SideWidget *w);
 

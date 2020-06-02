@@ -20,6 +20,7 @@ using namespace std;
 #include "../Core/HCoordinates3.h"
 #include "../Core/Colors4.h"
 #include "../Core/Lights.h"
+#include "../Biquadratic/BiquadraticCompostieCurves3.h"
 
 namespace cagd
 {
@@ -135,6 +136,7 @@ void GLWidget::paintGL()
 
     if(_homeworkID == 2)
     {
+
         //Render all arcs;
         if(_d1 && _d2)
         {
@@ -169,6 +171,9 @@ void GLWidget::paintGL()
             }
             _curve->RenderArcs();
         }
+
+        drawControlPoints(_pickPhase);
+
     }
 
     else if(_homeworkID == 3)
@@ -277,6 +282,7 @@ void GLWidget::paintGL()
                 }
             }
         }
+        drawControlPoints(_pickPhase);
     }
 
     else if(_homeworkID == 1)
@@ -344,6 +350,31 @@ void GLWidget::paintGL()
 
     }
 
+    /* -- SURFACES------
+     *
+
+        DirectionalLight *dl = 0;
+
+        HCoordinate3 direction(0.0,0.0,1.0,1.0);
+        Color4 ambient(0.4,0.4,0.4,1.0);
+        Color4 diffuse(0.8,0.8,0.8,1.0);
+        Color4 specular(1.0,1.0,1.0,1.0);
+
+        dl = new DirectionalLight(GL_LIGHT0,direction,ambient,diffuse,specular);
+
+        if(dl)
+        {
+            dl->Enable();
+            MatFBRuby.Apply();
+            _surface->Render();
+            dl->Disable();
+        }
+
+        if(dl)
+        {
+            delete dl,dl = 0;
+        }
+        */
     // pops the current matrix stack, replacing the current matrix with the one below it on the stack,
     // i.e., the original model view matrix is restored
     glPopMatrix();
@@ -1130,8 +1161,6 @@ void GLWidget::enable_shader(int value)
 
 }
 
-
-
 void GLWidget::renderCyclic()
 {
     set_current_point(0);
@@ -1276,22 +1305,127 @@ void GLWidget::set_derivative_scale(int value)
     updateGL();
 }
 
-void GLWidget::mousePressEvent(QMouseEvent *event) {
-    GLint viewport[4];
-    GLdouble modelview[16];
-    GLdouble projection[16];
-    GLdouble posX, posY, posZ;
-    GLfloat winx = event->x(), winy = event->y(), winz;
+void processHits(GLint hits, GLuint buffer[])
+{
+    unsigned int i, j;
+    GLuint names, *ptr;
 
-    glGetDoublev( GL_MODELVIEW_MATRIX, modelview );
-    glGetDoublev( GL_PROJECTION_MATRIX, projection );
-    glGetIntegerv( GL_VIEWPORT, viewport );
+    printf("hits = %d\n", hits);
+    ptr = (GLuint *) buffer;
+    for (i = 0; i < hits; i++) {  /* for each hit  */
+       names = *ptr;
+       printf(" number of names for hit = %d\n", names); ptr++;
+       printf("  z1 is %g;", (float) *ptr/0x7fffffff); ptr++;
+       printf(" z2 is %g\n", (float) *ptr/0x7fffffff); ptr++;
+       printf("   the name is ");
+       for (j = 0; j < names; j++) {  /* for each name */
+          printf("%d ", *ptr); ptr++;
+       }
+       printf("\n");
+    }
+}
 
-    glReadPixels(winx, winy, 1, 1, GL_DEPTH_COMPONENT, GL_FLOAT, &winz);
-    gluUnProject(winx, winy, winz, modelview, projection, viewport, &posX, &posY, &posZ);
+void GLWidget::drawControlPoints(bool a) {
+//    _model = models(11);
+//    std::vector<BiquadraticCompositeCurve3::ArcAttributes> _attributes = _curve->get_attributes();
+//    for (GLuint i = 0; i < _attributes.size(); i++) {
+//        for (GLuint j = 0; j < 4; j++) {
+//            DCoordinate3 point = _attributes[i].arc->GetData(j);
+//            if (a)
+//                glLoadName(j);
+//            glPointSize(10.0);
+//            glBegin(GL_POINTS);
+//                glColor3d(1.0, 0.0, 0.0);
+//                glVertex3f(point.x(), point.y(), point.z());
+//            glEnd();
+//            glPushMatrix();
+//            glTranslated(point.x(), point.y(), point.z());
+//            glScaled(0.20, 0.20, 0.20);
+//            glEnable(GL_LIGHTING);
+//            glEnable(GL_LIGHT0);
+//            glEnable(GL_NORMALIZE);
+//            MatFBPearl.Apply();
+//            _model.Render();
+//            glDisable(GL_NORMALIZE);
+//            glDisable(GL_LIGHTING);
+//            glDisable(GL_LIGHT0);
+//            glPopMatrix();
+//        }
+//    }
 
-    cout << winx << " " << winy << " " << winz << endl;
-    cout << posX << " " << posY << " " << posZ << endl;
+    if (a)
+    {
+        glPointSize(10.0);
+        glBegin(GL_POINTS);
+            glColor3d(1.0, 0.0, 0.0);
+            glVertex3dv(_locator);
+        glEnd();
+        glPointSize(1.0);
+
+        glDisable(GL_DEPTH_TEST);
+        glColor3d(1.0, 0.8, 0.0);
+        renderText(_locator[0], _locator[1], _locator[2],
+                   QString::number(_locator[0]) + ", " +
+                   QString::number(_locator[1]) + ", " +
+                   QString::number(_locator[2]));
+        glEnable(GL_DEPTH_TEST);
+    }
+}
+
+void GLWidget::mousePressEvent(QMouseEvent *event)
+{
+    GLdouble projection_matrix[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+
+    glPushMatrix();
+
+        glRotatef(_angle_x, 1.0, 0.0, 0.0);
+        glRotatef(_angle_y, 0.0, 1.0, 0.0);
+        glRotatef(_angle_z, 0.0, 0.0, 1.0);
+        glTranslated(_trans_x, _trans_y, _trans_z);
+        glScaled(_zoom, _zoom, _zoom);
+
+        GLdouble model_view_matrix[16];
+        glGetDoublev(GL_MODELVIEW_MATRIX, model_view_matrix);
+
+    glPopMatrix();
+
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    GLint    win_x = event->x();
+    GLint    win_y = viewport[3] - event->y();
+    GLdouble win_z;
+
+    glReadPixels(win_x, win_y, 1, 1, GL_DEPTH_COMPONENT, GL_DOUBLE, &win_z);
+    gluUnProject(win_x, win_y, win_z, model_view_matrix, projection_matrix, viewport, &_locator[0], &_locator[1], &_locator[2]);
+    cout << "Locator: " << _locator[0] << " " << _locator[1] << " " << _locator[2] << endl;
+
+//    glRenderMode(GL_SELECT);
+//    glInitNames();
+//    glPushName(0);
+//    glSelectBuffer(100, selectBuffer);
+//    glMatrixMode(GL_PROJECTION);
+
+//    glPushMatrix();
+//    glLoadIdentity();
+
+//    gluPickMatrix(_locator[0], _locator[1], 100.0, 100.0, viewport);
+//    gluPerspective(_fovy, _aspect, _z_near, _z_far);
+    _pickPhase = true;
+    updateGL();
+//    glPopMatrix();
+
+//    hits = glRenderMode(GL_RENDER);
+//    cout << "Hits: " << hits << endl;
+
+//    glMatrixMode(GL_MODELVIEW);
+//    _pickPhase = false;
+//    updateGL();
+}
+
+void GLWidget::mouseReleaseEvent(QMouseEvent *event) {
+    _pickPhase = false;
+    updateGL();
 }
 
 /* Arc methods */
@@ -1557,30 +1691,45 @@ void GLWidget::do_patch_operation() {
 
     switch (operation) {
     // Move
-    case 0:
-        // hopefully mouseevent handler
-        cout<<"MOVECP"<<endl;
-        _composite_surface->MoveControlPoint(0,2,2,0,0,1);
-        break;
+    case 0: {
+        GLuint index = _side_widget->selectPatch1->currentIndex();
+        DCoordinate3 point;
 
+        if(!_composite_surface->getPatchAttributes(index).patch->GetData(_side_widget->selectRow->currentIndex(), _side_widget->selectColumn->currentIndex(), point))
+            cout << "No data for patch" << endl;
+
+        GLuint xlocal = point.x(), ylocal = point.y();
+
+        _composite_surface->MoveControlPoint(index, xlocal, ylocal, _side_widget->xspinbox->value(), _side_widget->yspinbox->value(), _side_widget->zspinbox->value());
+        break;
+    }
     //Shift
     case 1:
-        // hopefully mouseevent handler
+        shift();
         break;
 
     // Continue
-    case 2:
+    case 2: {
         cout<<"Continue"<<endl;
-        _composite_surface->ContinueExistingPatch(_composite_surface->getPatchIndex(index1), dir1);
-        break;
+        QString matName = _side_widget->selectPatchMaterial->currentText();
+        _composite_surface->ContinueExistingPatch(_composite_surface->getPatchIndex(index1), dir1, matName.toStdString());
 
+        _side_widget->deletePatchBox->addItem(matName);
+        _side_widget->selectPatch1->addItem(matName);
+        _side_widget->selectPatch2->addItem(matName);
+        break;
+    }
     // Join
-    case 3:
-        // join(patch1, patch2, direction1, direction2);
+    case 3: {
         cout<<"Join"<<endl;
-        _composite_surface->JoinExistingPatches(_composite_surface->getPatchIndex(index1),dir1,_composite_surface->getPatchIndex(index2),dir2);
-        break;
+        QString matName = _side_widget->selectPatchMaterial->currentText();
+        _composite_surface->JoinExistingPatches(_composite_surface->getPatchIndex(index1),dir1,_composite_surface->getPatchIndex(index2),dir2,matName.toStdString());
 
+        _side_widget->deletePatchBox->addItem(matName);
+        _side_widget->selectPatch1->addItem(matName);
+        _side_widget->selectPatch2->addItem(matName);
+        break;
+    }
     // Merge
     case 4:
         // merge(patch1, patch2, direction1, direction2);
@@ -1644,9 +1793,7 @@ void GLWidget::shift()
 
     GLuint index = _side_widget->selectPatch1->currentIndex();
 
-
     _composite_surface->ShiftPatch(index,xvalue,yvalue,zvalue);
-
 
     updateGL();
 }

@@ -59,10 +59,10 @@ namespace cagd {
                                              GLuint u_div_point_count = 30, GLuint v_div_point_count = 30,
                                              GLuint u_isoline_count = 30, GLuint v_isoline_count = 30,
                                              GLenum usage_flag = GL_STATIC_DRAW);
-            GLboolean ContinueExistingPatch(const size_t &patch_index,Direction direction);
+            GLboolean ContinueExistingPatch(const size_t &patch_index,Direction direction,std::string mat);
 
             GLboolean JoinExistingPatches(const size_t &patch_index1, Direction direction1,
-                                       const size_t &patch_index2, Direction direction2);
+                                       const size_t &patch_index2, Direction direction2,std::string mat);
             GLboolean MergeExistingPatches(const size_t &patch_index1, Direction direction1,
                                         const size_t &patch_index2, Direction direction2);
             //render all patches, rendere selected patch, update selected patch

@@ -84,6 +84,8 @@ namespace cagd
         GLuint VertexCount() const; // homework
         GLuint FaceCount() const;   // homework
 
+        DCoordinate3 get_leftmost_vertex();
+
         // destructor
         virtual ~TriangulatedMesh3();
     };

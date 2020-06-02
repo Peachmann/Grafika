@@ -340,7 +340,7 @@ int BiquadraticCompositeSurface3::GetDirectionIndex(Direction direction) const {
     }
 }
 
-GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patch_index, Direction direction)
+GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patch_index, Direction direction, string mat)
 {
     int direc_ind = GetDirectionIndex(direction);
     //check if it already has this neighbor
@@ -538,7 +538,20 @@ GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patc
         }
     }
 
-    _attributes[attr_size].material = &MatFBRuby;
+    if(mat == "Gold")
+        _attributes[attr_size].material = &MatFBGold;
+    if(mat == "Ruby")
+        _attributes[attr_size].material = &MatFBRuby;
+    if(mat == "Emerald")
+        _attributes[attr_size].material = &MatFBEmerald;
+    if(mat == "Brass")
+        _attributes[attr_size].material = &MatFBBrass;
+    if(mat == "Pearl")
+        _attributes[attr_size].material = &MatFBPearl;
+    if(mat == "Turquoise")
+        _attributes[attr_size].material = &MatFBTurquoise;
+    if(mat == "Silver")
+        _attributes[attr_size].material = &MatFBSilver;
 
     //Update dataVBO
     _attributes[attr_size].patch->UpdateVertexBufferObjectsOfData();
@@ -602,7 +615,7 @@ GLboolean BiquadraticCompositeSurface3::ContinueExistingPatch(const size_t &patc
     return GL_TRUE;
 }
 
-GLboolean BiquadraticCompositeSurface3::JoinExistingPatches(const size_t &patch_index1, Direction direction1, const size_t &patch_index2, Direction direction2)
+GLboolean BiquadraticCompositeSurface3::JoinExistingPatches(const size_t &patch_index1, Direction direction1, const size_t &patch_index2, Direction direction2, string mat)
 {
     int direc_ind1 = GetDirectionIndex(direction1);
     int direc_ind2 = GetDirectionIndex(direction2);
@@ -828,7 +841,20 @@ GLboolean BiquadraticCompositeSurface3::JoinExistingPatches(const size_t &patch_
 
     }
 
-    _attributes[attr_size].material = &MatFBRuby;
+    if(mat == "Gold")
+        _attributes[attr_size].material = &MatFBGold;
+    if(mat == "Ruby")
+        _attributes[attr_size].material = &MatFBRuby;
+    if(mat == "Emerald")
+        _attributes[attr_size].material = &MatFBEmerald;
+    if(mat == "Brass")
+        _attributes[attr_size].material = &MatFBBrass;
+    if(mat == "Pearl")
+        _attributes[attr_size].material = &MatFBPearl;
+    if(mat == "Turquoise")
+        _attributes[attr_size].material = &MatFBTurquoise;
+    if(mat == "Silver")
+        _attributes[attr_size].material = &MatFBSilver;
 
     //Update dataVBO
     _attributes[attr_size].patch->UpdateVertexBufferObjectsOfData();
