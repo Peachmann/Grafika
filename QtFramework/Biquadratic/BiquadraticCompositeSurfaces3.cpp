@@ -1414,6 +1414,139 @@ void BiquadraticCompositeSurface3::clear()
     _attributes.clear();
 }
 
+GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint &patch_index, GLuint &point_i, GLuint &point_j, GLdouble x, GLdouble y, GLdouble z) {
+
+    DCoordinate3 shiftPoint(x,y,z);
+
+    DCoordinate3 point;
+    _attributes[patch_index].patch->GetData(point_i, point_j, point);
+    _attributes[patch_index].patch->SetData(point_i, point_j, point + shiftPoint);
+
+    UpdatePatch(patch_index);
+
+    std::vector<PatchAttributes*> visited;
+    visited.push_back(&_attributes[patch_index]);
+
+    if(point_i == 0 || point_j == 0 || point_i == 3 || point_j == 3) {
+
+    } else {
+
+        GLuint sum = 4 * point_i + point_j;
+        switch(sum) {
+        case 5:
+            break;
+        case 6:
+            break;
+        case 9:
+            break;
+        case 10:
+            break;
+        }
+    }
+    return GL_TRUE;
+}
+
+GLboolean BiquadraticCompositeSurface3::MoveControlPointNeighbours(GLuint patch_index, int point_i, int point_j, DCoordinate3 point, std::vector<PatchAttributes*> visited) {
+
+    for(GLuint j = 0 ; j < visited.size(); j++)
+    {
+        if(visited[j] == &_attributes[patch_index])
+        {
+            return GL_FALSE;
+        }
+    }
+    DCoordinate3 p;
+    _attributes[patch_index].patch->GetData(point_i, point_j, p);
+    _attributes[patch_index].patch->SetData(point_i, point_j, p + point);
+
+    UpdatePatch(patch_index);
+
+    visited.push_back(&_attributes[patch_index]);
+
+    if(point_i == 0 || point_j == 0 || point_i == 3 || point_j == 3) {
+
+    } else {
+
+        GLuint sum = 4 * point_i + point_j;
+        DCoordinate3 p0, p1, p2, np;
+        int i = 0, j = 0;
+        switch(sum) {
+        case 5:
+            if(_attributes[patch_index].neighbours[6] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[6]->patch) { i++; }
+                _attributes[patch_index].patch->GetData(1,0,p0);
+                _attributes[patch_index].patch->GetData(1,1,p1);
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    _attributes[i].patch->GetData(1,1,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 1, 1, np, visited);
+                    break;
+                case 2:
+                    _attributes[i].patch->GetData(1,2,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 1, 2, np, visited);
+                    break;
+                case 4:
+                    _attributes[i].patch->GetData(2,2,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 2, 2, np, visited);
+                    break;
+                case 6:
+                    _attributes[i].patch->GetData(2,1,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 2, 1, np, visited);
+                    break;
+                }
+            }
+
+            if(_attributes[patch_index].neighbours[0] != nullptr) {
+                i = 0; j = 0;
+                while(_attributes[i].patch != _attributes[patch_index].neighbours[0]->patch) { i++; }
+                _attributes[patch_index].patch->GetData(1,0,p0);
+                _attributes[patch_index].patch->GetData(1,1,p1);
+                while(_attributes[i].neighbours[j] != &_attributes[patch_index]) { j++; }
+                switch(j) {
+
+                case 0:
+                    _attributes[i].patch->GetData(1,1,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 1, 1, np, visited);
+                    break;
+                case 2:
+                    _attributes[i].patch->GetData(1,2,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 1, 2, np, visited);
+                    break;
+                case 4:
+                    _attributes[i].patch->GetData(2,2,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 2, 2, np, visited);
+                    break;
+                case 6:
+                    _attributes[i].patch->GetData(2,1,p2);
+                    np = 2.0 * p0 - p1 - p2;
+                    MoveControlPointNeighbours(i, 2, 1, np, visited);
+                    break;
+                }
+            }
+
+
+            break;
+        case 6:
+            break;
+        case 9:
+            break;
+        case 10:
+            break;
+        }
+    }
+    return GL_TRUE;
+}
+
 
 
 
