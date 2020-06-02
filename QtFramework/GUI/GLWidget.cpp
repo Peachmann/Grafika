@@ -1569,14 +1569,14 @@ void GLWidget::do_patch_operation() {
     // Continue
     case 2:
         cout<<"Continue"<<endl;
-        _composite_surface->ContinueExistingPatch(0, dir1);
+        _composite_surface->ContinueExistingPatch(_composite_surface->getPatchIndex(index1), dir1);
         break;
 
     // Join
     case 3:
         // join(patch1, patch2, direction1, direction2);
         cout<<"Join"<<endl;
-        _composite_surface->JoinExistingPatches(0,dir1,1,dir2);
+        _composite_surface->JoinExistingPatches(_composite_surface->getPatchIndex(index1),dir1,_composite_surface->getPatchIndex(index2),dir2);
         break;
 
     // Merge
