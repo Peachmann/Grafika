@@ -100,6 +100,11 @@ namespace cagd {
             void PrintNeighbours(GLuint index);
 
             void clear();
+
+            //File operations
+            GLuint ReadSurfaceFromFile(const std::string &file, GLuint index);
+
+            GLboolean SaveSurfaceToFile(const std::string &file);
         };
     };
 #endif // BIQUADRATICCOMPOSITESURFACES3_H

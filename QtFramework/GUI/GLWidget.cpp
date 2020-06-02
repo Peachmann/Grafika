@@ -1766,12 +1766,11 @@ void GLWidget::change_patch_material(int value)
 void GLWidget::curve()
 {
     _curve = new BiquadraticCompositeCurve3();
-    /*
-    if(!_curve->InsertNewIsolatedArc(0))
-       cout<<"Couldn't create new arc!"<<endl;
-    else
-        cout<<"New arc created!"<<endl;
-     */
+    _curveindex += _curve->ReadCurveFromFile("Curves/curve.txt", _curveindex);
+
+    updateGL();
+
+    _curve->SaveCurveToFile("Curves/curve_out.txt");
 }
 
 void GLWidget::loadColors()
@@ -1793,7 +1792,11 @@ void GLWidget::loadColors()
 void GLWidget::surface()
 {
     _composite_surface = new BiquadraticCompositeSurface3();
-    cout<<"Surface created!"<<endl;
+    _surfaceindex +=_composite_surface->ReadSurfaceFromFile("Surfaces/surface2.txt",_surfaceindex);
+
+    updateGL();
+
+    _composite_surface->SaveSurfaceToFile("Surfaces/surf_out.txt");
 }
 
 GLWidget::~GLWidget()

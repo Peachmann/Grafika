@@ -592,7 +592,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
@@ -738,7 +738,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Material</string>
+      <string>Color</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -755,37 +755,32 @@
      </property>
      <item>
       <property name="text">
-       <string>Brass</string>
+       <string>Red</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Gold</string>
+       <string>Green</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Silver</string>
+       <string>Blue</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Emerald</string>
+       <string>Yellow</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Pearl</string>
+       <string>Magenta</string>
       </property>
      </item>
      <item>
       <property name="text">
-       <string>Ruby</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Turquoise</string>
+       <string>Cyan</string>
       </property>
      </item>
     </widget>

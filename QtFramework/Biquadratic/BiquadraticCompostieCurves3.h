@@ -109,6 +109,10 @@ namespace cagd {
         GLboolean moveControlPointZ(const size_t &arc_index, const size_t &point_index, GLdouble offset);
         GLboolean moveControlPointAll(const size_t &arc_index, const size_t &point_index, GLdouble offx, GLdouble offy, GLdouble offz);
 
+        //File operations
+        GLuint ReadCurveFromFile(const std::string &file, GLuint index);
+        GLboolean SaveCurveToFile(const std::string &file);
+
     };
 }
 

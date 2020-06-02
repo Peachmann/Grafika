@@ -1,4 +1,5 @@
 #include "BiquadraticCompositeSurfaces3.h";
+#include "fstream";
 
 
 using namespace std;
@@ -1568,6 +1569,77 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPointNeighbours(GLuint patch_
     return GL_TRUE;
 }
 
+GLuint BiquadraticCompositeSurface3::ReadSurfaceFromFile(const std::string &file, GLuint index)
+{
+
+    fstream f;
+    f.open(file, ios::in);
+    if(!f.good())
+        return GL_FALSE;
+
+    GLuint no_of_patches;
+    f >> no_of_patches;
+
+    Matrix<DCoordinate3> data;
+    data.ResizeRows(4);
+    data.ResizeColumns(4);
+    for(GLuint pno = 0; pno < no_of_patches; pno++)
+    {
+        GLuint n = _attributes.size();
+        _attributes.resize(n + 1);
+        _attributes[n].index = index;
+        index++;
+        _attributes[n].material = &MatFBSilver;
+        _attributes[n].patch = new (nothrow) BiquadraticPatch3();
+
+        if(!_attributes[n].patch)
+        {
+            std::cout<<"Patch not created!\n";
+            _attributes.pop_back();
+            return GL_FALSE;
+        }
+
+        GLdouble x,y,z;
+        for(GLuint i = 0; i < 4;i++)
+        {
+            for(GLuint j = 0; j < 4; j++)
+            {
+                f >> x >> y >> z;
+               _attributes[n].patch->SetData(i,j,x,y,z);
+            }
+        }
+        _attributes[n].patch->UpdateVertexBufferObjectsOfData();
+        UpdatePatch(n);
+    }
+
+    f.close();
+    return no_of_patches;
+
+}
+
+GLboolean BiquadraticCompositeSurface3::SaveSurfaceToFile(const std::string &file)
+{
+    fstream g;
+    g.open(file, ios::out);
+
+    DCoordinate3 point;
+
+    g<<_attributes.size()<<endl<<endl;
+    for(GLuint i = 0; i < _attributes.size(); i++)
+    {
+        for(GLuint j = 0; j < 4 ; j++)
+        {
+            for(GLuint k = 0; k < 4; k++)
+            {
+                 _attributes[i].patch->GetData(j,k,point);
+                 g << point<< endl;
+            }
+            g<<endl;
+        }
+    }
+
+    return GL_TRUE;
+}
 
 
 

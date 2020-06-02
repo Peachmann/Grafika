@@ -1,8 +1,10 @@
 #include "BiquadraticCompostieCurves3.h"
 #include <iostream>
 #include <qmessagebox.h>
+#include "fstream"
 
 using namespace cagd;
+using namespace std;
 
 BiquadraticCompositeCurve3::BiquadraticCompositeCurve3()
 {
@@ -21,7 +23,7 @@ GLboolean BiquadraticCompositeCurve3::SetCurveData(GLuint index, GLuint div_poin
     if(index == 0)
     {
 
-        DCoordinate3 point = *new DCoordinate3(-1.0 , 0.0, 0.0);
+        DCoordinate3 point = DCoordinate3(-1.0 , 0.0, 0.0);
         _attributes[index].arc->SetData(0,point);
         point = DCoordinate3(-2.0, 2.0, 0.0);
         _attributes[index].arc->SetData(1,point);
@@ -358,6 +360,22 @@ GLboolean BiquadraticCompositeCurve3::RenderArcs(GLboolean d1, GLboolean d2, GLb
 
         if(polygon)
         {
+            //Control points
+            glPointSize(25.0f);
+            glBegin(GL_POINTS);
+            for(GLuint  j = 0 ; j < 4; j++)
+            {
+                GLdouble x,y,z;
+                x = _attributes[i].arc->GetData(j).x();
+                y = _attributes[i].arc->GetData(j).y();
+                z = _attributes[i].arc->GetData(j).z();
+                std::cout<<x << " " <<y<<" "<<z<<std::endl;
+                glVertex3f(x,y,z);
+
+            }
+            glEnd();
+
+            glPointSize(1.0f);
             glColor3f(1.0,1.0,1.0);
             _attributes[i].arc->RenderData(GL_LINE_STRIP);
         }
@@ -787,3 +805,71 @@ GLboolean BiquadraticCompositeCurve3::moveControlPointAll(const size_t &arc_inde
 
     return GL_TRUE;
 }
+
+
+
+GLuint BiquadraticCompositeCurve3::ReadCurveFromFile(const std::string &file, GLuint index)
+{
+
+    fstream f;
+    f.open(file, ios::in);
+    if(!f.good())
+        return GL_FALSE;
+
+    GLuint no_of_arcs;
+    f >> no_of_arcs;
+
+    for(GLuint pno = 0; pno < no_of_arcs; pno++)
+    {
+        GLuint n = _attributes.size();
+        _attributes.resize(n + 1);
+        _attributes[n].index = index;
+        index++;
+       // _attributes[n].material = &MatFBSilver;
+        _attributes[n].color = new Color4(1.0f,1.0f,1.0f);
+        _attributes[n].arc = new (nothrow) BiquadraticArcs3();
+
+        if(!_attributes[n].arc)
+        {
+            std::cout<<"Arc not created!\n";
+            _attributes.pop_back();
+            return GL_FALSE;
+        }
+
+        GLdouble x,y,z;
+            for(GLuint j = 0; j < 4; j++)
+            {
+                f >> x >> y >> z;
+                DCoordinate3 p = DCoordinate3(x,y,z);
+               _attributes[n].arc->SetData(j,p);
+            }
+        _attributes[n].arc->UpdateVertexBufferObjectsOfData();
+        UpdateArc_2(n,30,3);
+    }
+
+    f.close();
+    return no_of_arcs;
+
+}
+
+GLboolean BiquadraticCompositeCurve3::SaveCurveToFile(const std::string &file)
+{
+
+    fstream g;
+    g.open(file, ios::out);
+
+    g<<_attributes.size()<<endl<<endl;
+    for(GLuint i = 0; i < _attributes.size(); i++)
+    {
+        for(GLuint j = 0; j < 4 ; j++)
+        {
+
+         g<< _attributes[i].arc->GetData(j)<<endl;
+        }
+        g<<endl;
+    }
+
+    return GL_TRUE;
+}
+
+
