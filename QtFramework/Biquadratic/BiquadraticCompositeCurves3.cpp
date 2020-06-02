@@ -20,23 +20,24 @@ GLboolean BiquadraticCompositeCurve3::SetCurveData(GLuint index, GLuint div_poin
 
     if(index == 0)
     {
+
         DCoordinate3 point = *new DCoordinate3(-1.0 , 0.0, 0.0);
         _attributes[index].arc->SetData(0,point);
-        point = *new DCoordinate3(-2.0, 2.0, 0.0);
+        point = DCoordinate3(-2.0, 2.0, 0.0);
         _attributes[index].arc->SetData(1,point);
-        point = *new DCoordinate3(1.0, 1.0, 0.0);
+        point = DCoordinate3(1.0, 1.0, 0.0);
         _attributes[index].arc->SetData(2,point);
-        point = *new DCoordinate3(3.0, 0.0, 0.0);
+        point = DCoordinate3(3.0, 0.0, 0.0);
         _attributes[index].arc->SetData(3,point);
     }
     else
-    { DCoordinate3 point = *new DCoordinate3(2.0 , 0.0, 0.0);
+    { DCoordinate3 point = DCoordinate3(2.0 , 0.0, 0.0);
         _attributes[index].arc->SetData(0,point);
-        point = *new DCoordinate3(1.0, 2.0, 0.0);
+        point = DCoordinate3(1.0, 2.0, 0.0);
         _attributes[index].arc->SetData(1,point);
-        point = *new DCoordinate3(4.0, 1.0, 0.0);
+        point = DCoordinate3(4.0, 1.0, 0.0);
         _attributes[index].arc->SetData(2,point);
-        point = *new DCoordinate3(6.0, 0.0, 0.0);
+        point = DCoordinate3(6.0, 0.0, 0.0);
         _attributes[index].arc->SetData(3,point);
     }
 

@@ -320,19 +320,19 @@ int BiquadraticCompositeSurface3::GetDirectionIndex(Direction direction) const {
 
     case N:
         return 0;
-    case NE:
+    case NW:
         return 1;
-    case E:
+    case W:
         return 2;
-    case SE:
+    case SW:
         return 3;
     case S:
         return 4;
-    case SW:
+    case SE:
         return 5;
-    case W:
+    case E:
         return 6;
-    case NW:
+    case NE:
         return 7;
     default:
         return -1;
@@ -848,6 +848,11 @@ GLboolean BiquadraticCompositeSurface3::MergeExistingPatches(const size_t &patch
 
     if(patch_index1 == patch_index2)
         return GL_FALSE;
+    if(_attributes[patch_index1].neighbours[direction1])
+        return GL_FALSE;
+
+    if(_attributes[patch_index2].neighbours[direction2])
+        return GL_FALSE;
 
     RowMatrix<DCoordinate3> newPoints;
     newPoints.ResizeColumns(4);
@@ -1298,7 +1303,6 @@ GLboolean BiquadraticCompositeSurface3::UpdatePatch(GLuint index)
 GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_lines, GLboolean v_lines, GLboolean polygon)
 {
 
-    //std::cout<<"Belemegy " << _attributes.size() <<"\n";
     if(_attributes.size() == 0)
     {
         std::cout<<"No elements!"<<std::endl;
@@ -1306,6 +1310,8 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
     }
     for(GLuint i = 0 ; i < _attributes.size(); i++)
     {
+
+
         if(u_lines)
         {
             for(GLuint j = 0 ; j < _attributes[i].u_isolines->GetColumnCount();j++)
@@ -1331,6 +1337,21 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
         }
         if(polygon)
         {
+            glColor3f(0.8,0.8,0.8);
+            glPointSize(25.0f);
+            glBegin(GL_POINTS);
+            for(GLuint ii = 0; ii < 4; ii++)
+            {
+                for(GLuint jj = 0; jj < 4; jj++)
+                {
+                    GLdouble x,y,z;
+                    _attributes[i].patch->GetData(ii,jj,x,y,z);
+                    glVertex3f(x,y,z);
+                }
+            }
+            glEnd();
+            glPointSize(1.0f);
+
             glLineWidth(3.0f);
             glColor3f(1.0,1.0,1.0);
             _attributes[i].patch->RenderData();
