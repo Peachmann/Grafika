@@ -1530,26 +1530,35 @@ void GLWidget::do_arc_operation() {
         break;
     }
     // Continue
-    case 2:
-        if(direction1 == "Right")
-            _curve->ContinueExistingArc(index1,BiquadraticCompositeCurve3::RIGHT);
-        else
-            _curve->ContinueExistingArc(index1,BiquadraticCompositeCurve3::LEFT);
-        // continue(arc1, direction1);
-        break;
+    case 2: {
+        QString colorName = _side_widget->arcColorBox->currentText();
+        Color4 *col = getColorFromString(colorName.toStdString());
 
+        if(direction1 == "Right")
+            _curve->ContinueExistingArc(index1,BiquadraticCompositeCurve3::RIGHT, col);
+        else
+            _curve->ContinueExistingArc(index1,BiquadraticCompositeCurve3::LEFT, col);
+
+        _side_widget->deleteArcBox->addItem(colorName);
+        _side_widget->selectArc1->addItem(colorName);
+        _side_widget->selectArc2->addItem(colorName);
+
+        break;
+    }
     // Join
     case 3: {
-        if(direction1 == "Right" && direction2 == "Left" )
-              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::LEFT);
-        else if(direction1 == "Right" && direction2 == "Right")
-              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::RIGHT);
-        else if(direction1 == "Left" && direction2 == "Right")
-              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::RIGHT);
-        else if(direction1 == "Left" && direction2 == "Left")
-              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::LEFT);
+        QString colorName = _side_widget->arcColorBox->currentText();
+        Color4 *col = getColorFromString(colorName.toStdString());
 
-        QString colorName = _side_widget->arcColor->currentText();
+        if(direction1 == "Right" && direction2 == "Left" )
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::LEFT, col);
+        else if(direction1 == "Right" && direction2 == "Right")
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::RIGHT, col);
+        else if(direction1 == "Left" && direction2 == "Right")
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::RIGHT, col);
+        else if(direction1 == "Left" && direction2 == "Left")
+              _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::LEFT, col);
+
         _side_widget->deleteArcBox->addItem(colorName);
         _side_widget->selectArc1->addItem(colorName);
         _side_widget->selectArc2->addItem(colorName);

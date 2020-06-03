@@ -1483,12 +1483,24 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
                 _attributes[i].mesh->Render();
             }
             directionalL->Disable();
+            delete directionalL;
             break;
         }
-        case 1:
+        case 1: {
+            HCoordinate3 dir(10.0, 10.0, 10.0, 0.0), spotdir(1.0, 1.0, 1.0, 0.0);
+            Color4 ambient(0.4, 0.4, 0.4, 1.0);
+            Color4 diffuse(0.8, 0.8, 0.8, 1.0);
+            Color4 specular(1.0, 1.0, 1.0, 1.0);
+            Spotlight *spotL = new Spotlight(GL_LIGHT0, dir, ambient, diffuse, specular, 1.0, 1.0, 1.0, spotdir, 30.0, 10.0);
+            spotL->Enable();
+            if(_attributes[i].mesh)
+            {
+                _attributes[i].material->Apply();
+                _attributes[i].mesh->Render();
+            }
+            spotL->Disable();
             break;
-        case 2:
-            break;
+        }
         case 3: {
             glEnable(GL_LIGHTING);
             glEnable(GL_LIGHT0);
