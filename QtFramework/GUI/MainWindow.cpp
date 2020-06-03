@@ -84,7 +84,7 @@ namespace cagd
         connect(_side_widget->doArcOperation, SIGNAL(clicked()), _gl_widget, SLOT(do_arc_operation()));
         connect(_side_widget->arcColor,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(change_arc_color(int)));
 
-
+        connect(_side_widget->lightCheck,SIGNAL(stateChanged(int)),_gl_widget,SLOT(set_light(int)));
 
         /* Patch controller */
         connect(_side_widget->addPatch, SIGNAL(clicked()), _gl_widget, SLOT(add_patch()));

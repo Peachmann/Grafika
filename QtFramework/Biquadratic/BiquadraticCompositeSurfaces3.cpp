@@ -1405,7 +1405,7 @@ GLboolean BiquadraticCompositeSurface3::UpdatePatch(GLuint index)
 
 }
 
-GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_lines, GLboolean v_lines, GLboolean polygon)
+GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_lines, GLboolean v_lines, GLboolean polygon, GLuint light)
 {
 
     if(_attributes.size() == 0)
@@ -1468,19 +1468,45 @@ GLboolean BiquadraticCompositeSurface3::RenderPatches(GLboolean d1, GLboolean u_
             _attributes[i].patch->RenderData();
             glLineWidth(1.0f);
         }
-        glEnable(GL_LIGHTING);
-        glEnable(GL_LIGHT0);
-        glEnable(GL_NORMALIZE);
 
-        if(_attributes[i].mesh)
-        {
-            _attributes[i].material->Apply();
-            _attributes[i].mesh->Render();
+        switch (light) {
+        case 0: {
+            HCoordinate3 dir(10.0, 10.0, 10.0, 0.0);
+            Color4 ambient(0.4, 0.4, 0.4, 1.0);
+            Color4 diffuse(0.8, 0.8, 0.8, 1.0);
+            Color4 specular(1.0, 1.0, 1.0, 1.0);
+            DirectionalLight *directionalL = new DirectionalLight(GL_LIGHT0, dir, ambient, diffuse, specular);
+            directionalL->Enable();
+            if(_attributes[i].mesh)
+            {
+                _attributes[i].material->Apply();
+                _attributes[i].mesh->Render();
+            }
+            directionalL->Disable();
+            break;
+        }
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3: {
+            glEnable(GL_LIGHTING);
+            glEnable(GL_LIGHT0);
+            glEnable(GL_NORMALIZE);
+
+            if(_attributes[i].mesh)
+            {
+                _attributes[i].material->Apply();
+                _attributes[i].mesh->Render();
+            }
+
+            glDisable(GL_LIGHTING);
+            glDisable(GL_LIGHT0);
+            glDisable(GL_NORMALIZE);
+            break;
         }
 
-        glDisable(GL_LIGHTING);
-        glDisable(GL_LIGHT0);
-        glDisable(GL_NORMALIZE);
+        }
     }
 
     return GL_TRUE;

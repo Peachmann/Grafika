@@ -15,6 +15,7 @@
 #include "../Biquadratic/BiquadraticCompositeSurfaces3.h"
 #include "../Core/ShaderPrograms.h"
 #include "../Core/Colors4.h"
+#include "../Core/Lights.h"
 #include "SideWidget.h"
 
 namespace cagd
@@ -93,6 +94,13 @@ namespace cagd
 
         float _toon_color_1 = 0.0,_toon_color_2 = 0.0,_toon_color_3 = 0.0,_toon_color_4 = 0.0;
 
+        /* Light stuff */
+        bool isLight = true;
+        GLuint lightMode;
+        void loadLights();
+        DirectionalLight *directionalL;
+        PointLight *pointL;
+        Spotlight *spotL;
 
         /*Arcs / Patch*/
         RowMatrix<GenericCurve3*>* _uiso;
@@ -216,7 +224,7 @@ namespace cagd
         void renderArc();
         void set_derivative_scale(int);
 
-
+        void set_light(int);
 
         /* Arc controller */
         void add_arc();

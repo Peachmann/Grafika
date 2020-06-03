@@ -3,6 +3,7 @@
 #include "BiquadraticPatches3.h"
 #include <Core/Materials.h>
 #include <Core/ShaderPrograms.h>
+#include "../Core/Lights.h"
 
 
 namespace cagd {
@@ -67,7 +68,7 @@ namespace cagd {
                                         const size_t &patch_index2, Direction direction2);
             //render all patches, rendere selected patch, update selected patch
 
-            GLboolean RenderPatches(GLboolean d1 = GL_FALSE, GLboolean u_lines = GL_FALSE, GLboolean v_lines = GL_FALSE, GLboolean polygon = GL_FALSE);
+            GLboolean RenderPatches(GLboolean d1 = GL_FALSE, GLboolean u_lines = GL_FALSE, GLboolean v_lines = GL_FALSE, GLboolean polygon = GL_FALSE, GLuint light = 3);
 
             GLboolean ShiftPatch(GLuint index, GLdouble off_x, GLdouble off_y, GLdouble off_z);
 

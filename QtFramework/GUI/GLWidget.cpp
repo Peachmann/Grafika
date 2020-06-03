@@ -127,6 +127,9 @@ void GLWidget::paintGL()
     // stores/duplicates the original model view matrix
     glPushMatrix();
 
+    (isLight) ? lightMode = _side_widget->selectLight->currentIndex() : lightMode = 3;
+
+    cout << "LightMode " << lightMode << endl;
     // applying transformations
     glRotatef(_angle_x, 1.0, 0.0, 0.0);
     glRotatef(_angle_y, 0.0, 1.0, 0.0);
@@ -184,11 +187,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_TRUE,GL_FALSE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_TRUE,GL_FALSE,lightMode);
                 }
 
             }
@@ -196,11 +199,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_TRUE,GL_TRUE);
+                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_TRUE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                     _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_TRUE,GL_FALSE);
+                     _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_TRUE,GL_FALSE,lightMode);
                 }
             }
         }
@@ -210,11 +213,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_FALSE,GL_TRUE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_FALSE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_FALSE,GL_FALSE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_TRUE,GL_FALSE,GL_FALSE,lightMode);
                 }
 
             }
@@ -222,11 +225,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_FALSE,GL_TRUE);
+                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_FALSE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_FALSE,GL_FALSE);
+                    _composite_surface->RenderPatches(GL_FALSE,GL_TRUE,GL_FALSE,GL_FALSE,lightMode);
                 }
             }
         }
@@ -236,11 +239,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_TRUE,GL_TRUE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_TRUE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_TRUE,GL_FALSE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_TRUE,GL_FALSE,lightMode);
                 }
 
             }
@@ -248,11 +251,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                     _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_TRUE,GL_TRUE);
+                     _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_TRUE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_TRUE,GL_FALSE);
+                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_TRUE,GL_FALSE,lightMode);
                 }
             }
         }
@@ -262,11 +265,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_FALSE,GL_TRUE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_FALSE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_FALSE,GL_FALSE);
+                    _composite_surface->RenderPatches(GL_TRUE,GL_FALSE,GL_FALSE,GL_FALSE,lightMode);
                 }
 
             }
@@ -274,11 +277,11 @@ void GLWidget::paintGL()
             {
                 if(_control_net_status)
                 {
-                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_FALSE,GL_TRUE);
+                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_FALSE,GL_TRUE,lightMode);
                 }
                 else
                 {
-                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE);
+                    _composite_surface->RenderPatches(GL_FALSE,GL_FALSE,GL_FALSE,GL_FALSE,lightMode);
                 }
             }
         }
@@ -1506,20 +1509,26 @@ void GLWidget::do_arc_operation() {
 
     switch (operation) {
     // Move
-    case 0:
-        // hopefully mouseevent handler
-        //_curve->moveOnAxisX(index1,-5.0);
-        //_curve->moveOnAxisZ(index1,-5.0);
-        //_curve->ShiftArc(index1,-1.0,0.0,0.0);
-        _curve->moveOnAllAxis(index1,-5.0,5.0,5.0);
-        break;
+    case 0: {
+        GLuint pointindex = _side_widget->arcPointSelect->currentIndex();
+        GLdouble localx = _side_widget->arcxbox->value();
+        GLdouble localy = _side_widget->arcybox->value();
+        GLdouble localz = _side_widget->arczbox->value();
 
+        _curve->moveControlPointAll(index1, pointindex, localx, localy, localz);
+        break;
+    }
     //Shift
-    case 1:
-        // hopefully mouseevent handler
-        _curve->moveControlPointAll(index1, 2, -1.0, 2.0, -0.5);
-        break;
+    case 1: {
+        // hopefully mouseevent handler :(
 
+        GLdouble localx = _side_widget->arcxbox->value();
+        GLdouble localy = _side_widget->arcybox->value();
+        GLdouble localz = _side_widget->arczbox->value();
+
+        _curve->moveOnAllAxis(index1,localx, localy, localz);
+        break;
+    }
     // Continue
     case 2:
         if(direction1 == "Right")
@@ -1530,7 +1539,7 @@ void GLWidget::do_arc_operation() {
         break;
 
     // Join
-    case 3:
+    case 3: {
         if(direction1 == "Right" && direction2 == "Left" )
               _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::LEFT);
         else if(direction1 == "Right" && direction2 == "Right")
@@ -1539,11 +1548,16 @@ void GLWidget::do_arc_operation() {
               _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::RIGHT);
         else if(direction1 == "Left" && direction2 == "Left")
               _curve->JoinExistingArcs(index1,BiquadraticCompositeCurve3::LEFT,index2,BiquadraticCompositeCurve3::LEFT);
-        break;
 
+        QString colorName = _side_widget->arcColor->currentText();
+        _side_widget->deleteArcBox->addItem(colorName);
+        _side_widget->selectArc1->addItem(colorName);
+        _side_widget->selectArc2->addItem(colorName);
+
+        break;
+    }
     // Merge
     case 4:
-        // merge(arc1, arc2, direction1, direction2);
        if(direction1 == "Right" && direction2 == "Left" )
              _curve->MergeExistingArcs(index1,BiquadraticCompositeCurve3::RIGHT,index2,BiquadraticCompositeCurve3::LEFT);
        else if(direction1 == "Right" && direction2 == "Right")
@@ -1779,7 +1793,7 @@ void GLWidget::do_patch_operation() {
     // Continue
     case 2: {
         cout<<"Continue"<<endl;
-        QString matName = _side_widget->selectPatchMaterial->currentText();
+        QString matName = _side_widget->patchColorBox->currentText();
         _composite_surface->ContinueExistingPatch(_composite_surface->getPatchIndex(index1), dir1, matName.toStdString());
 
         _side_widget->deletePatchBox->addItem(matName);
@@ -1790,7 +1804,7 @@ void GLWidget::do_patch_operation() {
     // Join
     case 3: {
         cout<<"Join"<<endl;
-        QString matName = _side_widget->selectPatchMaterial->currentText();
+        QString matName = _side_widget->patchColorBox->currentText();
         _composite_surface->JoinExistingPatches(_composite_surface->getPatchIndex(index1),dir1,_composite_surface->getPatchIndex(index2),dir2,matName.toStdString());
 
         _side_widget->deletePatchBox->addItem(matName);
@@ -1882,6 +1896,11 @@ void GLWidget::set_individual_shader(int value)
     }
 }
 
+void GLWidget::set_light(int v) {
+    (v > 0) ? isLight = true : isLight = false;
+    cout << "Light is " << isLight << endl;
+    updateGL();
+}
 
 void GLWidget::change_patch_material(int value)
 {
