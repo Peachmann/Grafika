@@ -204,7 +204,9 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
     }
 
     DCoordinate3 p0, p1, p2, p3;
+
     // setting up first 2 points
+
     switch (direction1) {
 
     case LEFT:
