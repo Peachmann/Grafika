@@ -138,6 +138,8 @@ namespace cagd
 
         Color4* getColorFromString(std::string c);
 
+        std::string getMaterialName(Material *m);
+
 
 
     signals:

@@ -180,12 +180,13 @@ GLboolean BiquadraticCompositeCurve3::MergeExistingArcs(const size_t &arc_index1
     return GL_TRUE;
 }
 
-GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1, Direction direction1, const size_t &arc_index2, Direction direction2)
+GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1, Direction direction1, const size_t &arc_index2, Direction direction2,Color4* color)
 {
     //Insert new attribute (arc)
     GLint attr_size = _attributes.size();
     _attributes.resize(attr_size + 1);
     _attributes[attr_size].arc = new BiquadraticArcs3();
+    _attributes[attr_size].color = color;
 
     //If selected arcs have already neighbours
     if((direction1 == LEFT && _attributes[arc_index1].previous != nullptr) ||
@@ -247,7 +248,7 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
     _attributes[attr_size].previous = &_attributes[arc_index2];
     _attributes[attr_size].next = &_attributes[arc_index1];
 
-    _attributes[attr_size].color = new Color4(0.2f,0.7f,0.8f);
+  //  _attributes[attr_size].color = new Color4(0.2f,0.7f,0.8f);
 
     _attributes[attr_size].arc->UpdateVertexBufferObjectsOfData();
 
@@ -278,12 +279,13 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
     return GL_TRUE;
 }
 
-GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_index, Direction direction)
+GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_index, Direction direction, Color4* color)
 {
     //Insert new attribute (arc)
     GLint attr_size = _attributes.size();
     _attributes.resize(attr_size + 1);
     _attributes[attr_size].arc = new BiquadraticArcs3();
+    _attributes[attr_size].color = color;
     if((direction == LEFT && _attributes[arc_index].previous != nullptr) || (direction == RIGHT && _attributes[arc_index].next != nullptr)) {
         return GL_FALSE;
     }
@@ -316,7 +318,7 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
     _attributes[attr_size].arc->SetData(1,(2.0 * p0 - p1) );
     _attributes[attr_size].arc->SetData(2,(3.0 * p0 - 2.0 * p1));
     _attributes[attr_size].arc->SetData(3,(4.0 * p0 - 3.0 * p1));
-    _attributes[attr_size].color = new Color4(0.2f,0.7f,0.8f);
+   // _attributes[attr_size].color = new Color4(0.2f,0.7f,0.8f);
 
     _attributes[attr_size].arc->UpdateVertexBufferObjectsOfData();
 

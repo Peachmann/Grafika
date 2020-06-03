@@ -73,10 +73,11 @@ namespace cagd {
         //_attributes[i].glColor4fv(&(*_attributes[i].color)[0]);
 
         GLboolean InsertNewIsolatedArc(GLuint index, Color4* color = new Color4(1.0,1.0,1.0,1.0));
-        GLboolean ContinueExistingArc(const size_t &arc_index,Direction direction);
+        GLboolean ContinueExistingArc(const size_t &arc_index,Direction direction, Color4* col);
 
         GLboolean JoinExistingArcs(const size_t &arc_index1, Direction direction1,
-                                   const size_t &arc_index2, Direction direction2);
+                                   const size_t &arc_index2, Direction direction2,
+                                   Color4* color);
         GLboolean MergeExistingArcs(const size_t &arc_index1, Direction direction1,
                                     const size_t &arc_index2, Direction direction2,
                                     GLuint div_point_count = 30,

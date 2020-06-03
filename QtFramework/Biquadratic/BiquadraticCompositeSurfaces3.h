@@ -48,7 +48,7 @@ namespace cagd {
             //i_attributes[i].image->RenderDerivatives(..,..);
             //_attributes[i].glColor4fv(&(*_attributes[i].color)[0]);
         public:
-
+            std::vector<Material*>  loaded_materials;
             //Constructors
             BiquadraticCompositeSurface3(GLuint max = 1000);
             BiquadraticCompositeSurface3(const BiquadraticCompositeSurface3 &rhs);
@@ -106,6 +106,12 @@ namespace cagd {
             GLuint ReadSurfaceFromFile(const std::string &file, GLuint index);
 
             GLboolean SaveSurfaceToFile(const std::string &file);
+
+            //Material to text
+            std::string convertMaterialToText(Material* m);
+
+
+
         };
     };
 #endif // BIQUADRATICCOMPOSITESURFACES3_H

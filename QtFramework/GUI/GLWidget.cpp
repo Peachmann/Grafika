@@ -2051,6 +2051,11 @@ void GLWidget::loadFromFile()
 
             Color4* color = getColorFromString(_curve->loadedColors[j]);
             _curve->changeArcColorByIndex(i,color);
+            string c = _curve->loadedColors[j];
+            QString x = QString::fromStdString(c);
+            _side_widget->deleteArcBox->addItem(x);
+            _side_widget->selectArc1->addItem(x);
+            _side_widget->selectArc2->addItem(x);
             j++;
         }
 
@@ -2062,9 +2067,23 @@ void GLWidget::loadFromFile()
     else if(_homeworkID == 3) // surface
     {
          path = "Surfaces/";
-         _surfaceindex+=_composite_surface->ReadSurfaceFromFile(path+s,_surfaceindex);
+         GLuint added = 0;
+         added = _composite_surface->ReadSurfaceFromFile(path+s,_surfaceindex);
+
+
+         GLuint j = 0;
+         for(GLuint i = _surfaceindex; i < added + _surfaceindex; i++)
+         {
+            string mat = getMaterialName( _composite_surface->loaded_materials[j]);
+            QString c = QString::fromStdString(mat);
+            _side_widget->deletePatchBox->addItem(c);
+            _side_widget->selectPatch1->addItem(c);
+            _side_widget->selectPatch2->addItem(c);
+            j++;
+         }
+
+         _surfaceindex += added;
     }
-    cout<<path+s;
     updateGL();
 
 }
@@ -2104,6 +2123,25 @@ Color4* GLWidget::getColorFromString(std::string c)
         return _colors[5];
 
     return _colors[0];
+}
+
+std::string GLWidget::getMaterialName(Material *m)
+{
+    if(m == &MatFBGold)
+        return "Gold";
+    if(m == &MatFBRuby)
+        return "Ruby";
+    if(m == &MatFBBrass)
+        return "Brass";
+    if(m == &MatFBPearl)
+        return "Pearl";
+    if(m == &MatFBSilver)
+        return "Silver";
+    if(m == &MatFBEmerald)
+        return "Emerald";
+    if(m == &MatFBTurquoise)
+        return "Turqoise";
+    return "Ruby";
 }
 
 GLWidget::~GLWidget()
