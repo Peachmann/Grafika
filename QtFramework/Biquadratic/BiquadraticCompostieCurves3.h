@@ -5,6 +5,7 @@
 #include <Core/Colors4.h>
 #include <Core/Constants.h>
 
+
 namespace cagd {
     class BiquadraticCompositeCurve3
     {
@@ -55,6 +56,7 @@ namespace cagd {
         std::vector<ArcAttributes> _attributes; //at1 at2 at3
         GLuint _maxArcNumber;
     public:
+        std::vector<std::string> loadedColors;
         //Default Constructor
         BiquadraticCompositeCurve3();
 
@@ -111,7 +113,13 @@ namespace cagd {
 
         //File operations
         GLuint ReadCurveFromFile(const std::string &file, GLuint index);
-        GLboolean SaveCurveToFile(const std::string &file);
+        GLboolean SaveCurveToFile(const std::string &file, RowMatrix<Color4*> colors);
+
+        //Change color by index
+        GLboolean changeArcColorByIndex(GLuint index, Color4 *colors);
+
+        //Color to String
+       GLuint convertColorToIndex(RowMatrix<Color4*> colors,Color4* color);
 
     };
 }

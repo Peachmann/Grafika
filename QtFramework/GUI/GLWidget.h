@@ -128,6 +128,10 @@ namespace cagd
         void drawControlPoints(bool);
         void getCoords(DCoordinate3 point);
 
+        Color4* getColorFromString(std::string c);
+
+
+
     signals:
         void xcoordhasChanged(double);
         void ycoordhasChanged(double);
@@ -219,6 +223,7 @@ namespace cagd
         void delete_arc();
         void do_arc_operation();
         GLuint get_index_by_color(Color4* color);
+        void change_arc_color(int value);
 
         /* Patch controller */
         void add_patch();
@@ -234,6 +239,10 @@ namespace cagd
 
         /* Suface */
         void surface();
+
+        /* File operations */
+        void loadFromFile();
+        void saveToFile();
 
    private:
         void testMatrices();

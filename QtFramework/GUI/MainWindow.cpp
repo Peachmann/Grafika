@@ -82,6 +82,9 @@ namespace cagd
         connect(_side_widget->addArc, SIGNAL(clicked()), _gl_widget, SLOT(add_arc()));
         connect(_side_widget->deleteArc, SIGNAL(clicked()), _gl_widget, SLOT(delete_arc()));
         connect(_side_widget->doArcOperation, SIGNAL(clicked()), _gl_widget, SLOT(do_arc_operation()));
+        connect(_side_widget->arcColor,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(change_arc_color(int)));
+
+
 
         /* Patch controller */
         connect(_side_widget->addPatch, SIGNAL(clicked()), _gl_widget, SLOT(add_patch()));
@@ -91,6 +94,11 @@ namespace cagd
 
         /* Individual Shader */
        // connect(_side_widget->shader_comboBox_2,SIGNAL(currentIndexChanged(int)),_gl_widget,SLOT(set_individual_shader(int)));
+
+        /* File operation */
+        connect(_side_widget->load_button,SIGNAL(clicked()),_gl_widget,SLOT(loadFromFile()));
+        connect(_side_widget->save_button,SIGNAL(clicked()),_gl_widget,SLOT(saveToFile()));
+
     }
 
     //--------------------------------

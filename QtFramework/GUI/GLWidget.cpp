@@ -1496,32 +1496,9 @@ void GLWidget::do_arc_operation() {
     GLuint operation = _side_widget->operationBox->currentIndex();
 
     GLuint index1 = -1,index2 = -1;
+    index1 = _side_widget->selectArc1->currentIndex();
+    index2 = _side_widget->selectArc2->currentIndex();
 
-    if(arc1 == "Red")
-        index1 = get_index_by_color(_colors[0]);
-    else if(arc1 == "Green")
-        index1 = get_index_by_color(_colors[1]);
-    else if(arc1 == "Blue")
-        index1 = get_index_by_color(_colors[2]);
-    else if(arc1 == "Yellow")
-        index1 = get_index_by_color(_colors[3]);
-    else if(arc1 == "Magenta")
-        index1 = get_index_by_color(_colors[4]);
-    else if(arc1 == "Cyan")
-        index1 = get_index_by_color(_colors[5]);
-
-    if(arc2 == "Red")
-        index2 = get_index_by_color(_colors[0]);
-    else if(arc2 == "Green")
-        index2 = get_index_by_color(_colors[1]);
-    else if(arc2 == "Blue")
-        index2 = get_index_by_color(_colors[2]);
-    else if(arc2 == "Yellow")
-        index2 = get_index_by_color(_colors[3]);
-    else if(arc2 == "Magenta")
-        index2 = get_index_by_color(_colors[4]);
-    else if(arc2 == "Cyan")
-        index2 = get_index_by_color(_colors[5]);
 
     cout<<"Index of 1: " << index1 <<" Index of 2: "<<index2<<endl;
 
@@ -1581,6 +1558,97 @@ void GLWidget::do_arc_operation() {
     updateGL();
 }
 
+void GLWidget::change_arc_color(int value)
+{
+    GLuint index = _side_widget->selectArc1->currentIndex();
+    switch (value) {
+        case 0:
+            _curve->changeArcColorByIndex(index,_colors[0]);
+            _side_widget->deleteArcBox->removeItem(index);
+            _side_widget->deleteArcBox->insertItem(index,"Red");
+
+            _side_widget->selectArc1->removeItem(index);
+            _side_widget->selectArc1->insertItem(index,"Red");
+
+            _side_widget->selectArc2->removeItem(index);
+            _side_widget->selectArc2->insertItem(index,"Red");
+
+        break;
+        case 1:
+            _curve->changeArcColorByIndex(index,_colors[1]);
+            _side_widget->deleteArcBox->removeItem(index);
+            _side_widget->deleteArcBox->insertItem(index,"Green");
+
+            _side_widget->selectArc1->removeItem(index);
+            _side_widget->selectArc1->insertItem(index,"Green");
+
+            _side_widget->selectArc2->removeItem(index);
+            _side_widget->selectArc2->insertItem(index,"Green");
+        break;
+        case 2:
+            _curve->changeArcColorByIndex(index,_colors[2]);
+
+            _side_widget->deleteArcBox->removeItem(index);
+            _side_widget->deleteArcBox->insertItem(index,"Blue");
+
+            _side_widget->selectArc1->removeItem(index);
+            _side_widget->selectArc1->insertItem(index,"Blue");
+
+            _side_widget->selectArc2->removeItem(index);
+            _side_widget->selectArc2->insertItem(index,"Blue");
+        break;
+        case 3:
+            _curve->changeArcColorByIndex(index,_colors[3]);
+
+            _side_widget->deleteArcBox->removeItem(index);
+            _side_widget->deleteArcBox->insertItem(index,"Yellow");
+
+            _side_widget->selectArc1->removeItem(index);
+            _side_widget->selectArc1->insertItem(index,"Yellow");
+
+            _side_widget->selectArc2->removeItem(index);
+            _side_widget->selectArc2->insertItem(index,"Yellow");
+        break;
+        case 4:
+            _curve->changeArcColorByIndex(index,_colors[4]);
+
+            _side_widget->deleteArcBox->removeItem(index);
+            _side_widget->deleteArcBox->insertItem(index,"Magenta");
+
+            _side_widget->selectArc1->removeItem(index);
+            _side_widget->selectArc1->insertItem(index,"Magenta");
+
+            _side_widget->selectArc2->removeItem(index);
+            _side_widget->selectArc2->insertItem(index,"Magenta");
+        break;
+        case 5:
+            _curve->changeArcColorByIndex(index,_colors[5]);
+
+            _side_widget->deleteArcBox->removeItem(index);
+            _side_widget->deleteArcBox->insertItem(index,"Cyan");
+
+            _side_widget->selectArc1->removeItem(index);
+            _side_widget->selectArc1->insertItem(index,"Cyan");
+
+            _side_widget->selectArc2->removeItem(index);
+            _side_widget->selectArc2->insertItem(index,"Cyan");
+        break;
+        default:
+            _curve->changeArcColorByIndex(index,_colors[0]);
+            _side_widget->deleteArcBox->removeItem(index);
+            _side_widget->deleteArcBox->insertItem(index,"Red");
+
+            _side_widget->selectArc1->removeItem(index);
+            _side_widget->selectArc1->insertItem(index,"Red");
+
+            _side_widget->selectArc2->removeItem(index);
+            _side_widget->selectArc2->insertItem(index,"Red");
+        break;
+
+    }
+
+    updateGL();
+}
 
 GLuint GLWidget::get_index_by_color(Color4* color)
 {
@@ -1814,7 +1882,7 @@ void GLWidget::set_individual_shader(int value)
     }
 }
 
-/* NOT WORKING */
+
 void GLWidget::change_patch_material(int value)
 {
     GLuint patch = _side_widget->selectPatch1->currentIndex();
@@ -1915,11 +1983,6 @@ void GLWidget::change_patch_material(int value)
 void GLWidget::curve()
 {
     _curve = new BiquadraticCompositeCurve3();
-    _curveindex += _curve->ReadCurveFromFile("Curves/curve.txt", _curveindex);
-
-    updateGL();
-
-    _curve->SaveCurveToFile("Curves/curve_out.txt");
 }
 
 void GLWidget::loadColors()
@@ -1941,11 +2004,78 @@ void GLWidget::loadColors()
 void GLWidget::surface()
 {
     _composite_surface = new BiquadraticCompositeSurface3();
-    _surfaceindex +=_composite_surface->ReadSurfaceFromFile("Surfaces/surface2.txt",_surfaceindex);
+}
 
+void GLWidget::loadFromFile()
+{
+    string path;
+    string s = _side_widget->lineEdit->text().toStdString();
+    if(_homeworkID == 2) // curve
+    {
+        path = "Curves/";
+        GLuint added = 0;
+        added =_curve->ReadCurveFromFile(path+s,_curveindex);
+
+        GLuint j = 0;
+
+        for(GLuint i = _curveindex ; i < added + _curveindex; i++)
+        {
+
+            Color4* color = getColorFromString(_curve->loadedColors[j]);
+            _curve->changeArcColorByIndex(i,color);
+            j++;
+        }
+
+        _curveindex += added;
+
+
+
+    }
+    else if(_homeworkID == 3) // surface
+    {
+         path = "Surfaces/";
+         _surfaceindex+=_composite_surface->ReadSurfaceFromFile(path+s,_surfaceindex);
+    }
+    cout<<path+s;
     updateGL();
 
-    _composite_surface->SaveSurfaceToFile("Surfaces/surf_out.txt");
+}
+
+void GLWidget::saveToFile()
+{
+    string path;
+    string s = _side_widget->lineEdit->text().toStdString();
+    if(_homeworkID == 2) // curve
+    {
+        path = "Curves/";
+
+        _curve->SaveCurveToFile(path+s, _colors);
+    }
+    else if(_homeworkID == 3) // surface
+    {
+         path = "Surfaces/";
+         _composite_surface->SaveSurfaceToFile(path+s);
+    }
+
+    updateGL();
+}
+
+Color4* GLWidget::getColorFromString(std::string c)
+{
+    if(c == "Red")
+        return _colors[0];
+    if(c == "Green")
+        return _colors[1];
+    if(c == "Blue")
+        return _colors[2];
+    if(c == "Yellow")
+        return _colors[3];
+    if(c == "Magenta")
+        return _colors[4];
+    if(c == "Cyan")
+        return _colors[5];
+
+    return _colors[0];
 }
 
 GLWidget::~GLWidget()

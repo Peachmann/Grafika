@@ -369,7 +369,6 @@ GLboolean BiquadraticCompositeCurve3::RenderArcs(GLboolean d1, GLboolean d2, GLb
                 x = _attributes[i].arc->GetData(j).x();
                 y = _attributes[i].arc->GetData(j).y();
                 z = _attributes[i].arc->GetData(j).z();
-                std::cout<<x << " " <<y<<" "<<z<<std::endl;
                 glVertex3f(x,y,z);
 
             }
@@ -810,7 +809,7 @@ GLboolean BiquadraticCompositeCurve3::moveControlPointAll(const size_t &arc_inde
 
 GLuint BiquadraticCompositeCurve3::ReadCurveFromFile(const std::string &file, GLuint index)
 {
-
+    loadedColors.clear();
     fstream f;
     f.open(file, ios::in);
     if(!f.good())
@@ -819,13 +818,16 @@ GLuint BiquadraticCompositeCurve3::ReadCurveFromFile(const std::string &file, GL
     GLuint no_of_arcs;
     f >> no_of_arcs;
 
+    std::string color;
+
     for(GLuint pno = 0; pno < no_of_arcs; pno++)
     {
+        f >> color;
+        loadedColors.push_back(color);
         GLuint n = _attributes.size();
         _attributes.resize(n + 1);
         _attributes[n].index = index;
         index++;
-       // _attributes[n].material = &MatFBSilver;
         _attributes[n].color = new Color4(1.0f,1.0f,1.0f);
         _attributes[n].arc = new (nothrow) BiquadraticArcs3();
 
@@ -852,15 +854,39 @@ GLuint BiquadraticCompositeCurve3::ReadCurveFromFile(const std::string &file, GL
 
 }
 
-GLboolean BiquadraticCompositeCurve3::SaveCurveToFile(const std::string &file)
+GLboolean BiquadraticCompositeCurve3::SaveCurveToFile(const std::string &file, RowMatrix<Color4*> colors)
 {
 
     fstream g;
     g.open(file, ios::out);
-
+    std::string color;
     g<<_attributes.size()<<endl<<endl;
     for(GLuint i = 0; i < _attributes.size(); i++)
     {
+        GLuint c_index = convertColorToIndex(colors,_attributes[i].color);
+        switch (c_index) {
+        case 0:
+            g << "Red" << endl;
+            break;
+        case 1:
+            g << "Green" << endl;
+            break;
+        case 2:
+            g << "Blue" << endl;
+            break;
+        case 3:
+            g << "Yellow" << endl;
+            break;
+        case 4:
+            g << "Magenta" << endl;
+            break;
+        case 5:
+            g << "Cyan" << endl;
+            break;
+        default:
+            g << "Red" << endl;
+            break;
+        }
         for(GLuint j = 0; j < 4 ; j++)
         {
 
@@ -872,4 +898,19 @@ GLboolean BiquadraticCompositeCurve3::SaveCurveToFile(const std::string &file)
     return GL_TRUE;
 }
 
+GLuint BiquadraticCompositeCurve3::convertColorToIndex(RowMatrix<Color4*> colors, Color4 *color)
+{
+    for(GLuint i = 0 ; i < colors.GetColumnCount(); i++)
+    {
+        if(color == colors[i])
+            return i;
+    }
+    return -1;
+}
+
+GLboolean BiquadraticCompositeCurve3::changeArcColorByIndex(GLuint index, Color4 *color)
+{
+    _attributes[index].color = color;
+    return GL_TRUE;
+}
 
