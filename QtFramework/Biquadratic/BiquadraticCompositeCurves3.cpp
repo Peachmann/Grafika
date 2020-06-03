@@ -187,6 +187,7 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
     _attributes.resize(attr_size + 1);
     _attributes[attr_size].arc = new BiquadraticArcs3();
     _attributes[attr_size].color = color;
+    _attributes[attr_size].index = attr_size;
 
     //If selected arcs have already neighbours
     if((direction1 == LEFT && _attributes[arc_index1].previous != nullptr) ||
@@ -210,11 +211,14 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
         p0 = _attributes[arc_index1].arc->GetData(0);
         p1 = _attributes[arc_index1].arc->GetData(1);
         _attributes[arc_index1].previous = &_attributes[attr_size];
+        _attributes[attr_size].next = &_attributes[arc_index1];
         break;
     case RIGHT:
         p0 = _attributes[arc_index1].arc->GetData(3);
         p1 = _attributes[arc_index1].arc->GetData(2);
         _attributes[arc_index1].next = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index1];
+
         break;
     default:
         std :: cout << "That should not have happened..." << std :: endl;
@@ -228,11 +232,13 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
         p3 = _attributes[arc_index2].arc->GetData(0);
         p2 = _attributes[arc_index2].arc->GetData(1);
         _attributes[arc_index2].previous = &_attributes[attr_size];
+        _attributes[attr_size].next = &_attributes[arc_index2];
         break;
     case RIGHT:
         p3 = _attributes[arc_index2].arc->GetData(3);
         p2 = _attributes[arc_index2].arc->GetData(2);
         _attributes[arc_index2].next = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index2];
         break;
     default:
         std :: cout << "That should not have happened..." << std :: endl;
@@ -245,8 +251,7 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
     _attributes[attr_size].arc->SetData(2,(2.0 * p3 - p2));
     _attributes[attr_size].arc->SetData(3,p3);
 
-    _attributes[attr_size].previous = &_attributes[arc_index2];
-    _attributes[attr_size].next = &_attributes[arc_index1];
+
 
   //  _attributes[attr_size].color = new Color4(0.2f,0.7f,0.8f);
 
@@ -286,6 +291,7 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
     _attributes.resize(attr_size + 1);
     _attributes[attr_size].arc = new BiquadraticArcs3();
     _attributes[attr_size].color = color;
+    _attributes[attr_size].index = attr_size;
     if((direction == LEFT && _attributes[arc_index].previous != nullptr) || (direction == RIGHT && _attributes[arc_index].next != nullptr)) {
         return GL_FALSE;
     }
@@ -303,11 +309,13 @@ GLboolean BiquadraticCompositeCurve3::ContinueExistingArc(const size_t &arc_inde
         p0 = _attributes[arc_index].arc->GetData(0);
         p1 = _attributes[arc_index].arc->GetData(1);
         _attributes[arc_index].previous = &_attributes[attr_size];
+        _attributes[attr_size].next = &_attributes[arc_index];
         break;
     case RIGHT:
         p0 = _attributes[arc_index].arc->GetData(3);
         p1 = _attributes[arc_index].arc->GetData(2);
         _attributes[arc_index].next = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index];
         break;
     default:
         std :: cout << "That should not have happened..." << std :: endl;
@@ -622,6 +630,55 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisZ(const size_t &arc_index, GLdou
     return GL_TRUE;
 }
 
+GLboolean BiquadraticCompositeCurve3::shiftArc(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz, std::vector<ArcAttributes *> visited)
+{
+    for(GLuint i = 0; i < 4; i++)
+    {
+        GLdouble x = _attributes[arc_index].arc->GetData(i).x();
+        GLdouble y = _attributes[arc_index].arc->GetData(i).y();
+        GLdouble z = _attributes[arc_index].arc->GetData(i).z();
+        _attributes[arc_index].arc->SetData(i,DCoordinate3(x + offx,y+offy, z + offz));
+    }
+    UpdateArc_2(arc_index,30,3);
+    visited.push_back(&_attributes[arc_index]);
+
+    GLboolean ok = GL_TRUE;
+    if(_attributes[arc_index].next)
+    {
+        for(GLuint i = 0 ; i < visited.size(); i++)
+        {
+            if(visited[i] == _attributes[arc_index].next)
+            {
+                ok = GL_FALSE;
+                break;
+            }
+        }
+        if(ok)
+        {
+            shiftArc(_attributes[arc_index].next->index,offx,offy,offz,visited);
+        }
+    }
+
+    if(_attributes[arc_index].previous)
+    {
+        for(GLuint i = 0 ; i < visited.size(); i++)
+        {
+            if(visited[i] == _attributes[arc_index].previous)
+            {
+                ok = GL_FALSE;
+                break;
+            }
+        }
+        if(ok)
+        {
+            shiftArc(_attributes[arc_index].previous->index,offx,offy,offz,visited);
+        }
+    }
+
+    return GL_TRUE;
+
+}
+
 GLboolean BiquadraticCompositeCurve3::moveOnAllAxis(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz) {
 
     ArcAttributes* first = &_attributes[arc_index];
@@ -634,7 +691,8 @@ GLboolean BiquadraticCompositeCurve3::moveOnAllAxis(const size_t &arc_index, GLd
     }
     UpdateArc_2(*first,30,3);
     std::cout<< first->index << std::endl;
-
+   // std::vector<ArcAttributes*> visited;
+   // visited.push_back(&_attributes[arc_index]);
     ArcAttributes *next;
     next = first->previous;
 

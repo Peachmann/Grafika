@@ -104,6 +104,7 @@ namespace cagd {
 
 
 
+
         std::vector<ArcAttributes> get_attributes();
 
         //moving control points
@@ -111,6 +112,9 @@ namespace cagd {
         GLboolean moveControlPointY(const size_t &arc_index, const size_t &point_index, GLdouble offset);
         GLboolean moveControlPointZ(const size_t &arc_index, const size_t &point_index, GLdouble offset);
         GLboolean moveControlPointAll(const size_t &arc_index, const size_t &point_index, GLdouble offx, GLdouble offy, GLdouble offz);
+
+        //Shift
+        GLboolean shiftArc(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz,std::vector<ArcAttributes*> _avector);
 
         //File operations
         GLuint ReadCurveFromFile(const std::string &file, GLuint index);

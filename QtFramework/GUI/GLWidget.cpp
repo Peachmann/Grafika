@@ -1526,7 +1526,10 @@ void GLWidget::do_arc_operation() {
         GLdouble localy = _side_widget->arcybox->value();
         GLdouble localz = _side_widget->arczbox->value();
 
-        _curve->moveOnAllAxis(index1,localx, localy, localz);
+        //_curve->moveOnAllAxis(index1,localx, localy, localz);
+        std::vector<BiquadraticCompositeCurve3::ArcAttributes*> visited;
+        visited.clear();
+        _curve->shiftArc(index1,localx,localy,localz,visited);
         break;
     }
     // Continue
