@@ -1784,14 +1784,14 @@ void GLWidget::do_patch_operation() {
     // Move
     case 0: {
         GLuint index = _side_widget->selectPatch1->currentIndex();
-        DCoordinate3 point;
+        //DCoordinate3 point;
 
-        if(!_composite_surface->getPatchAttributes(index).patch->GetData(_side_widget->selectRow->currentIndex(), _side_widget->selectColumn->currentIndex(), point))
-            cout << "No data for patch" << endl;
+        //if(!_composite_surface->getPatchAttributes(index).patch->GetData(_side_widget->selectRow->currentIndex(), _side_widget->selectColumn->currentIndex(), point))
+         //   cout << "No data for patch" << endl;
 
-        GLuint xlocal = point.x(), ylocal = point.y();
+        //GLuint xlocal = point.x(), ylocal = point.y();
 
-        _composite_surface->MoveControlPoint(index, xlocal, ylocal, _side_widget->xspinbox->value(), _side_widget->yspinbox->value(), _side_widget->zspinbox->value());
+        _composite_surface->MoveControlPoint(index, _side_widget->selectRow->currentIndex(), _side_widget->selectColumn->currentIndex(), _side_widget->xspinbox->value(), _side_widget->yspinbox->value(), _side_widget->zspinbox->value());
         break;
     }
     //Shift
