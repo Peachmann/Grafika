@@ -1578,66 +1578,36 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
     if(point_i == 0 || point_j == 0 || point_i == 3 || point_j == 3) {
 
         GLuint sum = 4 * point_i + point_j;
-        int i = 0, j = 0, x = 0, y = 0;
+        int i = 0, x = 0, y = 0;
         DCoordinate3 p0, p1, op;
         switch(sum) {
         case 0:
+            visited.push_back(&_attributes[patch_index]);
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(0, 1, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 1, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
+                    if(i == patch_index) continue;
+
                     _attributes[patch_index].patch->GetData(0, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
                         }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(1, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(1, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
                     }
                 }
             }
@@ -1647,9 +1617,10 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
             _attributes[patch_index].patch->SetData(0, 1, op + point);
             _attributes[patch_index].patch->GetData(1, 0, op);
             _attributes[patch_index].patch->SetData(1, 0, op + point);
+            _attributes[patch_index].patch->GetData(1, 1, op);
+            _attributes[patch_index].patch->SetData(1, 1, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,1,1,point,visited);
             break;
         case 1:
             for(int l = 0; l < 8; l++) {
@@ -1673,77 +1644,22 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                         _attributes[patch_index].patch->GetData(0, 1, op);
                         _attributes[i].patch->SetData(x,y, op + point);;
                     }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(0, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(1, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(1, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
                 }
             }
-            _attributes[patch_index].patch->GetData(0, 0, op);
-            _attributes[patch_index].patch->SetData(0, 0, op + point);
             _attributes[patch_index].patch->GetData(0, 1, op);
             _attributes[patch_index].patch->SetData(0, 1, op + point);
-            _attributes[patch_index].patch->GetData(1, 0, op);
-            _attributes[patch_index].patch->SetData(1, 0, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,1,1,point,visited);
+            MoveControlPointNeighbours(patch_index,1,1,-point,visited);
+            _attributes[patch_index].patch->GetData(1, 1, op);
+            _attributes[patch_index].patch->SetData(1, 1, op + 2 * point);
             break;
         case 2:
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(1, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(1, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
+
                     _attributes[patch_index].patch->GetData(0, 2, p0);
                     _attributes[i].patch->GetData(x, y, p1);
                     while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
@@ -1761,147 +1677,62 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                         _attributes[patch_index].patch->GetData(0, 2, op);
                         _attributes[i].patch->SetData(x,y, op + point);
                     }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(0, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
                 }
             }
-            _attributes[patch_index].patch->GetData(0, 3, op);
-            _attributes[patch_index].patch->SetData(0, 3, op + point);
             _attributes[patch_index].patch->GetData(0, 2, op);
             _attributes[patch_index].patch->SetData(0, 2, op + point);
-            _attributes[patch_index].patch->GetData(1, 3, op);
-            _attributes[patch_index].patch->SetData(1, 3, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,1,2,point,visited);
+            MoveControlPointNeighbours(patch_index,1,2,-point,visited);
+            _attributes[patch_index].patch->GetData(1, 2, op);
+            _attributes[patch_index].patch->SetData(1, 2, op + 2 * point);
             break;
         case 3:
+            visited.push_back(&_attributes[patch_index]);
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(1, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(1, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(0, 2, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 2, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
+                    if(i == patch_index) continue;
+
                     _attributes[patch_index].patch->GetData(0, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
                         }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
                     }
                 }
             }
-            _attributes[patch_index].patch->GetData(0, 3, op);
-            _attributes[patch_index].patch->SetData(0, 3, op + point);
             _attributes[patch_index].patch->GetData(0, 2, op);
             _attributes[patch_index].patch->SetData(0, 2, op + point);
+            _attributes[patch_index].patch->GetData(0, 3, op);
+            _attributes[patch_index].patch->SetData(0, 3, op + point);
+            _attributes[patch_index].patch->GetData(1, 2, op);
+            _attributes[patch_index].patch->SetData(1, 2, op + point);
             _attributes[patch_index].patch->GetData(1, 3, op);
             _attributes[patch_index].patch->SetData(1, 3, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,1,2,point,visited);
             break;
         case 4:
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(0, 1, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 1, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(0, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
                     _attributes[patch_index].patch->GetData(1, 0, p0);
                     _attributes[i].patch->GetData(x, y, p1);
                     while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
@@ -1921,15 +1752,13 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                     }
                 }
             }
-            _attributes[patch_index].patch->GetData(0, 0, op);
-            _attributes[patch_index].patch->SetData(0, 0, op + point);
-            _attributes[patch_index].patch->GetData(0, 1, op);
-            _attributes[patch_index].patch->SetData(0, 1, op + point);
             _attributes[patch_index].patch->GetData(1, 0, op);
             _attributes[patch_index].patch->SetData(1, 0, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,1,1,point,visited);
+            MoveControlPointNeighbours(patch_index,1,1,-point,visited);
+            _attributes[patch_index].patch->GetData(1, 1, op);
+            _attributes[patch_index].patch->SetData(1, 1, op + 2 * point);
             break;
         case 7:
             for(int l = 0; l < 8; l++) {
@@ -1953,53 +1782,15 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                         _attributes[patch_index].patch->GetData(1, 3, op);
                         _attributes[i].patch->SetData(x,y, op + point);;
                     }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(0, 2, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 2, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(0, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(0, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
                 }
             }
-            _attributes[patch_index].patch->GetData(0, 3, op);
-            _attributes[patch_index].patch->SetData(0, 3, op + point);
-            _attributes[patch_index].patch->GetData(0, 2, op);
-            _attributes[patch_index].patch->SetData(0, 2, op + point);
             _attributes[patch_index].patch->GetData(1, 3, op);
             _attributes[patch_index].patch->SetData(1, 3, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,1,2,point,visited);
+            MoveControlPointNeighbours(patch_index,1,2,-point,visited);
+            _attributes[patch_index].patch->GetData(1, 2, op);
+            _attributes[patch_index].patch->SetData(1, 2, op + 2 * point);
             break;
         case 8:
             for(int l = 0; l < 8; l++) {
@@ -2023,95 +1814,21 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                         _attributes[patch_index].patch->GetData(2, 0, op);
                         _attributes[i].patch->SetData(x,y, op + point);;
                     }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(3, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(3, 1, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 1, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
                 }
             }
             _attributes[patch_index].patch->GetData(2, 0, op);
             _attributes[patch_index].patch->SetData(2, 0, op + point);
-            _attributes[patch_index].patch->GetData(3, 0, op);
-            _attributes[patch_index].patch->SetData(3, 0, op + point);
-            _attributes[patch_index].patch->GetData(3, 1, op);
-            _attributes[patch_index].patch->SetData(3, 1, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,2,1,point,visited);
+            MoveControlPointNeighbours(patch_index,2,1,-point,visited);
+            _attributes[patch_index].patch->GetData(2, 1, op);
+            _attributes[patch_index].patch->SetData(2, 1, op + 2 * point);
             break;
         case 11:
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(3, 2, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 2, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(3, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
                     _attributes[patch_index].patch->GetData(2, 3, p0);
                     _attributes[i].patch->GetData(x, y, p1);
                     while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
@@ -2131,127 +1848,60 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                     }
                 }
             }
-            _attributes[patch_index].patch->GetData(3, 3, op);
-            _attributes[patch_index].patch->SetData(3, 3, op + point);
             _attributes[patch_index].patch->GetData(2, 3, op);
             _attributes[patch_index].patch->SetData(2, 3, op + point);
-            _attributes[patch_index].patch->GetData(3, 2, op);
-            _attributes[patch_index].patch->SetData(3, 2, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,2,2,point,visited);
+            MoveControlPointNeighbours(patch_index,2,2,-point,visited);
+            _attributes[patch_index].patch->GetData(2, 2, op);
+            _attributes[patch_index].patch->SetData(2, 2, op + 2 * point);
             break;
         case 12:
+            visited.push_back(&_attributes[patch_index]);
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(2, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(2, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
+                    if(i == patch_index) continue;
+
                     _attributes[patch_index].patch->GetData(3, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
                         }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(3, 1, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 1, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
                     }
                 }
             }
             _attributes[patch_index].patch->GetData(2, 0, op);
             _attributes[patch_index].patch->SetData(2, 0, op + point);
+            _attributes[patch_index].patch->GetData(2, 1, op);
+            _attributes[patch_index].patch->SetData(2, 1, op + point);
             _attributes[patch_index].patch->GetData(3, 0, op);
             _attributes[patch_index].patch->SetData(3, 0, op + point);
             _attributes[patch_index].patch->GetData(3, 1, op);
             _attributes[patch_index].patch->SetData(3, 1, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,2,1,point,visited);
             break;
         case 13:
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(2, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(2, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(3, 0, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 0, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
                     _attributes[patch_index].patch->GetData(3, 1, p0);
                     _attributes[i].patch->GetData(x, y, p1);
                     while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
@@ -2271,15 +1921,13 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                     }
                 }
             }
-            _attributes[patch_index].patch->GetData(2, 0, op);
-            _attributes[patch_index].patch->SetData(2, 0, op + point);
-            _attributes[patch_index].patch->GetData(3, 0, op);
-            _attributes[patch_index].patch->SetData(3, 0, op + point);
             _attributes[patch_index].patch->GetData(3, 1, op);
             _attributes[patch_index].patch->SetData(3, 1, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,2,1,point,visited);
+            MoveControlPointNeighbours(patch_index,2,1,-point,visited);
+            _attributes[patch_index].patch->GetData(2, 1, op);
+            _attributes[patch_index].patch->SetData(2, 1, op + 2 * point);
             break;
         case 14:
             for(int l = 0; l < 8; l++) {
@@ -2303,125 +1951,59 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPoint(GLuint patch_index, GLu
                         _attributes[patch_index].patch->GetData(3, 2, op);
                         _attributes[i].patch->SetData(x,y, op + point);;
                     }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(3, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(2, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(2, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
                 }
             }
-            _attributes[patch_index].patch->GetData(3, 3, op);
-            _attributes[patch_index].patch->SetData(3, 3, op + point);
-            _attributes[patch_index].patch->GetData(2, 3, op);
-            _attributes[patch_index].patch->SetData(2, 3, op + point);
             _attributes[patch_index].patch->GetData(3, 2, op);
             _attributes[patch_index].patch->SetData(3, 2, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,2,2,point,visited);
+            MoveControlPointNeighbours(patch_index,2,2,-point,visited);
+            _attributes[patch_index].patch->GetData(2, 2, op);
+            _attributes[patch_index].patch->SetData(2, 2, op + 2 * point);
             break;
         case 15:
+            visited.push_back(&_attributes[patch_index]);
             for(int l = 0; l < 8; l++) {
                 if(_attributes[patch_index].neighbours[l] != nullptr) {
                     i = 0; x = 0; y = 0;
                     while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
-                    _attributes[patch_index].patch->GetData(3, 2, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 2, op);
-                        _attributes[i].patch->SetData(x,y, op + point);;
-                    }
-                    x = 0; y = 0;
+                    if(i == patch_index) continue;
+
                     _attributes[patch_index].patch->GetData(3, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
                         }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(3, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
-                    }
-                    x = 0; y = 0;
-                    _attributes[patch_index].patch->GetData(2, 3, p0);
-                    _attributes[i].patch->GetData(x, y, p1);
-                    while(p0.x() != p1.x() || p0.y() != p1.y() || p0.z() != p1.z()) {
-                        y++;
-                        if(y == 4) {
-                            x++;
-                            y = 0;
-                        }
-                        if(x == 4) {
-                            break;
-                        }
-                        _attributes[i].patch->GetData(x, y, p1);
-                    }
-                    if(x != 4) {
-                        _attributes[patch_index].patch->GetData(2, 3, op);
-                        _attributes[i].patch->SetData(x,y, op + point);
                     }
                 }
             }
-            _attributes[patch_index].patch->GetData(3, 3, op);
-            _attributes[patch_index].patch->SetData(3, 3, op + point);
+            _attributes[patch_index].patch->GetData(2, 2, op);
+            _attributes[patch_index].patch->SetData(2, 2, op + point);
             _attributes[patch_index].patch->GetData(2, 3, op);
             _attributes[patch_index].patch->SetData(2, 3, op + point);
             _attributes[patch_index].patch->GetData(3, 2, op);
             _attributes[patch_index].patch->SetData(3, 2, op + point);
+            _attributes[patch_index].patch->GetData(3, 3, op);
+            _attributes[patch_index].patch->SetData(3, 3, op + point);
 
             UpdatePatch(patch_index);
-            MoveControlPointNeighbours(patch_index,2,2,point,visited);
             break;
         }
+        UpdatePatch(patch_index);
     } else {
 
         DCoordinate3 op;
@@ -2746,16 +2328,184 @@ GLboolean BiquadraticCompositeSurface3::MoveControlPointNeighbours(GLuint patch_
         }
     }
     DCoordinate3 p;
-    _attributes[patch_index].patch->GetData(point_i, point_j, p);
-    _attributes[patch_index].patch->SetData(point_i, point_j, p + point);
-    UpdatePatch(patch_index);
+    int s = point_i * 4 + point_j;
+    if(s != 0 && s != 3 && s != 12 && s != 15) {
+        _attributes[patch_index].patch->GetData(point_i, point_j, p);
+        _attributes[patch_index].patch->SetData(point_i, point_j, p + point);
+        UpdatePatch(patch_index);
+    }
 
     visited.push_back(&_attributes[patch_index]);
 
     if(point_i == 0 || point_j == 0 || point_i == 3 || point_j == 3) {
         DCoordinate3 op;
-        _attributes[patch_index].patch->GetData(point_i, point_j, op);
-        _attributes[patch_index].patch->SetData(point_i, point_j, op + point);
+        /*_attributes[patch_index].patch->GetData(point_i, point_j, op);
+        _attributes[patch_index].patch->SetData(point_i, point_j, op + point);*/
+        int sum = point_i * 4 + point_j;
+        int i = 0, x = 0, y = 0;
+        DCoordinate3 p0, p1;
+        switch(sum) {
+        case 0:
+            for(int l = 0; l < 8; l++) {
+                if(_attributes[patch_index].neighbours[l] != nullptr) {
+                    i = 0; x = 0; y = 0;
+                    while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
+                    if(i == patch_index) continue;
+
+                    _attributes[patch_index].patch->GetData(0, 0, p0);
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _attributes[patch_index].patch->GetData(0, 0, op);
+            _attributes[patch_index].patch->SetData(0, 0, op + point);
+            _attributes[patch_index].patch->GetData(0, 1, op);
+            _attributes[patch_index].patch->SetData(0, 1, op + point);
+            _attributes[patch_index].patch->GetData(1, 0, op);
+            _attributes[patch_index].patch->SetData(1, 0, op + point);
+            _attributes[patch_index].patch->GetData(1, 1, op);
+            _attributes[patch_index].patch->SetData(1, 1, op + point);
+
+            UpdatePatch(patch_index);
+            break;
+        case 3:
+            for(int l = 0; l < 8; l++) {
+                if(_attributes[patch_index].neighbours[l] != nullptr) {
+                    i = 0; x = 0; y = 0;
+                    while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
+                    if(i == patch_index) continue;
+
+                    _attributes[patch_index].patch->GetData(0, 3, p0);
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _attributes[patch_index].patch->GetData(0, 2, op);
+            _attributes[patch_index].patch->SetData(0, 2, op + point);
+            _attributes[patch_index].patch->GetData(0, 3, op);
+            _attributes[patch_index].patch->SetData(0, 3, op + point);
+            _attributes[patch_index].patch->GetData(1, 2, op);
+            _attributes[patch_index].patch->SetData(1, 2, op + point);
+            _attributes[patch_index].patch->GetData(1, 3, op);
+            _attributes[patch_index].patch->SetData(1, 3, op + point);
+
+            UpdatePatch(patch_index);
+            break;
+        case 12:
+            for(int l = 0; l < 8; l++) {
+                if(_attributes[patch_index].neighbours[l] != nullptr) {
+                    i = 0; x = 0; y = 0;
+                    while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
+                    if(i == patch_index) continue;
+
+                    _attributes[patch_index].patch->GetData(3, 0, p0);
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _attributes[patch_index].patch->GetData(2, 0, op);
+            _attributes[patch_index].patch->SetData(2, 0, op + point);
+            _attributes[patch_index].patch->GetData(2, 1, op);
+            _attributes[patch_index].patch->SetData(2, 1, op + point);
+            _attributes[patch_index].patch->GetData(3, 0, op);
+            _attributes[patch_index].patch->SetData(3, 0, op + point);
+            _attributes[patch_index].patch->GetData(3, 1, op);
+            _attributes[patch_index].patch->SetData(3, 1, op + point);
+
+            UpdatePatch(patch_index);
+            break;
+        case 15:
+            for(int l = 0; l < 8; l++) {
+                if(_attributes[patch_index].neighbours[l] != nullptr) {
+                    i = 0; x = 0; y = 0;
+                    while(&_attributes[i] != _attributes[patch_index].neighbours[l]) { i++; }
+                    if(i == patch_index) continue;
+
+                    _attributes[patch_index].patch->GetData(3, 3, p0);
+                    _attributes[i].patch->GetData(0, 0, p1);
+                    if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                        MoveControlPointNeighbours(i,0,0,point,visited);
+                    } else {
+                        _attributes[i].patch->GetData(0, 3, p1);
+                        if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                            MoveControlPointNeighbours(i,0,3,point,visited);
+                        } else {
+                            _attributes[i].patch->GetData(3, 0, p1);
+                            if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                MoveControlPointNeighbours(i,3,0,point,visited);
+                            } else {
+                                _attributes[i].patch->GetData(3, 3, p1);
+                                if(p1.x() == p0.x() && p1.y() == p0.y() && p1.z() == p0.z()) {
+                                    MoveControlPointNeighbours(i,3,3,point,visited);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            _attributes[patch_index].patch->GetData(2, 2, op);
+            _attributes[patch_index].patch->SetData(2, 2, op + point);
+            _attributes[patch_index].patch->GetData(2, 3, op);
+            _attributes[patch_index].patch->SetData(2, 3, op + point);
+            _attributes[patch_index].patch->GetData(3, 2, op);
+            _attributes[patch_index].patch->SetData(3, 2, op + point);
+            _attributes[patch_index].patch->GetData(3, 3, op);
+            _attributes[patch_index].patch->SetData(3, 3, op + point);
+
+            UpdatePatch(patch_index);
+            break;
+        }
 
         UpdatePatch(patch_index);
     } else {

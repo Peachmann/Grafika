@@ -207,19 +207,43 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
 
     // setting up first 2 points
 
+    if(direction1 == LEFT && direction2 == RIGHT) {
+        _attributes[arc_index1].previous = &_attributes[attr_size];
+        _attributes[arc_index2].next = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index1];
+        _attributes[attr_size].next = &_attributes[arc_index2];
+    } else if(direction1 == LEFT && direction2 == LEFT) {
+        _attributes[arc_index1].previous = &_attributes[attr_size];
+        _attributes[arc_index2].previous = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index1];
+        _attributes[attr_size].next = &_attributes[arc_index2];
+    } else if(direction1 == RIGHT && direction2 == LEFT) {
+        _attributes[arc_index1].next = &_attributes[attr_size];
+        _attributes[arc_index2].previous = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index1];
+        _attributes[attr_size].next = &_attributes[arc_index2];
+    } else if(direction1 == RIGHT && direction2 == RIGHT) {
+        _attributes[arc_index1].next = &_attributes[attr_size];
+        _attributes[arc_index2].next = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index1];
+        _attributes[attr_size].next = &_attributes[arc_index2];
+    } else {
+        std :: cout << "That should not have happened..." << std :: endl;
+        return GL_FALSE;
+    }
     switch (direction1) {
 
     case LEFT:
         p0 = _attributes[arc_index1].arc->GetData(0);
         p1 = _attributes[arc_index1].arc->GetData(1);
-        _attributes[arc_index1].previous = &_attributes[attr_size];
-        _attributes[attr_size].next = &_attributes[arc_index1];
+        /*_attributes[arc_index1].previous = &_attributes[attr_size];
+        _attributes[attr_size].next = &_attributes[arc_index1];*/
         break;
     case RIGHT:
         p0 = _attributes[arc_index1].arc->GetData(3);
         p1 = _attributes[arc_index1].arc->GetData(2);
-        _attributes[arc_index1].next = &_attributes[attr_size];
-        _attributes[attr_size].previous = &_attributes[arc_index1];
+        /*_attributes[arc_index1].next = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index1];*/
 
         break;
     default:
@@ -233,14 +257,14 @@ GLboolean BiquadraticCompositeCurve3::JoinExistingArcs(const size_t &arc_index1,
     case LEFT:
         p3 = _attributes[arc_index2].arc->GetData(0);
         p2 = _attributes[arc_index2].arc->GetData(1);
-        _attributes[arc_index2].previous = &_attributes[attr_size];
-        _attributes[attr_size].next = &_attributes[arc_index2];
+        /*_attributes[arc_index2].previous = &_attributes[attr_size];
+        _attributes[attr_size].next = &_attributes[arc_index2];*/
         break;
     case RIGHT:
         p3 = _attributes[arc_index2].arc->GetData(3);
         p2 = _attributes[arc_index2].arc->GetData(2);
-        _attributes[arc_index2].next = &_attributes[attr_size];
-        _attributes[attr_size].previous = &_attributes[arc_index2];
+        /*_attributes[arc_index2].next = &_attributes[attr_size];
+        _attributes[attr_size].previous = &_attributes[arc_index2];*/
         break;
     default:
         std :: cout << "That should not have happened..." << std :: endl;
@@ -634,6 +658,11 @@ GLboolean BiquadraticCompositeCurve3::moveOnAxisZ(const size_t &arc_index, GLdou
 
 GLboolean BiquadraticCompositeCurve3::shiftArc(const size_t &arc_index, GLdouble offx, GLdouble offy, GLdouble offz, std::vector<ArcAttributes *> visited)
 {
+    for(GLuint i = 0; i < visited.size(); i++) {
+        if(visited[i] == &_attributes[arc_index]) {
+            return GL_FALSE;
+        }
+    }
     for(GLuint i = 0; i < 4; i++)
     {
         GLdouble x = _attributes[arc_index].arc->GetData(i).x();
@@ -644,7 +673,16 @@ GLboolean BiquadraticCompositeCurve3::shiftArc(const size_t &arc_index, GLdouble
     UpdateArc_2(arc_index,30,3);
     visited.push_back(&_attributes[arc_index]);
 
-    GLboolean ok = GL_TRUE;
+    if(_attributes[arc_index].next) {
+        cout << "Next neighbour: " << _attributes[arc_index].next->index << endl;
+        shiftArc(_attributes[arc_index].next->index,offx,offy,offz,visited);
+    }
+    if(_attributes[arc_index].previous) {
+        cout << "Previous neighbour: " << _attributes[arc_index].previous->index << endl;
+        shiftArc(_attributes[arc_index].previous->index,offx,offy,offz,visited);
+    }
+
+    /*GLboolean ok = GL_TRUE;
     if(_attributes[arc_index].next)
     {
         for(GLuint i = 0 ; i < visited.size(); i++)
@@ -661,6 +699,7 @@ GLboolean BiquadraticCompositeCurve3::shiftArc(const size_t &arc_index, GLdouble
         }
     }
 
+    ok = GL_TRUE;
     if(_attributes[arc_index].previous)
     {
         for(GLuint i = 0 ; i < visited.size(); i++)
@@ -675,7 +714,7 @@ GLboolean BiquadraticCompositeCurve3::shiftArc(const size_t &arc_index, GLdouble
         {
             shiftArc(_attributes[arc_index].previous->index,offx,offy,offz,visited);
         }
-    }
+    }*/
 
     return GL_TRUE;
 
@@ -838,8 +877,125 @@ GLboolean BiquadraticCompositeCurve3::moveControlPointZ(const size_t &arc_index,
 GLboolean BiquadraticCompositeCurve3::moveControlPointAll(const size_t &arc_index, const size_t &point_index, GLdouble offx, GLdouble offy, GLdouble offz) {
 
     ArcAttributes* first = &_attributes[arc_index];
+    ArcAttributes* next = first->next;
+    ArcAttributes* previous = first->previous;
+    ArcAttributes* neighbour;
+    GLuint opposite = 3 - point_index, other;
+    DCoordinate3 p0, p1;
+
+    DCoordinate3 connect;
+    if(point_index < 2) {
+        connect = first->arc->GetData(0);
+    } else {
+        connect = first->arc->GetData(3);
+    }
+    GLboolean found = GL_FALSE;
+
+    switch(point_index) {
+    case 0:
+    case 3:
+        if(point_index == 0) {
+            other = 1;
+        } else {
+            other = 2;
+        }
+        if(next) {
+            p0 = next->arc->GetData(0);
+            if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                first->arc->SetData(point_index, DCoordinate3(connect.x() + offx, connect.y() + offy, connect.z() + offz));
+                first->arc->SetData(other, DCoordinate3(first->arc->GetData(other).x() + offx, first->arc->GetData(other).y() + offy, first->arc->GetData(other).z() + offz));
+                next->arc->SetData(0, DCoordinate3(p0.x() + offx, p0.y() + offy, p0.z() + offz));
+                next->arc->SetData(1, DCoordinate3(next->arc->GetData(1).x() + offx, next->arc->GetData(1).y() + offy, next->arc->GetData(1).z() + offz));
+                found = GL_TRUE;
+                UpdateArc_2(*next,30,3);
+            }
+            if(!found) {
+                p0 = next->arc->GetData(3);
+                if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                    first->arc->SetData(point_index, DCoordinate3(connect.x() + offx, connect.y() + offy, connect.z() + offz));
+                    first->arc->SetData(other, DCoordinate3(first->arc->GetData(other).x() + offx, first->arc->GetData(other).y() + offy, first->arc->GetData(other).z() + offz));
+                    next->arc->SetData(3, DCoordinate3(p0.x() + offx, p0.y() + offy, p0.z() + offz));
+                    next->arc->SetData(2, DCoordinate3(next->arc->GetData(2).x() + offx, next->arc->GetData(2).y() + offy, next->arc->GetData(2).z() + offz));
+                    found = GL_TRUE;
+                    UpdateArc_2(*next,30,3);
+                }
+            }
+        }
+        if(previous && !found) {
+            p0 = previous->arc->GetData(0);
+            if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                first->arc->SetData(point_index, DCoordinate3(connect.x() + offx, connect.y() + offy, connect.z() + offz));
+                first->arc->SetData(other, DCoordinate3(first->arc->GetData(other).x() + offx, first->arc->GetData(other).y() + offy, first->arc->GetData(other).z() + offz));
+                previous->arc->SetData(0, DCoordinate3(p0.x() + offx, p0.y() + offy, p0.z() + offz));
+                previous->arc->SetData(1, DCoordinate3(previous->arc->GetData(1).x() + offx, previous->arc->GetData(1).y() + offy, previous->arc->GetData(1).z() + offz));
+                found = GL_TRUE;
+                UpdateArc_2(*previous,30,3);
+            }
+            if(!found) {
+                p0 = previous->arc->GetData(3);
+                if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                    first->arc->SetData(point_index, DCoordinate3(connect.x() + offx, connect.y() + offy, connect.z() + offz));
+                    first->arc->SetData(other, DCoordinate3(first->arc->GetData(other).x() + offx, first->arc->GetData(other).y() + offy, first->arc->GetData(other).z() + offz));
+                    previous->arc->SetData(3, DCoordinate3(p0.x() + offx, p0.y() + offy, p0.z() + offz));
+                    previous->arc->SetData(2, DCoordinate3(previous->arc->GetData(2).x() + offx, previous->arc->GetData(2).y() + offy, previous->arc->GetData(2).z() + offz));
+                    found = GL_TRUE;
+                    UpdateArc_2(*previous,30,3);
+                }
+            }
+        }
+        if(!found) {
+            first->arc->SetData(point_index, DCoordinate3(connect.x() + offx, connect.y() + offy, connect.z() + offz));
+        }
+        UpdateArc_2(*first,30,3);
+        break;
+    case 1:
+    case 2:
+        if(next) {
+            p0 = next->arc->GetData(0);
+            if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
+                next->arc->SetData(1, DCoordinate3(next->arc->GetData(1).x() - offx, next->arc->GetData(1).y() - offy, next->arc->GetData(1).z() - offz));
+                found = GL_TRUE;
+                UpdateArc_2(*next,30,3);
+            }
+            if(!found) {
+                p0 = next->arc->GetData(3);
+                if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                    first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
+                    next->arc->SetData(2, DCoordinate3(next->arc->GetData(2).x() - offx, next->arc->GetData(2).y() - offy, next->arc->GetData(2).z() - offz));
+                    found = GL_TRUE;
+                    UpdateArc_2(*next,30,3);
+                }
+            }
+        }
+        if(previous && !found) {
+            p0 = previous->arc->GetData(0);
+            if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
+                previous->arc->SetData(1, DCoordinate3(previous->arc->GetData(1).x() - offx, previous->arc->GetData(1).y() - offy, previous->arc->GetData(1).z() - offz));
+                found = GL_TRUE;
+                UpdateArc_2(*previous,30,3);
+            }
+            if(!found) {
+                p0 = previous->arc->GetData(3);
+                if(p0.x() == connect.x() && p0.y() == connect.y() && p0.z() == connect.z()) {
+                    first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
+                    previous->arc->SetData(2, DCoordinate3(previous->arc->GetData(2).x() - offx, previous->arc->GetData(2).y() - offy, previous->arc->GetData(2).z() - offz));
+                    found = GL_TRUE;
+                    UpdateArc_2(*previous,30,3);
+                }
+            }
+        }
+        if(!found) {
+            first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
+        }
+        UpdateArc_2(*first,30,3);
+        break;
+    }
+
+
     // set the chosen arc
-    first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
+    /*first->arc->SetData(point_index, DCoordinate3(first->arc->GetData(point_index).x() + offx, first->arc->GetData(point_index).y() + offy, first->arc->GetData(point_index).z() + offz));
 
     UpdateArc_2(*first,30,3);
 
@@ -862,7 +1018,9 @@ GLboolean BiquadraticCompositeCurve3::moveControlPointAll(const size_t &arc_inde
             next->arc->SetData(1, 2.0 * first->arc->GetData(3) - first->arc->GetData(2));
             UpdateArc_2(*next,30,3);
         }
-    }
+    }*/
+
+
 
     return GL_TRUE;
 }
