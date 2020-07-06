@@ -620,6 +620,7 @@ GLboolean BiquadraticCompositeSurface3::JoinExistingPatches(const size_t &patch_
 {
     int direc_ind1 = GetDirectionIndex(direction1);
     int direc_ind2 = GetDirectionIndex(direction2);
+
     //check if it already has this neighbor
     if(_attributes[patch_index1].neighbours[direc_ind1] != nullptr || _attributes[patch_index2].neighbours[direc_ind2] != nullptr) {
         return GL_FALSE;
@@ -699,147 +700,431 @@ GLboolean BiquadraticCompositeSurface3::JoinExistingPatches(const size_t &patch_
 
     } else if(direc_ind1 % 2 == 1 && direc_ind2 % 2 == 1) {
         DCoordinate3 p0, p1, p2, p3, p4, p5, p6, p7;
+        switch(direc_ind2) {
+
+        case 1:
+            //get
+            _attributes[patch_index2].patch->GetData(1,2,p4);
+            _attributes[patch_index2].patch->GetData(1,3,p5);
+            _attributes[patch_index2].patch->GetData(0,2,p6);
+            _attributes[patch_index2].patch->GetData(0,3,p7);
+            break;
+        case 3:
+            //get
+            _attributes[patch_index2].patch->GetData(1,1,p4);
+            _attributes[patch_index2].patch->GetData(1,0,p5);
+            _attributes[patch_index2].patch->GetData(0,1,p6);
+            _attributes[patch_index2].patch->GetData(0,0,p7);
+            break;
+        case 5:
+            //get
+            _attributes[patch_index2].patch->GetData(2,1,p4);
+            _attributes[patch_index2].patch->GetData(2,0,p5);
+            _attributes[patch_index2].patch->GetData(3,1,p6);
+            _attributes[patch_index2].patch->GetData(3,0,p7);
+            break;
+        case 7:
+            //get
+            _attributes[patch_index2].patch->GetData(2,2,p4);
+            _attributes[patch_index2].patch->GetData(2,3,p5);
+            _attributes[patch_index2].patch->GetData(3,2,p6);
+            _attributes[patch_index2].patch->GetData(3,3,p7);
+            break;
+
+        }
         switch(direc_ind1) {
 
         case 1:
             //get
-            _attributes[patch_index1].patch->GetData(0,4,p0);
-            _attributes[patch_index1].patch->GetData(0,3,p1);
-            _attributes[patch_index1].patch->GetData(1,4,p2);
-            _attributes[patch_index1].patch->GetData(1,3,p3);
+            _attributes[patch_index1].patch->GetData(1,2,p0);
+            _attributes[patch_index1].patch->GetData(1,3,p1);
+            _attributes[patch_index1].patch->GetData(0,2,p2);
+            _attributes[patch_index1].patch->GetData(0,3,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, 4.0 * p3 - 3.0 * p1);
+            _attributes[attr_size].patch->SetData(0,1, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            //_attributes[attr_size].patch->SetData(0,2, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            //_attributes[attr_size].patch->SetData(0,3, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            _attributes[attr_size].patch->SetData(1,0, 3.0 * p3 - 2.0 * p1);
+            _attributes[attr_size].patch->SetData(1,1, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            //_attributes[attr_size].patch->SetData(1,2, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            //_attributes[attr_size].patch->SetData(1,3, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(2,0, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(2,1, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(2,2, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,3, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(3,0, p3);
+            _attributes[attr_size].patch->SetData(3,1, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(3,2, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(3,3, 4.0 * p3 - 3.0 * p2);
+            //neighbours
+            _attributes[patch_index1].neighbours[1] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[5] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[1] = &_attributes[patch_index2];
+
+            //other part
+            _attributes[attr_size].patch->GetData(0,0,p0);
+            _attributes[attr_size].patch->SetData(0,0, (p0 + 4.0 * p7 - 3.0 * p6) / 2);
+            _attributes[attr_size].patch->GetData(0,1,p0);
+            _attributes[attr_size].patch->SetData(0,1, (p0 + 3.0 * p7 - 2.0 * p6) / 2);
+            _attributes[attr_size].patch->SetData(0,2, 2.0 * p7 - p6);
+            _attributes[attr_size].patch->SetData(0,3, p7);
+            _attributes[attr_size].patch->GetData(1,0,p0);
+            _attributes[attr_size].patch->SetData(1,0, (p0 + 8.0 * p7 - 6.0 * p6 - 4.0 * p5 + 3.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(1,1,p0);
+            _attributes[attr_size].patch->SetData(1,1, (p0 + 6.0 * p7 - 4.0 * p6 - 3.0 * p5 + 2.0 * p4) / 2);
+            _attributes[attr_size].patch->SetData(1,2, 4.0 * p7 - 2.0 * p6 - 2.0 * p5 + p4);
+            _attributes[attr_size].patch->SetData(1,3, 2.0 * p7 - p5);
+            //_attributes[attr_size].patch->SetData(2,0, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            //_attributes[attr_size].patch->SetData(2,1, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            _attributes[attr_size].patch->GetData(2,2,p0);
+            _attributes[attr_size].patch->SetData(2,2, (p0 + 6.0 * p7 - 3.0 * p6 - 4.0 * p5 + 2.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(2,3,p0);
+            _attributes[attr_size].patch->SetData(2,3, (p0 + 3.0 * p7 - 2.0 * p5) / 2);
+            //_attributes[attr_size].patch->SetData(3,0, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            //_attributes[attr_size].patch->SetData(3,1, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->GetData(3,2,p0);
+            _attributes[attr_size].patch->SetData(3,2, (p0 + 8.0 * p7 - 4.0 * p6 - 6.0 * p5 + 3.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(3,3,p0);
+            _attributes[attr_size].patch->SetData(3,3, (p0 + 4.0 * p7 - 3.0 * p5) / 2);
+
             break;
-        case 3:
-            //get
-            _attributes[patch_index1].patch->GetData(3,3,p0);
-            _attributes[patch_index1].patch->GetData(2,3,p1);
-            _attributes[patch_index1].patch->GetData(3,2,p2);
-            _attributes[patch_index1].patch->GetData(2,2,p3);
+        case 3://get
+            _attributes[patch_index1].patch->GetData(1,1,p0);
+            _attributes[patch_index1].patch->GetData(1,0,p1);
+            _attributes[patch_index1].patch->GetData(0,1,p2);
+            _attributes[patch_index1].patch->GetData(0,0,p3);
+            //set
+            //_attributes[attr_size].patch->SetData(0,0, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            //_attributes[attr_size].patch->SetData(0,1, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(0,2, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(0,3, 4.0 * p3 - 3.0 * p1);
+            //_attributes[attr_size].patch->SetData(1,0, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            //_attributes[attr_size].patch->SetData(1,1, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            _attributes[attr_size].patch->SetData(1,2, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,3, 3.0 * p3 - 2.0 * p1);
+            _attributes[attr_size].patch->SetData(2,0, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(2,1, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,2, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(2,3, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(3,0, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(3,1, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(3,2, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(3,3, p3);
+            //neighbours
+            _attributes[patch_index1].neighbours[3] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[7] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[3] = &_attributes[patch_index2];
+
+            _attributes[attr_size].patch->SetData(0,0, p7);
+            _attributes[attr_size].patch->SetData(0,1, 2.0 * p7 - p6);
+            _attributes[attr_size].patch->GetData(0,2,p0);
+            _attributes[attr_size].patch->SetData(0,2, (p0 + 3.0 * p7 - 2.0 * p6) / 2);
+            _attributes[attr_size].patch->GetData(0,3,p0);
+            _attributes[attr_size].patch->SetData(0,3, (p0 + 4.0 * p7 - 3.0 * p6) / 2);
+            _attributes[attr_size].patch->SetData(1,0, 2.0 * p7 - p5);
+            _attributes[attr_size].patch->SetData(1,1, 4.0 * p7 - 2.0 * p6 - 2.0 * p5 + p4);
+            _attributes[attr_size].patch->GetData(1,2,p0);
+            _attributes[attr_size].patch->SetData(1,2, (p0 + 6.0 * p7 - 4.0 * p6 - 3.0 * p5 + 2.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(1,3,p0);
+            _attributes[attr_size].patch->SetData(1,3, (p0 + 8.0 * p7 - 6.0 * p6 - 4.0 * p5 + 3.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(2,0,p0);
+            _attributes[attr_size].patch->SetData(2,0, (p0 + 3.0 * p7 - 2.0 * p5) / 2);
+            _attributes[attr_size].patch->GetData(2,1,p0);
+            _attributes[attr_size].patch->SetData(2,1, (p0 + 6.0 * p7 - 3.0 * p6 - 4.0 * p5 + 2.0 * p4) / 2);
+            //_attributes[attr_size].patch->SetData(2,2, 9.0 * p7 - 6.0 * p6 - 6.0 * p5 + 4.0 * p4);
+            //_attributes[attr_size].patch->SetData(2,3, 12.0 * p7 - 9.0 * p6 - 8.0 * p5 + 6.0 * p4);
+            _attributes[attr_size].patch->GetData(3,0,p0);
+            _attributes[attr_size].patch->SetData(3,0, (p0 + 4.0 * p7 - 3.0 * p5) / 2);
+            _attributes[attr_size].patch->GetData(3,1,p0);
+            _attributes[attr_size].patch->SetData(3,1, (p0 + 8.0 * p7 - 4.0 * p6 - 6.0 * p5 + 3.0 * p4) / 2);
+            //_attributes[attr_size].patch->SetData(3,2, 12.0 * p7 - 8.0 * p6 - 9.0 * p5 + 6.0 * p4);
+            //_attributes[attr_size].patch->SetData(3,3, 16.0 * p7 - 12.0 * p6 - 12.0 * p5 + 9.0 * p4);
             break;
         case 5:
             //get
-            _attributes[patch_index1].patch->GetData(3,0,p0);
+            _attributes[patch_index1].patch->GetData(2,1,p0);
             _attributes[patch_index1].patch->GetData(2,0,p1);
             _attributes[patch_index1].patch->GetData(3,1,p2);
-            _attributes[patch_index1].patch->GetData(2,1,p3);
-            break;
-        case 7:
-            //get
-            _attributes[patch_index1].patch->GetData(0,0,p0);
-            _attributes[patch_index1].patch->GetData(0,1,p1);
-            _attributes[patch_index1].patch->GetData(1,0,p2);
-            _attributes[patch_index1].patch->GetData(1,1,p3);
-            break;
-
-        }
-        switch(direc_ind2) {
-
-        case 1:
-            //get
-            _attributes[patch_index2].patch->GetData(0,4,p7);
-            _attributes[patch_index2].patch->GetData(0,3,p6);
-            _attributes[patch_index2].patch->GetData(1,4,p5);
-            _attributes[patch_index2].patch->GetData(1,3,p4);
-            break;
-        case 3:
-            //get
-            _attributes[patch_index2].patch->GetData(3,3,p7);
-            _attributes[patch_index2].patch->GetData(2,3,p6);
-            _attributes[patch_index2].patch->GetData(3,2,p5);
-            _attributes[patch_index2].patch->GetData(2,2,p4);
-            break;
-        case 5:
-            //get
-            _attributes[patch_index2].patch->GetData(3,0,p7);
-            _attributes[patch_index2].patch->GetData(2,0,p6);
-            _attributes[patch_index2].patch->GetData(3,1,p5);
-            _attributes[patch_index2].patch->GetData(2,1,p4);
-            break;
-        case 7:
-            //get
-            _attributes[patch_index2].patch->GetData(0,0,p7);
-            _attributes[patch_index2].patch->GetData(0,1,p6);
-            _attributes[patch_index2].patch->GetData(1,0,p5);
-            _attributes[patch_index2].patch->GetData(1,1,p4);
-            break;
-
-        }
-
-        //set
-        _attributes[attr_size].patch->SetData(0,0, p0);//
-        _attributes[attr_size].patch->SetData(0,1, 2.0 * p0 - p2);//
-        _attributes[attr_size].patch->SetData(1,0, 2.0 * p0 - p1);//
-        _attributes[attr_size].patch->SetData(1,1, 2.0 * p0 - p3); //
-        _attributes[attr_size].patch->SetData(0,2, 2.0 * p0 - p1);
-        _attributes[attr_size].patch->SetData(0,3, p3);
-        _attributes[attr_size].patch->SetData(1,2, p7 + p0 - p4 - p3 + 0.5 * p6 + 0.5 * p1); //
-        _attributes[attr_size].patch->SetData(1,3, p3);
-        _attributes[attr_size].patch->SetData(2,0, p0);
-        _attributes[attr_size].patch->SetData(2,1, 2.0 * p0 - p1);
-        _attributes[attr_size].patch->SetData(3,0, p0);
-        _attributes[attr_size].patch->SetData(3,1, 2.0 * p0 - p1);
-        _attributes[attr_size].patch->SetData(2,2, 2.0 * p7 - p4);//
-        _attributes[attr_size].patch->SetData(2,3, 2.0 * p7 - p5);//
-        _attributes[attr_size].patch->SetData(3,2, 2.0 * p7 - p6);//
-        _attributes[attr_size].patch->SetData(3,3, p7); //
-
-        _attributes[attr_size].neighbours[3] = &_attributes[patch_index2];
-        _attributes[attr_size].neighbours[7] = &_attributes[patch_index1];
-        switch(direc_ind1) {
-        case 0:
-            _attributes[patch_index1].neighbours[2] = &_attributes[attr_size];
-            break;
-        case 1:
-            _attributes[patch_index1].neighbours[1] = &_attributes[attr_size];
-            break;
-        case 2:
-            _attributes[patch_index1].neighbours[4] = &_attributes[attr_size];
-            break;
-        case 3:
-            _attributes[patch_index1].neighbours[7] = &_attributes[attr_size];
-            break;
-        case 4:
-            _attributes[patch_index1].neighbours[6] = &_attributes[attr_size];
-            break;
-        case 5:
+            _attributes[patch_index1].patch->GetData(3,0,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(0,1, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(0,2, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(0,3, p3);
+            _attributes[attr_size].patch->SetData(1,0, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(1,1, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,2, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(1,3, 2.0 * p3 - p1);
+            //_attributes[attr_size].patch->SetData(2,0, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            //_attributes[attr_size].patch->SetData(2,1, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            _attributes[attr_size].patch->SetData(2,2, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,3, 3.0 * p3 - 2.0 * p1);
+            //_attributes[attr_size].patch->SetData(3,0, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            //_attributes[attr_size].patch->SetData(3,1, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(3,2, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(3,3, 4.0 * p3 - 3.0 * p1);
+            //neighbours
             _attributes[patch_index1].neighbours[5] = &_attributes[attr_size];
-            break;
-        case 6:
-            _attributes[patch_index1].neighbours[0] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[1] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[5] = &_attributes[patch_index2];
+
+            _attributes[attr_size].patch->GetData(0,0,p0);
+            _attributes[attr_size].patch->SetData(0,0, (p0 + 4.0 * p7 - 3.0 * p5) / 2);
+            _attributes[attr_size].patch->GetData(0,1,p0);
+            _attributes[attr_size].patch->SetData(0,1, (p0 + 8.0 * p7 - 4.0 * p6 - 6.0 * p5 + 3.0 * p4) / 2);
+            //_attributes[attr_size].patch->SetData(0,2, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            //_attributes[attr_size].patch->SetData(0,3, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            _attributes[attr_size].patch->GetData(1,0,p0);
+            _attributes[attr_size].patch->SetData(1,0, (p0 + 3.0 * p7 - 2.0 * p5) / 2);
+            _attributes[attr_size].patch->GetData(1,1,p0);
+            _attributes[attr_size].patch->SetData(1,1, (p0 + 6.0 * p7 - 3.0 * p6 - 4.0 * p5 + 2.0 * p4) / 2);
+            //_attributes[attr_size].patch->SetData(1,2, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            //_attributes[attr_size].patch->SetData(1,3, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(2,0, 2.0 * p7 - p5);
+            _attributes[attr_size].patch->SetData(2,1, 4.0 * p7 - 2.0 * p6 - 2.0 * p5 + p4);
+            _attributes[attr_size].patch->GetData(2,2,p0);
+            _attributes[attr_size].patch->SetData(2,2, (p0 + 6.0 * p7 - 4.0 * p6 - 3.0 * p5 + 2.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(2,3,p0);
+            _attributes[attr_size].patch->SetData(2,3, (p0 + 8.0 * p7 - 6.0 * p6 - 4.0 * p5 + 3.0 * p4) / 2);
+            _attributes[attr_size].patch->SetData(3,0, p7);
+            _attributes[attr_size].patch->SetData(3,1, 2.0 * p7 - p6);
+            _attributes[attr_size].patch->GetData(3,2,p0);
+            _attributes[attr_size].patch->SetData(3,2, (p0 + 3.0 * p7 - 2.0 * p6) / 2);
+            _attributes[attr_size].patch->GetData(3,3,p0);
+            _attributes[attr_size].patch->SetData(3,3, (p0 + 4.0 * p7 - 3.0 * p6) / 2);
             break;
         case 7:
-            _attributes[patch_index1].neighbours[3] = &_attributes[attr_size];
+            //get
+            _attributes[patch_index1].patch->GetData(2,2,p0);
+            _attributes[patch_index1].patch->GetData(2,3,p1);
+            _attributes[patch_index1].patch->GetData(3,2,p2);
+            _attributes[patch_index1].patch->GetData(3,3,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, p3);
+            _attributes[attr_size].patch->SetData(0,1, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(0,2, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(0,3, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(1,0, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(1,1, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(1,2, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,3, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(2,0, 3.0 * p3 - 2.0 * p1);
+            _attributes[attr_size].patch->SetData(2,1, 6.0 * p3 - 3.0 * p2 - 4.0 * p1 + 2.0 * p0);
+            //_attributes[attr_size].patch->SetData(2,2, 9.0 * p3 - 6.0 * p2 - 6.0 * p1 + 4.0 * p0);
+            //_attributes[attr_size].patch->SetData(2,3, 12.0 * p3 - 9.0 * p2 - 8.0 * p1 + 6.0 * p0);
+            _attributes[attr_size].patch->SetData(3,0, 4.0 * p3 - 3.0 * p1);
+            _attributes[attr_size].patch->SetData(3,1, 8.0 * p3 - 4.0 * p2 - 6.0 * p1 + 3.0 * p0);
+            //_attributes[attr_size].patch->SetData(3,2, 12.0 * p3 - 8.0 * p2 - 9.0 * p1 + 6.0 * p0);
+            //_attributes[attr_size].patch->SetData(3,3, 16.0 * p3 - 12.0 * p2 - 12.0 * p1 + 9.0 * p0);
+            //neighbours
+            _attributes[patch_index1].neighbours[7] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[3] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[7] = &_attributes[patch_index2];
+
+            //_attributes[attr_size].patch->SetData(0,0, 16.0 * p7 - 12.0 * p6 - 12.0 * p5 + 9.0 * p4);
+            //_attributes[attr_size].patch->SetData(0,1, 12.0 * p7 - 8.0 * p6 - 9.0 * p5 + 6.0 * p4);
+            _attributes[attr_size].patch->GetData(0,2,p0);
+            _attributes[attr_size].patch->SetData(0,2, (p0 + 8.0 * p7 - 4.0 * p6 - 6.0 * p5 + 3.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(0,3,p0);
+            _attributes[attr_size].patch->SetData(0,3, (p0 + 4.0 * p7 - 3.0 * p5) / 2);
+            //_attributes[attr_size].patch->SetData(1,0, 12.0 * p7 - 9.0 * p6 - 8.0 * p5 + 6.0 * p4);
+            //_attributes[attr_size].patch->SetData(1,1, 9.0 * p7 - 6.0 * p6 - 6.0 * p5 + 4.0 * p4);
+            _attributes[attr_size].patch->GetData(1,2,p0);
+            _attributes[attr_size].patch->SetData(1,2, (p0 + 6.0 * p7 - 3.0 * p6 - 4.0 * p5 + 2.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(1,3,p0);
+            _attributes[attr_size].patch->SetData(1,3, (p0 + 3.0 * p7 - 2.0 * p5) / 2);
+            _attributes[attr_size].patch->GetData(2,0,p0);
+            _attributes[attr_size].patch->SetData(2,0, (p0 + 8.0 * p7 - 6.0 * p6 - 4.0 * p5 + 3.0 * p4) / 2);
+            _attributes[attr_size].patch->GetData(2,1,p0);
+            _attributes[attr_size].patch->SetData(2,1, (p0 + 6.0 * p7 - 4.0 * p6 - 3.0 * p5 + 2.0 * p4) / 2);
+            _attributes[attr_size].patch->SetData(2,2, 4.0 * p7 - 2.0 * p6 - 2.0 * p5 + p4);
+            _attributes[attr_size].patch->SetData(2,3, 2.0 * p7 - p5);
+            _attributes[attr_size].patch->GetData(3,0,p0);
+            _attributes[attr_size].patch->SetData(3,0, (p0 + 4.0 * p7 - 3.0 * p6) / 2);
+            _attributes[attr_size].patch->GetData(3,1,p0);
+            _attributes[attr_size].patch->SetData(3,1, (p0 + 3.0 * p7 - 2.0 * p6) / 2);
+            _attributes[attr_size].patch->SetData(3,2, 2.0 * p7 - p6);
+            _attributes[attr_size].patch->SetData(3,3, p7);
             break;
+
         }
+        _attributes[patch_index2].neighbours[direc_ind2] = &_attributes[attr_size];
+
+    } else if(direc_ind1 % 2 == 1) {
+        DCoordinate3 p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11;
         switch(direc_ind2) {
         case 0:
-            _attributes[patch_index2].neighbours[2] = &_attributes[attr_size];
-            break;
-        case 1:
-            _attributes[patch_index2].neighbours[1] = &_attributes[attr_size];
+            _attributes[patch_index2].patch->GetData(0,3,p4);
+            _attributes[patch_index2].patch->GetData(1,3,p6);
+            _attributes[patch_index2].patch->GetData(2,3,p8);
+            _attributes[patch_index2].patch->GetData(3,3,p10);
+            _attributes[patch_index2].patch->GetData(0,2,p5);
+            _attributes[patch_index2].patch->GetData(1,2,p7);
+            _attributes[patch_index2].patch->GetData(2,2,p9);
+            _attributes[patch_index2].patch->GetData(3,2,p11);
             break;
         case 2:
-            _attributes[patch_index2].neighbours[4] = &_attributes[attr_size];
-            break;
-        case 3:
-            _attributes[patch_index2].neighbours[7] = &_attributes[attr_size];
+            _attributes[patch_index2].patch->GetData(0,0,p4);
+            _attributes[patch_index2].patch->GetData(0,1,p6);
+            _attributes[patch_index2].patch->GetData(0,2,p8);
+            _attributes[patch_index2].patch->GetData(0,3,p10);
+            _attributes[patch_index2].patch->GetData(1,0,p5);
+            _attributes[patch_index2].patch->GetData(1,1,p7);
+            _attributes[patch_index2].patch->GetData(1,2,p9);
+            _attributes[patch_index2].patch->GetData(1,3,p11);
             break;
         case 4:
-            _attributes[patch_index2].neighbours[6] = &_attributes[attr_size];
-            break;
-        case 5:
-            _attributes[patch_index2].neighbours[5] = &_attributes[attr_size];
+            _attributes[patch_index2].patch->GetData(3,0,p4);
+            _attributes[patch_index2].patch->GetData(2,0,p6);
+            _attributes[patch_index2].patch->GetData(1,0,p8);
+            _attributes[patch_index2].patch->GetData(0,0,p10);
+            _attributes[patch_index2].patch->GetData(3,1,p5);
+            _attributes[patch_index2].patch->GetData(2,1,p7);
+            _attributes[patch_index2].patch->GetData(1,1,p9);
+            _attributes[patch_index2].patch->GetData(0,1,p11);
             break;
         case 6:
-            _attributes[patch_index2].neighbours[0] = &_attributes[attr_size];
-            break;
-        case 7:
-            _attributes[patch_index2].neighbours[3] = &_attributes[attr_size];
+            _attributes[patch_index2].patch->GetData(3,3,p4);
+            _attributes[patch_index2].patch->GetData(3,2,p6);
+            _attributes[patch_index2].patch->GetData(3,1,p8);
+            _attributes[patch_index2].patch->GetData(3,0,p10);
+            _attributes[patch_index2].patch->GetData(2,3,p5);
+            _attributes[patch_index2].patch->GetData(2,2,p7);
+            _attributes[patch_index2].patch->GetData(2,1,p9);
+            _attributes[patch_index2].patch->GetData(2,0,p11);
             break;
         }
-    } else if(direc_ind1 % 2 == 1) {
 
+        switch(direc_ind1) {
+
+        case 1:
+            //get
+            _attributes[patch_index1].patch->GetData(1,2,p0);
+            _attributes[patch_index1].patch->GetData(1,3,p1);
+            _attributes[patch_index1].patch->GetData(0,2,p2);
+            _attributes[patch_index1].patch->GetData(0,3,p3);
+            //set
+            _attributes[attr_size].patch->SetData(2,0, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(2,1, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(2,2, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,3, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(3,0, p3);
+            _attributes[attr_size].patch->SetData(3,1, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(3,2, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(3,3, 4.0 * p3 - 3.0 * p2);
+            //neighbours
+            _attributes[patch_index1].neighbours[1] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[5] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[2] = &_attributes[patch_index2];
+
+            _attributes[attr_size].patch->SetData(0,0,p4);
+            _attributes[attr_size].patch->SetData(0,1,p6);
+            _attributes[attr_size].patch->SetData(0,2,p8);
+            _attributes[attr_size].patch->SetData(0,3,p10);
+            _attributes[attr_size].patch->SetData(1,0,2.0 * p4 - p5);
+            _attributes[attr_size].patch->SetData(1,1,2.0 * p6 - p7);
+            _attributes[attr_size].patch->SetData(1,2,2.0 * p8 - p9);
+            _attributes[attr_size].patch->SetData(1,3,2.0 * p10 - p11);
+
+            break;
+        case 3://get
+            _attributes[patch_index1].patch->GetData(1,1,p0);
+            _attributes[patch_index1].patch->GetData(1,0,p1);
+            _attributes[patch_index1].patch->GetData(0,1,p2);
+            _attributes[patch_index1].patch->GetData(0,0,p3);
+            //set
+
+            _attributes[attr_size].patch->SetData(2,0, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(2,1, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(2,2, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(2,3, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(3,0, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(3,1, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(3,2, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(3,3, p3);
+            //neighbours
+            _attributes[patch_index1].neighbours[3] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[7] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[2] = &_attributes[patch_index2];
+
+            _attributes[attr_size].patch->SetData(0,0,p10);
+            _attributes[attr_size].patch->SetData(0,1,p8);
+            _attributes[attr_size].patch->SetData(0,2,p6);
+            _attributes[attr_size].patch->SetData(0,3,p4);
+            _attributes[attr_size].patch->SetData(1,0,2.0 * p10 - p11);
+            _attributes[attr_size].patch->SetData(1,1,2.0 * p8 - p9);
+            _attributes[attr_size].patch->SetData(1,2,2.0 * p6 - p7);
+            _attributes[attr_size].patch->SetData(1,3,2.0 * p4 - p5);
+
+            break;
+        case 5:
+            //get
+            _attributes[patch_index1].patch->GetData(2,1,p0);
+            _attributes[patch_index1].patch->GetData(2,0,p1);
+            _attributes[patch_index1].patch->GetData(3,1,p2);
+            _attributes[patch_index1].patch->GetData(3,0,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(0,1, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(0,2, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(0,3, p3);
+            _attributes[attr_size].patch->SetData(1,0, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            _attributes[attr_size].patch->SetData(1,1, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,2, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(1,3, 2.0 * p3 - p1);
+            //neighbours
+            _attributes[patch_index1].neighbours[5] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[1] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[6] = &_attributes[patch_index2];
+
+            _attributes[attr_size].patch->SetData(3,0,p4);
+            _attributes[attr_size].patch->SetData(3,1,p6);
+            _attributes[attr_size].patch->SetData(3,2,p8);
+            _attributes[attr_size].patch->SetData(3,3,p10);
+            _attributes[attr_size].patch->SetData(2,0,2.0 * p4 - p5);
+            _attributes[attr_size].patch->SetData(2,1,2.0 * p6 - p7);
+            _attributes[attr_size].patch->SetData(2,2,2.0 * p8 - p9);
+            _attributes[attr_size].patch->SetData(2,3,2.0 * p10 - p11);
+
+            break;
+        case 7:
+            //get
+            _attributes[patch_index1].patch->GetData(2,2,p0);
+            _attributes[patch_index1].patch->GetData(2,3,p1);
+            _attributes[patch_index1].patch->GetData(3,2,p2);
+            _attributes[patch_index1].patch->GetData(3,3,p3);
+            //set
+            _attributes[attr_size].patch->SetData(0,0, p3);
+            _attributes[attr_size].patch->SetData(0,1, 2.0 * p3 - p2);
+            _attributes[attr_size].patch->SetData(0,2, 3.0 * p3 - 2.0 * p2);
+            _attributes[attr_size].patch->SetData(0,3, 4.0 * p3 - 3.0 * p2);
+            _attributes[attr_size].patch->SetData(1,0, 2.0 * p3 - p1);
+            _attributes[attr_size].patch->SetData(1,1, 4.0 * p3 - 2.0 * p2 - 2.0 * p1 + p0);
+            _attributes[attr_size].patch->SetData(1,2, 6.0 * p3 - 4.0 * p2 - 3.0 * p1 + 2.0 * p0);
+            _attributes[attr_size].patch->SetData(1,3, 8.0 * p3 - 6.0 * p2 - 4.0 * p1 + 3.0 * p0);
+            //neighbours
+            _attributes[patch_index1].neighbours[7] = &_attributes[attr_size];
+            _attributes[attr_size].neighbours[3] = &_attributes[patch_index1];
+            _attributes[attr_size].neighbours[6] = &_attributes[patch_index2];
+
+            _attributes[attr_size].patch->SetData(3,0,p4);
+            _attributes[attr_size].patch->SetData(3,1,p6);
+            _attributes[attr_size].patch->SetData(3,2,p8);
+            _attributes[attr_size].patch->SetData(3,3,p10);
+            _attributes[attr_size].patch->SetData(2,0,2.0 * p4 - p5);
+            _attributes[attr_size].patch->SetData(2,1,2.0 * p6 - p7);
+            _attributes[attr_size].patch->SetData(2,2,2.0 * p8 - p9);
+            _attributes[attr_size].patch->SetData(2,3,2.0 * p10 - p11);
+
+            break;
+
+        }
+        _attributes[patch_index2].neighbours[direc_ind2] = &_attributes[attr_size];
     } else if(direc_ind2 % 2 == 1) {
-
+        _attributes.resize(attr_size);
+        JoinExistingPatches(patch_index2,direction2,patch_index1,direction1,mat);
+        return GL_TRUE;
     }
 
     if(mat == "Gold")
@@ -1213,7 +1498,7 @@ GLboolean BiquadraticCompositeSurface3::ShiftPatch(GLuint index, GLdouble off_x,
 {
 
     DCoordinate3 point,shiftPoint;
-    shiftPoint = DCoordinate3(off_x,off_z,off_y);
+    shiftPoint = DCoordinate3(off_x,off_y,off_z);
 
     for(GLuint i = 0 ; i < 4; i++)
     {
