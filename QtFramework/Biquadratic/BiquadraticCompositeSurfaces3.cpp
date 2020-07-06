@@ -1,5 +1,6 @@
-#include "BiquadraticCompositeSurfaces3.h";
-#include "fstream";
+#include "BiquadraticCompositeSurfaces3.h"
+#include "fstream"
+#include "string.h"
 
 
 using namespace std;
@@ -2819,18 +2820,20 @@ GLuint BiquadraticCompositeSurface3::ReadSurfaceFromFile(const std::string &file
 {
     loaded_materials.clear();
     fstream f;
-    f.open(file, ios::in);
+    f.open(file,ios::in);
     if(!f.good())
         return GL_FALSE;
-
     std::string material;
 
     GLuint no_of_patches;
     f >> no_of_patches;
 
+    GLuint id = 0;
+    GLuint original_size = _attributes.size();
     Matrix<DCoordinate3> data;
     data.ResizeRows(4);
     data.ResizeColumns(4);
+
     for(GLuint pno = 0; pno < no_of_patches; pno++)
     {
         GLuint n = _attributes.size();
@@ -2867,14 +2870,13 @@ GLuint BiquadraticCompositeSurface3::ReadSurfaceFromFile(const std::string &file
 
         loaded_materials.push_back(_attributes[n].material);
         _attributes[n].patch = new (nothrow) BiquadraticPatch3();
-
         if(!_attributes[n].patch)
         {
             std::cout<<"Patch not created!\n";
             _attributes.pop_back();
             return GL_FALSE;
         }
-
+        f >> id;
         GLdouble x,y,z;
         for(GLuint i = 0; i < 4;i++)
         {
@@ -2884,12 +2886,59 @@ GLuint BiquadraticCompositeSurface3::ReadSurfaceFromFile(const std::string &file
                 _attributes[n].patch->SetData(i,j,x,y,z);
             }
         }
+
+
         _attributes[n].patch->UpdateVertexBufferObjectsOfData();
         UpdatePatch(n);
     }
 
+
+    GLint nb = -1;
+
+    for(GLuint i = 0 ; i < no_of_patches; i++)
+    {
+        nb = -1;
+        for(GLuint j = 0 ; j < 4; j++)
+        {
+            f >> nb;
+            cout<<"NB = "<<nb<<endl;
+            if(nb >= 0)
+            {
+
+                switch (j) {
+                    case 0 :
+                {
+                    cout<<"Setting N for "<<i<<" while NB = "<<nb<<endl;
+                    _attributes[original_size + i].neighbours[N] = &_attributes[original_size+nb];
+                    break;
+                }
+                case 1:
+                {
+                    cout<<"Setting E for "<<i<<" while NB = "<<nb<<endl;
+                    _attributes[original_size + i].neighbours[E] = &_attributes[original_size+nb];
+                    break;
+                }
+                case 2:
+                {
+                   cout<<"Setting S for "<<i<<" while NB = "<<nb<<endl;
+                    _attributes[original_size + i].neighbours[S] = &_attributes[original_size+nb];
+                    break;
+                }
+                case 3:
+                {
+                    cout<<"Setting W for "<<i<<" while NB = "<<nb<<endl;
+                    _attributes[original_size + i].neighbours[W] = &_attributes[original_size+nb];
+                    break;
+                }
+                }
+            }
+
+
+        }
+    }
     f.close();
     return no_of_patches;
+
 
 }
 
@@ -2898,12 +2947,27 @@ GLboolean BiquadraticCompositeSurface3::SaveSurfaceToFile(const std::string &fil
     fstream g;
     g.open(file, ios::out);
 
+    GLuint file_id = 0;
+    std::vector<BiquadraticPatch3*> patches;
+    GLboolean ok = GL_FALSE;
+
+
+
     DCoordinate3 point;
+
+    for(GLuint i = 0; i < _attributes.size(); i++)
+    {
+        patches.push_back(_attributes[i].patch);
+    }
 
     g<<_attributes.size()<<endl<<endl;
     for(GLuint i = 0; i < _attributes.size(); i++)
     {
-        g<<convertMaterialToText(_attributes[i].material)<<endl;
+        g<<convertMaterialToText(_attributes[i].material)<<" "<<file_id<<endl;
+
+        file_id++;
+
+        g<<endl;
         for(GLuint j = 0; j < 4 ; j++)
         {
 
@@ -2913,6 +2977,90 @@ GLboolean BiquadraticCompositeSurface3::SaveSurfaceToFile(const std::string &fil
                 g << point<< endl;
             }
             g<<endl;
+        }
+    }
+
+    for(GLuint i = 0 ; i < _attributes.size(); i++)
+    {
+        if(_attributes[i].neighbours[Direction::N]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::N]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
+
+        if(_attributes[i].neighbours[Direction::E]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::E]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
+        if(_attributes[i].neighbours[Direction::S]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::S]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
+        if(_attributes[i].neighbours[Direction::W]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::W]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
         }
     }
 

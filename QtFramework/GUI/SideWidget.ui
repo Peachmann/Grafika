@@ -246,7 +246,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="Various">
     <attribute name="title">
@@ -690,7 +690,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="tab_3">
     <attribute name="title">
@@ -771,7 +771,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Delete arc</string>
+      <string>Delete arcs</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_11">
@@ -1229,12 +1229,12 @@
       <rect>
        <x>180</x>
        <y>40</y>
-       <width>75</width>
+       <width>81</width>
        <height>23</height>
       </rect>
      </property>
      <property name="text">
-      <string>Delete patch</string>
+      <string>Delete patches</string>
      </property>
     </widget>
     <widget class="QComboBox" name="patchColorBox">

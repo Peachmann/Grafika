@@ -1476,9 +1476,13 @@ void GLWidget::add_arc() {
 }
 
 void GLWidget::delete_arc () {
-    _side_widget->selectArc1->removeItem(_side_widget->deleteArcBox->currentIndex());
-    _side_widget->selectArc2->removeItem(_side_widget->deleteArcBox->currentIndex());
-    _side_widget->deleteArcBox->removeItem(_side_widget->deleteArcBox->currentIndex());
+    _side_widget->selectArc1->clear();
+    _side_widget->selectArc2->clear();
+    _side_widget->deleteArcBox->clear();
+
+    _curve->clear();
+    _curveindex = 0;
+    updateGL();
 
     // actual delete of arc with ID
     /* ex.: BiquadraticCompositeCurves3 x;
@@ -1526,10 +1530,10 @@ void GLWidget::do_arc_operation() {
         GLdouble localy = _side_widget->arcybox->value();
         GLdouble localz = _side_widget->arczbox->value();
 
-        //_curve->moveOnAllAxis(index1,localx, localy, localz);
+        _curve->moveOnAllAxis(index1,localx, localy, localz);
         std::vector<BiquadraticCompositeCurve3::ArcAttributes*> visited;
         visited.clear();
-        _curve->shiftArc(index1,localx,localy,localz,visited);
+        //_curve->shiftArc(index1,localx,localy,localz,visited);
         break;
     }
     // Continue
@@ -1726,9 +1730,13 @@ void GLWidget::add_patch() {
 }
 
 void GLWidget::delete_patch() {
-    _side_widget->selectPatch1->removeItem(_side_widget->deletePatchBox->currentIndex());
-    _side_widget->selectPatch2->removeItem(_side_widget->deletePatchBox->currentIndex());
-    _side_widget->deletePatchBox->removeItem(_side_widget->deletePatchBox->currentIndex());
+   // _side_widget->selectPatch1->removeItem(_side_widget->deletePatchBox->currentIndex());
+   // _side_widget->selectPatch2->removeItem(_side_widget->deletePatchBox->currentIndex());
+   // _side_widget->deletePatchBox->removeItem(_side_widget->deletePatchBox->currentIndex());
+
+    _side_widget->selectPatch1->clear();
+    _side_widget->selectPatch2->clear();
+    _side_widget->deletePatchBox->clear();
 
     _composite_surface->clear();
     _surfaceindex = 0;
@@ -2046,7 +2054,6 @@ void GLWidget::loadFromFile()
         path = "Curves/";
         GLuint added = 0;
         added =_curve->ReadCurveFromFile(path+s,_curveindex);
-
         GLuint j = 0;
 
         for(GLuint i = _curveindex ; i < added + _curveindex; i++)
@@ -2072,6 +2079,7 @@ void GLWidget::loadFromFile()
          path = "Surfaces/";
          GLuint added = 0;
          added = _composite_surface->ReadSurfaceFromFile(path+s,_surfaceindex);
+         cout<<added<<endl;
 
 
          GLuint j = 0;

@@ -126,6 +126,9 @@ namespace cagd {
         //Color to String
        GLuint convertColorToIndex(RowMatrix<Color4*> colors,Color4* color);
 
+       //Delete
+       GLvoid clear();
+
     };
 }
 

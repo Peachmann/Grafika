@@ -1038,6 +1038,8 @@ GLuint BiquadraticCompositeCurve3::ReadCurveFromFile(const std::string &file, GL
     GLuint no_of_arcs;
     f >> no_of_arcs;
 
+    GLuint original_size = _attributes.size();
+
     std::string color;
 
     for(GLuint pno = 0; pno < no_of_arcs; pno++)
@@ -1069,6 +1071,40 @@ GLuint BiquadraticCompositeCurve3::ReadCurveFromFile(const std::string &file, GL
         UpdateArc_2(n,30,3);
     }
 
+    GLint nb = -1;
+    for(GLuint i = 0 ; i < no_of_arcs; i++)
+    {
+        nb = -1;
+        for(GLuint j = 0; j < 1; j++)
+        {
+            f >> nb;
+            cout<<"NB = "<<nb<<endl;
+            if(nb >= 0)
+            {
+                switch (j) {
+                    case 0: //next
+                {
+                    _attributes[original_size + i].next = &_attributes[original_size + nb];
+                    break;
+                }
+                case 1: //previous
+                {
+                    _attributes[original_size + i].previous = &_attributes[original_size + nb];
+                    break;
+                }
+                }
+            }
+        }
+    }
+
+    for(GLuint i = 0; i < no_of_arcs; i++)
+    {
+        cout<<i<<endl;
+        cout<<"NEXT: "<<_attributes[original_size + i].next;
+        cout<<"PREV: "<<_attributes[original_size + i].previous;
+        cout<<endl;
+    }
+
     f.close();
     return no_of_arcs;
 
@@ -1080,6 +1116,14 @@ GLboolean BiquadraticCompositeCurve3::SaveCurveToFile(const std::string &file, R
     fstream g;
     g.open(file, ios::out);
     std::string color;
+    std::vector<BiquadraticArcs3*> arcs;
+    GLboolean ok = GL_FALSE;
+
+    for(GLuint i = 0 ; i < _attributes.size(); i++)
+    {
+        arcs.push_back(_attributes[i].arc);
+    }
+
     g<<_attributes.size()<<endl<<endl;
     for(GLuint i = 0; i < _attributes.size(); i++)
     {
@@ -1115,6 +1159,49 @@ GLboolean BiquadraticCompositeCurve3::SaveCurveToFile(const std::string &file, R
         g<<endl;
     }
 
+    for(GLuint i = 0 ; i < _attributes.size(); i++)
+    {
+        if(_attributes[i].next != nullptr)
+        {
+            for(GLuint a = 0; a < arcs.size(); a++)
+            {
+                if(arcs[a] == _attributes[i].next->arc)
+                {
+                    g << a << endl;
+                    ok = GL_TRUE;
+                }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
+        if(_attributes[i].previous != nullptr)
+        {
+            for(GLuint a = 0; a < arcs.size(); a++)
+            {
+                if(arcs[a] == _attributes[i].previous->arc)
+                {
+                    g << a << endl;
+                    ok = GL_TRUE;
+                }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+    }
+
     return GL_TRUE;
 }
 
@@ -1132,5 +1219,10 @@ GLboolean BiquadraticCompositeCurve3::changeArcColorByIndex(GLuint index, Color4
 {
     _attributes[index].color = color;
     return GL_TRUE;
+}
+
+GLvoid BiquadraticCompositeCurve3::clear()
+{
+    _attributes.clear();
 }
 
