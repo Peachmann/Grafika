@@ -2906,28 +2906,50 @@ GLuint BiquadraticCompositeSurface3::ReadSurfaceFromFile(const std::string &file
             {
 
                 switch (j) {
-                    case 0 :
+                    case 0 : //N
                 {
-                    cout<<"Setting N for "<<i<<" while NB = "<<nb<<endl;
+
                     _attributes[original_size + i].neighbours[N] = &_attributes[original_size+nb];
                     break;
                 }
-                case 1:
+                case 1: // NE
                 {
-                    cout<<"Setting E for "<<i<<" while NB = "<<nb<<endl;
+
+                    _attributes[original_size + i].neighbours[NE] = &_attributes[original_size+nb];
+                    break;
+                }
+                case 2: // E
+                {
+
                     _attributes[original_size + i].neighbours[E] = &_attributes[original_size+nb];
                     break;
                 }
-                case 2:
+                case 3: //SE
                 {
-                   cout<<"Setting S for "<<i<<" while NB = "<<nb<<endl;
-                    _attributes[original_size + i].neighbours[S] = &_attributes[original_size+nb];
+
+                    _attributes[original_size + i].neighbours[SE] = &_attributes[original_size+nb];
                     break;
                 }
-                case 3:
+
+                case 4: //S
                 {
-                    cout<<"Setting W for "<<i<<" while NB = "<<nb<<endl;
-                    _attributes[original_size + i].neighbours[W] = &_attributes[original_size+nb];
+                     _attributes[original_size + i].neighbours[S] = &_attributes[original_size+nb];
+                    break;
+                }
+
+                case 5: //SW
+                {
+                     _attributes[original_size + i].neighbours[SW] = &_attributes[original_size+nb];
+                    break;
+                }
+                case 6: //W
+                {
+                     _attributes[original_size + i].neighbours[W] = &_attributes[original_size+nb];
+                    break;
+                }
+                case 7: //NW
+                {
+                     _attributes[original_size + i].neighbours[NW] = &_attributes[original_size+nb];
                     break;
                 }
                 }
@@ -3002,6 +3024,26 @@ GLboolean BiquadraticCompositeSurface3::SaveSurfaceToFile(const std::string &fil
             ok = GL_FALSE;
         }
 
+        if(_attributes[i].neighbours[Direction::NE]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::NE]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
 
         if(_attributes[i].neighbours[Direction::E]!= nullptr)
         {
@@ -3023,6 +3065,27 @@ GLboolean BiquadraticCompositeSurface3::SaveSurfaceToFile(const std::string &fil
             ok = GL_FALSE;
         }
 
+        if(_attributes[i].neighbours[Direction::SE]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::SE]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
+
         if(_attributes[i].neighbours[Direction::S]!= nullptr)
         {
             for(GLint p = 0; p < patches.size(); p++)
@@ -3043,6 +3106,27 @@ GLboolean BiquadraticCompositeSurface3::SaveSurfaceToFile(const std::string &fil
             ok = GL_FALSE;
         }
 
+        if(_attributes[i].neighbours[Direction::SW]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::SW]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
+
         if(_attributes[i].neighbours[Direction::W]!= nullptr)
         {
             for(GLint p = 0; p < patches.size(); p++)
@@ -3062,6 +3146,27 @@ GLboolean BiquadraticCompositeSurface3::SaveSurfaceToFile(const std::string &fil
         {
             ok = GL_FALSE;
         }
+
+        if(_attributes[i].neighbours[Direction::NW]!= nullptr)
+        {
+            for(GLint p = 0; p < patches.size(); p++)
+            {
+               if(patches[p] == _attributes[i].neighbours[Direction::NW]->patch)
+               {
+                   g<<p<<endl;
+                   ok = GL_TRUE;
+               }
+            }
+        }
+        if(ok == GL_FALSE)
+        {
+            g<<-1<<endl;
+        }
+        if(ok != GL_FALSE)
+        {
+            ok = GL_FALSE;
+        }
+
     }
 
     return GL_TRUE;
